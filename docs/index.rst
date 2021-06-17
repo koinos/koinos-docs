@@ -3,8 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to koinos-docs's documentation!
+Welcome to Koinos documentation!
 =======================================
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, voluptatum corrupti. Adipisci, nam. Quia perferendis id cum. Facere delectus minima ipsam, officia facilis quo eveniet voluptas? Totam amet ut dicta! Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, voluptatum corrupti. Adipisci, nam. Quia perferendis id cum. Facere delectus minima ipsam, officia facilis quo eveniet voluptas? Totam amet ut dicta! Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, voluptatum corrupti. Adipisci, nam. Quia perferendis id cum. Facere delectus minima ipsam, officia facilis quo eveniet voluptas? Totam amet ut dicta!
 
 .. toctree::
    :maxdepth: 3
@@ -18,10 +19,6 @@ Welcome to koinos-docs's documentation!
 
 
 
-The Koinos Blockchain
-=====================
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, voluptatum corrupti. Adipisci, nam. Quia perferendis id cum. Facere delectus minima ipsam, officia facilis quo eveniet voluptas? Totam amet ut dicta! Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, voluptatum corrupti. Adipisci, nam. Quia perferendis id cum. Facere delectus minima ipsam, officia facilis quo eveniet voluptas? Totam amet ut dicta! Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, voluptatum corrupti. Adipisci, nam. Quia perferendis id cum. Facere delectus minima ipsam, officia facilis quo eveniet voluptas? Totam amet ut dicta!
 
 
 Indices and tables

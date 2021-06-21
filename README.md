@@ -1,4 +1,4 @@
-# Koinos Docomentation
+# Koinos Documentation
 
   
 

@@ -14,4 +14,4 @@ rsync -e "ssh -o StrictHostKeyChecking=no" -azP ./docs/_build/html koinos@173.25
 git add . && git commit -m "Sphinx build"
 
 # Push all changes to the Linode production server
-git push -f production HEAD:refs/heads/master
+git push -f master HEAD:refs/heads/master

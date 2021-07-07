@@ -7,5 +7,5 @@ cp scripts/prodignore .gitignore
 cat .gitignore
 
 # copy files inside the generated HTML directory to the webserver
-echo 'yes' | rsync -azPv ./docs/_build/html koinos@173.255.232.131:/var/www/html
+echo rsync -azPv ./docs/_build/html koinos@173.255.232.131:/var/www/html
 

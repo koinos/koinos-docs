@@ -1,6 +1,8 @@
 # add travis ssh key 
 ssh-add - <<< "${DEPLOY_SSH_KEY}"
 
+ls -la ~/
+
 # Remove .gitignore and replace with the production version
 rm -f .gitignore
 cp scripts/prodignore .gitignore

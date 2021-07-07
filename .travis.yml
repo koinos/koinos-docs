@@ -1,4 +1,4 @@
-dist: xenial # needed to use python 3.7
+dist: focal # needed to use python 3.7
 language: python
 branches:
   only:
@@ -6,24 +6,15 @@ branches:
 python:
   - 3.7
 install:
-  - pip install -U pip
-  - pip install pipenv
-  - pip install -r requirements.txt
+  - pip3 install -r requirements.txt
 script:
   - skip # Travis requires a `script` property, but we do not need it
-stages:
-  - build and test
-  - deploy
 jobs:
   include:
-    - stage: build and test # This stage builds and lints in parallel
-      name: Build
-      script: pipenv run make html # build the docs
-      name: Test
     - stage: deploy
       name: Deploy to Linode
       if: (NOT type IN (pull_request)) AND (branch = master) # only deploy if merging on master
-      script: pipenv run make html
+      script: sphinx-build -b html docs docs/_build/html
       deploy:
       - provider: script
         skip_cleanup: true

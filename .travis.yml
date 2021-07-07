@@ -1,0 +1,23 @@
+dist: focal # needed to use python 3.7
+language: python
+branches:
+  only:
+    - master
+python:
+  - 3.7
+install:
+  - pip3 install -r requirements.txt
+script:
+  - skip # Travis requires a `script` property, but we do not need it
+jobs:
+  include:
+    - stage: deploy
+      name: Deploy to Linode
+      if: (NOT type IN (pull_request)) AND (branch = master) # only deploy if merging on master
+      script: sphinx-build -b html docs docs/_build/html
+      deploy:
+      - provider: script
+        skip_cleanup: true
+        script: bash scripts/deploy.sh
+        on:
+          branch: master

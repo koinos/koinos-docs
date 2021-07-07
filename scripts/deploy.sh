@@ -10,6 +10,5 @@ cat .gitignore
 
 # copy files inside the generated HTML directory to the webserver
 ssh-keyscan hostname > known_hosts
-ssh-add -L
 rsync -e "ssh -o StrictHostKeyChecking=no" -azPv ./docs/_build/html koinos@173.255.232.131:/var/www/html
 

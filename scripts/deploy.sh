@@ -9,5 +9,7 @@ rm -f .gitignore
 cp scripts/prodignore .gitignore
 cat .gitignore
 
-# copy files inside the generated HTML directory to the webserver
+
+# Push all changes to the Linode production server
+git push -f production HEAD:refs/heads/master
 rsync -azP ./docs/_build/html/ koinos@173.255.232.131:/var/www/html

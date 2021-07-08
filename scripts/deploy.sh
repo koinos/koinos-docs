@@ -1,7 +1,7 @@
 # add travis ssh key 
 eval `ssh-agent -s`
 ssh-add - <<< "${DEPLOY_SSH_KEY}"
-cat /home/travis/.ssh/tmate.pub
+ssh koinos@173.255.232.131
 
 # Remove .gitignore and replace with the production version
 rm -f .gitignore

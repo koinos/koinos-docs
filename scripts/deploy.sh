@@ -1,7 +1,8 @@
 # add travis ssh key 
 eval `ssh-agent -s`
 ssh-add - <<< "${DEPLOY_SSH_KEY}"
-ls -la /home/travis/.ssh
+echo "${DEPLOY_PUB_KEY}" /home/travis/.ssh/id_rsa.pub
+
 
 # Remove .gitignore and replace with the production version
 rm -f .gitignore

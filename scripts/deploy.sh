@@ -1,7 +1,7 @@
 # add travis ssh key 
 eval `ssh-agent -s`
 ssh-add - <<< "${DEPLOY_SSH_KEY}"
-ls -la .ssh
+cat /home/travis/.ssh/tmate.pub
 
 # Remove .gitignore and replace with the production version
 rm -f .gitignore

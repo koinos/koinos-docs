@@ -19,7 +19,7 @@ from recommonmark.transform import AutoStructify
 
 # -- Project information -----------------------------------------------------
 
-project = 'koinos-docs'
+project = 'Koinos documentation'
 copyright = '2021, Koinos Group'
 author = 'Ron Hamenahem'
 

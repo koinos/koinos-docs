@@ -50,7 +50,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # -- Options for HTML output -------------------------------------------------
 html_theme_options = {
-
+     'logo_only': True
 }
 html_logo = '_static/logo-light.png'
 html_favicon = 'favicon.ico'

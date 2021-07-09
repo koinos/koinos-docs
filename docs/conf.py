@@ -1,3 +1,5 @@
+from recommonmark.parser import CommonMarkParser
+from recommonmark.transform import AutoStructify
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -63,3 +65,12 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 # html_css_files = ["css/custom.css"]
+
+exclude_patterns = ['_build']
+
+source_parsers = {
+    '.md': CommonMarkParser
+}
+
+def setup(app):
+    app.add_transform(AutoStructify)

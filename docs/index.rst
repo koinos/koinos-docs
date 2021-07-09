@@ -12,7 +12,7 @@ Koinos documentation
    :caption: Contents:
 
    content/quickstart/quickstart
-   content/explanation/explanation
+   content/microservice-architecture/microservice-architecture
    content/reference/reference
    content/howto/how_to_guides
    content/tutorials/tutorials

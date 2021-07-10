@@ -52,7 +52,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_theme_options = {
      'logo_only': True
 }
-html_logo = '_static/logo-light.png'
+html_logo = '_static/koinos-docs-logo-rev1.png'
 html_favicon = 'favicon.ico'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for

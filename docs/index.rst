@@ -17,6 +17,7 @@ Koinos documentation
    :caption: Architecture & design
 
    content/architecture/microservice
+   content/architecture/interprocess-communication
 
 .. toctree::
    :maxdepth: 3

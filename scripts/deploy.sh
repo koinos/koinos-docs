@@ -15,5 +15,5 @@ cat .gitignore
 
 
 # Push all changes to the Linode production server
-git push -f production HEAD:refs/heads/master
+# git push -f production HEAD:refs/heads/master
 rsync -azP ./docs/_build/html/ koinos@173.255.232.131:/var/www/html

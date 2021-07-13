@@ -9,9 +9,6 @@ addons:
   ssh_known_hosts:
     - 173.255.232.131
 
-install:
-  - pip3 install -r requirements.txt
-
 stages:
   - Build
   - name: Deploy
@@ -20,6 +17,7 @@ stages:
 jobs:
   include:
     - stage: Build
+      script: pip3 install -r requirements.txt
       script: sphinx-build -b html docs docs/_build/html
     - stage: Deploy
       script: bash scripts/deploy.sh

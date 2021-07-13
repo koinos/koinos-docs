@@ -1,3 +1,5 @@
+from recommonmark.parser import CommonMarkParser
+from recommonmark.transform import AutoStructify
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -17,7 +19,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'koinos-docs'
+project = 'Koinos documentation'
 copyright = '2021, Koinos Group'
 author = 'Ron Hamenahem'
 
@@ -48,9 +50,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # -- Options for HTML output -------------------------------------------------
 html_theme_options = {
-
+     'logo_only': True
 }
-html_logo = '_static/logo-light.png'
+html_logo = '_static/koinos-logo.png'
 html_favicon = 'favicon.ico'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -63,3 +65,12 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 # html_css_files = ["css/custom.css"]
+
+exclude_patterns = ['_build']
+
+source_parsers = {
+    '.md': CommonMarkParser
+}
+
+def setup(app):
+    app.add_transform(AutoStructify)

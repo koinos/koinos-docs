@@ -1,36 +1,34 @@
-# Getting started
-
-## Running a Koinos node
+# Running a Koinos node
 
 
-The Koinos engineering team came up with an elegant and clean install-and-run path which makes it super easy for almost anyone to run a node. The most time consuming part would be installing Docker, after that its just a matter of cloning the repo and running a command in the terminal (an extra step is required for Windows users). 
+The Koinos cluster is comprised of multiple microservices. To simplify the deployment of the Koinos cluster, it is recommended to use the provided Docker compose script to launch a local node. The most time consuming part would be installing Docker, after that its just a matter of cloning the repository and running a single command.
 <br/>
 
-### Installing on OSX / Linux
+## Installing on macOS / Linux
 
 1. Download and install [Docker](https://www.docker.com/products/docker-desktop)
 2. Clone (or download) the Koinos repository from [github](http://github.com/koinos/koinos)
 3. Open the terminal in the downloaded directory and run the following command:
 
     ```
-    docker-compose up
+    $ docker-compose up
     ```
 <br/>
 
-### Installing on Windows
+## Installing on Windows
 
 1. Download and install Docker
 2. Clone (or download) the Koinos repository from [github](http://github.com/koinos/koinos)
 3. Edit the first line in the .env file to read:
 
     ```
-    BASERID=c:\koinos
+    BASEDIR=c:\koinos
     ```
 
 4. Open the terminal in the downloaded directory and run the following command:
 
     ```
-    docker-compose up
+    $ docker-compose up
     ```
 
 

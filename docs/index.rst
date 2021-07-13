@@ -10,7 +10,7 @@ Koinos documentation
    :maxdepth: 3
    :caption: Quickstart
 
-   content/quickstart/quickstart
+   content/quickstart/running-a-koinos-node
 
 .. toctree::
    :maxdepth: 3
@@ -23,4 +23,4 @@ Koinos documentation
    :maxdepth: 3
    :caption: Step-by-step guides
 
-   content/tutorials/tutorials
+   content/tutorials/using-the-faucet-on-discord

@@ -13,13 +13,13 @@ install:
   - pip3 install -r requirements.txt
 
 stages:
-  - build
-  - name: deploy
+  - Build
+  - name: Deploy
     if: branch = master
 
 jobs:
   include:
-    - stage: build
+    - stage: Build
       script: sphinx-build -b html docs docs/_build/html
-    - stage: deploy
+    - stage: Deploy
       script: bash scripts/deploy.sh

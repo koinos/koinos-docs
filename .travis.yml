@@ -22,4 +22,4 @@ jobs:
     - stage: build
       script: sphinx-build -b html docs docs/_build/html
     - stage: deploy
-      script: scripts/deploy.sh
+      script: bash scripts/deploy.sh

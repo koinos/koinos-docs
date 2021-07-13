@@ -1,10 +1,40 @@
 # Tutorials
 
-## Token transfers
-At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
+## Using the tKOIN faucet
 
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, voluptatum corrupti. Adipisci, nam. Quia perferendis id cum. Facere delectus minima ipsam, officia facilis quo eveniet voluptas? Totam amet ut dicta! Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, voluptatum corrupti. Adipisci, nam. Quia perferendis id cum. Facere delectus minima ipsam, officia facilis quo eveniet voluptas? Totam amet ut dicta! Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, voluptatum corrupti. Adipisci, nam. Quia perferendis id cum. Facere delectus minima ipsam, officia facilis quo eveniet voluptas? Totam amet ut dicta!
+**tKOIN** is the Koinos blockchain testnet token. 
 
-At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
+Anyone can participate in the Koinos test network by running a node ([instructions here](https://www.youtube.com/watch?v=64NWplpcmqU&feature=emb_logo)). By installing and running the node each user is assigned a public and private key. Using the key a user can receive tKOIN from our discord faucet using the instructions below. The private key resides in ~/.koinos/block_producer/private.key in OSx / Linux and c:\.koinos in Windows
 
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, voluptatum corrupti. Adipisci, nam. Quia perferendis id cum. Facere delectus minima ipsam, officia facilis quo eveniet voluptas? Totam amet ut dicta! Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, voluptatum corrupti. Adipisci, nam. Quia perferendis id cum. Facere delectus minima ipsam, officia facilis quo eveniet voluptas? Totam amet ut dicta! Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, voluptatum corrupti. Adipisci, nam. Quia perferendis id cum. Facere delectus minima ipsam, officia facilis quo eveniet voluptas? Totam amet ut dicta!
+After starting the node for the first time you can get your public key by looking at the 000.log file in the .koinos/block_producer directory. It should be on the first line with the label "**Public address:"**
+
+``` 
+cat ~/.koinos/block_producer/000.log
+```
+
+It is also displayed when you first start the node although it usually scrolls out of view very quickly. 
+
+
+Once you have your public address you can join our [Discord](https://discord.com/invite/GErGNsu) server and request some tKOIN in the #koinos channel by sending the following message to the faucet bot:
+
+```
+!faucet + your public address
+```
+
+example:
+
+```
+!faucet 1ENxxuH81kytBdYe81fD9tBdYe81fD9Qxe
+```
+
+You can get your balance at any time using the command:
+
+```
+!balance + your public address
+```
+
+example:
+
+```
+!balance 1ENxxuH81kytBdYe81fD9BdYe81fD9Qxe
+```

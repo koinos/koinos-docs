@@ -23,5 +23,4 @@ Koinos documentation
    :maxdepth: 3
    :caption: Step-by-step guides
 
-   content/howto/how_to_guides
    content/tutorials/tutorials

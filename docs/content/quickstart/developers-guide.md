@@ -4,7 +4,7 @@
 
 Koinos projects that are written in C++ utilize [CMake](https://cmake.org/) for generating build files. CMake is a flexible pre-build step that allows developers to utilize a variety of Integrated Development Environments (IDE).
 
-Dependencies are handled using the [Hunter package manager](https://github.com/cpp-pm/hunter). Hunter will download the necessary dependencies and compile it on your development machine as well as cache the resulting libraries. Normally, a developer need not be aware of the Hunter mechanism - which is its great advantage. Be aware that the first time you generate a CMake project it will build the dependency cache increasing your build times. Subsequent calls to CMake will leverage the Hunter cache.
+Dependencies are handled using the [Hunter package manager](https://github.com/cpp-pm/hunter). Hunter will download the necessary dependencies and compile them on your development machine as well as cache the resulting libraries. Normally, a developer need not be aware of the Hunter mechanism - which is its great advantage. Be aware that the first time you generate a CMake project it will build the dependency cache increasing your build times. Subsequent calls to CMake will leverage the Hunter cache.
 
 ### Dependencies
 
@@ -31,7 +31,7 @@ $ sudo apt install build-essentials libgmp cmake
 
 #### Python
 
-Currently, [Koinos Types](https://github.com/koinos/koinos-types) requires the installation of Python3 as well as some additional python packages. Ensure that Python3 is installed then install the necessary python packages.
+Currently, [Koinos Types](https://github.com/koinos/koinos-types) requires the installation of Python3 as well as some additional python packages. Ensure that Python3 is installed and install the necessary python packages.
 
 ```sh
 $ pip3 install --user dataclasses_json Jinja2 importlib_resources pluginbase gitpython
@@ -158,7 +158,7 @@ Erasing book
 *** No errors detected
 ```
 
-It may be useful to start a test but have it wait for the debugger to be attached. Boost provides this useful feature so you can leverage it by adding `--wait_for_debugger` to the test binary invocation.
+It may be useful to start a test but have it wait for the debugger to be attached. Boost provides this feature, you can leverage it by adding `--wait_for_debugger` to the test binary invocation.
 
 ```sh
 ./koinos_tests -t statedb_tests/basic_test -l message --wait_for_debugger

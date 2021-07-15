@@ -11,6 +11,7 @@ Koinos documentation
    :caption: Quickstart
 
    content/quickstart/running-a-koinos-node
+   content/quickstart/developers-guide
 
 .. toctree::
    :maxdepth: 3

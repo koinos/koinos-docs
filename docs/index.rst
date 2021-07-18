@@ -6,8 +6,6 @@
 Koinos documentation
 ====================
 
-Our mission is to give everyone ownership of their digital selves and we believe that blockchain is the most promising technology for accomplishing this mission. Blockchain-based applications can add value to people’s lives in countless ways but building such applications is far too difficult, time consuming, and expensive.
-
 .. toctree::
    :maxdepth: 3
    :caption: Quickstart

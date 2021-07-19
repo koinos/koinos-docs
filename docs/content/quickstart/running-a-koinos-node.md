@@ -2,7 +2,6 @@
 
 The Koinos cluster is comprised of multiple microservices. To simplify the deployment of the Koinos cluster, it is recommended to use the provided Docker compose script to launch a local node. The most time consuming part would be installing Docker, after that its just a matter of cloning the repository and running a single command.
 
-
 ## Installing on macOS/Linux
 
 1. Download and install [Docker](https://www.docker.com/products/docker-desktop)
@@ -12,7 +11,7 @@ The Koinos cluster is comprised of multiple microservices. To simplify the deplo
     ```
     $ docker-compose up
     ```
-<br/>
+<br/><br/>
 
 ## Installing on Windows
 

@@ -19,6 +19,7 @@ Koinos documentation
 
    content/architecture/microservice
    content/architecture/interprocess-communication
+   content/architecture/protobuf
 
 .. toctree::
    :maxdepth: 3

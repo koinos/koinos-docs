@@ -779,7 +779,7 @@
 
 
 
-## Scalar Value Types
+## Scalar value types
 
 | .proto Type | Notes | C++ | Java | Python | Go | C# | PHP | Ruby |
 | ----------- | ----- | --- | ---- | ------ | -- | -- | --- | ---- |

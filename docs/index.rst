@@ -15,6 +15,13 @@ Koinos documentation
 
 .. toctree::
    :maxdepth: 3
+   :caption: API
+
+   content/api/api
+   content/api/json-rpc
+
+.. toctree::
+   :maxdepth: 3
    :caption: Architecture & design
 
    content/architecture/microservice

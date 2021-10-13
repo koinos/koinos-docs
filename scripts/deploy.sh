@@ -5,6 +5,8 @@ set -x
 
 # add travis ssh key
 eval `ssh-agent -s`
+ssh-add - <<< "${DEPLOY_SSH_KEY}"
+ssh-add -L
 
 
 # Remove .gitignore and replace with the production version

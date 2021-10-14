@@ -3,16 +3,16 @@
 set -e
 set -x
 
-# add travis ssh key
-eval `ssh-agent -s`
-# ssh-add - <<< "${DEPLOY_KEY}"
-# ssh-add -L
+git clone https://${GITHUB_USER_TOKEN}@github.com/koinos/koinos-docs-deploy.git
 
+pushd koinos-docs-private
 
-# Remove .gitignore and replace with the production version
-rm -f .gitignore
-cp scripts/prodignore .gitignore
+mkdir -p docs
+rsync -rvm $TRAVIS_BUILD_DIR/docs ./docs
 
+git add docs
 
-# Push all changes to the Linode production server
-rsync -azP ./docs/_build/html/ koinos@173.255.232.131:/var/www/html
+git commit -m "Update for koinos-docs commit $COMMIT_HASH"
+git push https://${GITHUB_USER_TOKEN}@github.com/koinos/koinos-docs-deploy.git
+
+popd

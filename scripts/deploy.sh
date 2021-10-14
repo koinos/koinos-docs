@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 set -x
 
 COMMIT_HASH=`git rev-parse --short HEAD`

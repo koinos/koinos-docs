@@ -3,6 +3,8 @@
 set -e
 set -x
 
+COMMIT_HASH=`git rev-parse --short HEAD`
+
 git clone https://${GITHUB_USER_TOKEN}@github.com/koinos/koinos-docs-deploy.git
 
 pushd koinos-docs-deploy

@@ -5,5 +5,5 @@ branches:
   only:
     - master
 
-script:
+after_success:
   - scripts/deploy.sh

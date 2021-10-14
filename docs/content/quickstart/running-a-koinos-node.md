@@ -103,7 +103,7 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `instance-id`: An ID that uniquely identifies the instance
  - `checkpoint`: Block checkpoint in the form height:blockid (may specify multiple times)
  - `direct`: Address of a peer to connect using gossipsub.WithDirectPeers (may specify multiple) (should be reciprocal)
- - `forceGossip`: Force gossip mode
+ - `force-gossip`: Force gossip mode
  - `gossip`: Enable gossip mode (default true)
  - `listen`: The multiaddress on which the node will listen
  - `peer`: Address of a peer to which to connect (may specify multiple)

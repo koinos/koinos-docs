@@ -43,7 +43,7 @@ alt="Install a koinos node video"  border="1" /></a>
 <br />
 <br />
 
-## Managing a Node
+## Managing a node
 
 Nodes can be configured through two mechanisms, environment variables that change which servies are running, and the node config.
 
@@ -65,7 +65,7 @@ These profiles can be set with the `--profile` options (i.e. `docker-compose --p
 
 For more information on docker compose profiles, please read the official [documentation](https://docs.docker.com/compose/profiles/).
 
-# Microservice Options
+# Microservice options
 
 These options can be set in the `config.yml`. If an option is shared by multiple microservices (such as `amqp`), you can set it for all of them by specifying it under `global`. Any option set for an individual microservice will override the global setting. Using this behavior you could enable debug level logging for one microservice while keeping info logs for the rest.
 

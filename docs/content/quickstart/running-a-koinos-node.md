@@ -122,6 +122,8 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `private-key-file`: The private key file
  - `pow-contract-id`: The PoW contract ID
  - `stale-production-threshold`: The distance of time in seconds from head where production should begin (-1 to disable)
+ - `resources-lower-bound`: The lower bound of resource utilization a newly created block will be considered adequate for submission
+ - `resources-upper-bound`: The upper bound of resource utilization a newly created block should not exceed
 
 ## Transaction Store
 

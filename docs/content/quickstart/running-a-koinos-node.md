@@ -103,7 +103,7 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `instance-id`: An ID that uniquely identifies the instance
  - `checkpoint`: Block checkpoint in the form height:blockid (may specify multiple times)
  - `direct`: Address of a peer to connect using gossipsub.WithDirectPeers (may specify multiple) (should be reciprocal)
- - `forceGossip`: Force gossip mode
+ - `force-gossip`: Force gossip mode
  - `gossip`: Enable gossip mode (default true)
  - `listen`: The multiaddress on which the node will listen
  - `peer`: Address of a peer to which to connect (may specify multiple)
@@ -122,6 +122,9 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `private-key-file`: The private key file
  - `pow-contract-id`: The PoW contract ID
  - `stale-production-threshold`: The distance of time in seconds from head where production should begin (-1 to disable)
+ - `resources-lower-bound`: The lower bound of resource utilization a newly created block will be considered adequate for submission
+ - `resources-upper-bound`: The upper bound of resource utilization a newly created block should not exceed
+ - `max-inclusion-attempts`: The maximum transaction inclusion attempts per block
 
 ## Transaction Store
 

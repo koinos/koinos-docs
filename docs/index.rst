@@ -27,6 +27,7 @@ Koinos documentation
    content/architecture/microservice
    content/architecture/interprocess-communication
    content/architecture/protobuf
+   content/architecture/contract_abi
 
 .. toctree::
    :maxdepth: 3

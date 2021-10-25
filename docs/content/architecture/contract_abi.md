@@ -66,7 +66,7 @@ To interact with smart contracts, Koinos tooling requires a application binary i
 }
 ```
 
-The fields for each entry in `methods` are pretty self explainatory. The argument and return type names are fully qualified types generated from Protobuf. In this case the generating file is:
+The fields for each entry in `methods` are pretty self explanatory. The argument and return type names are fully qualified types generated from Protobuf. In this case the generating file is:
 
 ``` proto
 syntax = "proto3";
@@ -145,4 +145,4 @@ $ protoc --descriptor_set_out=koin.pb koinos/contracts/token/token.proto koinos/
 $ cat koin.pb | base64
 ```
 
-Note: You need to include both the contract proto file (`koinos/contracts/token/token.proto` and any non-protobuf files it includes (`koinos/options.proto`). This will create the smallest possible ABI that can be used with various Koinos tooling.
+**Note:** You need to include both the contract proto file (`koinos/contracts/token/token.proto` and any non-protobuf files it includes (`koinos/options.proto`). This will create the smallest possible ABI that can be used with various Koinos tooling.

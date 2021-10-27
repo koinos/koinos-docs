@@ -12,6 +12,7 @@ Koinos documentation
 
    content/quickstart/running-a-koinos-node
    content/quickstart/developer-guide
+   content/quickstart/contract-developer-guide
 
 .. toctree::
    :maxdepth: 3
@@ -27,7 +28,7 @@ Koinos documentation
    content/architecture/microservice
    content/architecture/interprocess-communication
    content/architecture/protobuf
-   content/architecture/contract_abi
+   content/architecture/contract-abi
 
 .. toctree::
    :maxdepth: 3

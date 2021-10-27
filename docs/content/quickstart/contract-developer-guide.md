@@ -35,12 +35,14 @@ location.
 
 ##### macOS
 ```sh
-$ wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sdk-12.0-macos.tar.gz -C ~/opt2
+$ wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sdk-12.0-macos.tar.gz
+$ tar -xvf wasi-sdk-12.0-macos.tar.gz -C ~/opt
 ```
 
 ##### Linux
 ```sh
 $ wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sdk-12.0-linux.tar.gz -C ~/opt2
+$ tar -xvf wasi-sdk-12.0-linux.tar.gz -C ~/opt
 ```
 
 #### EmbeddedProto

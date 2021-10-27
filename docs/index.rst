@@ -35,3 +35,4 @@ Koinos documentation
    :caption: Step-by-step guides
 
    content/tutorials/using-the-faucet-on-discord
+   content/tutorials/deploying-token

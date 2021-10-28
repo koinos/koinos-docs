@@ -35,4 +35,5 @@ Koinos documentation
    :caption: Step-by-step guides
 
    tutorials/using-the-faucet-on-discord
+   tutorials/custom-types-contract
    tutorials/deploying-token

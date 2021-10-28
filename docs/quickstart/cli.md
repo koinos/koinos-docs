@@ -1,20 +1,20 @@
 # Using the Koinos CLI
 
-The Koinos CLI is a comprehensive command-line tool for interacting with the Koinos Blockchain.
+The Koinos Command Line Interface (CLI) is a comprehensive command line tool for interacting with the Koinos Blockchain.
 
 ## Installing and starting the CLI
 
-The latest release can be downloaded from `https://github.com/koinos/koinos-cli`
+The latest release can be downloaded from [GitHub](https://github.com/koinos/koinos-cli).
 
 Start the CLI with the binary included in the archive.
 
-## Basic Usage
+## Basic usage
 
 When running the wallet, it will start in interactive mode. Press tab or type `list` to see a list of possible commands.
 
 `help <command-name>` will show a help message for the given command.
 
-Some commands require a node RPC endpoint. This can be specified either when starting the cli with '--rpc' command line switch, or with the `connect` command from within the cli. Both take an endpoint url.
+Some commands require a node RPC endpoint. This can be specified either when starting the CLI with `--rpc` command line switch, or with the `connect` command from within the CLI. Both take an endpoint url.
 
 There is a public RPC server that may be used for testing at this address: `http://192.241.131.189:8080`
 
@@ -22,7 +22,7 @@ If there is a red symbol to the left of the prompt, it indicates that you are no
 
 `exit` or `quit` will quit the wallet.
 
-## Wallet Creation & Management
+## Wallet creation & management
 
 The lock symbol to the left of the prompt indicates whether or not you have a wallet open. Some commands require an open wallet.
 
@@ -52,7 +52,7 @@ To read from a smart contract, use the command `read <contract-id> <entry-point>
 
 To call a smart contract, use the command `call <contract-id> <entry-point> <arguments>`. The parameters here are given the same way as in the read command described above.
 
-## Transaction Sessions
+## Transaction sessions
 
 Sometimes it is important to ensure multiple operations are included in the same block in a specific order. To accomplish this with the CLI, you use a session.
 

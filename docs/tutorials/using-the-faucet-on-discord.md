@@ -6,7 +6,7 @@ Anyone can participate in the Koinos test network by [running a node](../quickst
 
 After starting the node for the first time you can get your public key by looking at the `000.log` file in the `.koinos/block_producer` directory. It should be on the first line with the label "**Public address:**" unless the log file was rotated out. Alternatively, you can take the private key from `.koinos/block_producer/private.key` and import it into Koinos CLI to utilize the account and/or view the public address.
 
-```
+```console
 $ head ~/.koinos/block_producer/000.log | grep "Public address"
 ```
 

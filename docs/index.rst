@@ -27,7 +27,7 @@ Koinos documentation
 
    content/architecture/microservice
    content/architecture/interprocess-communication
-   content/architecture/protobuf
+   content/architecture/serialization
    content/architecture/contract-abi
 
 .. toctree::

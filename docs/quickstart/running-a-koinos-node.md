@@ -134,7 +134,7 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `instance-id`: An ID that uniquely identifies the instance
  - `reset`: Reset the database
 
-## JSON RPC
+## JSON-RPC
 
  - `basedir`: Koinos base directory
  - `amqp`: AMQP server URL

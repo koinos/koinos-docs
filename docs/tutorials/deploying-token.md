@@ -9,7 +9,7 @@ uploading a contract using the Koinos CLI.
 Before attempting to build the token contract you should first follow the [Contract developer guide](../quickstart/contract-developer-guide.md) to
 ensure your environment is set up properly.
 
-```sh
+```console
 $ git clone --recursive https://github.com/koinos/koinos-token-example.git
 $ cd koinos-token-example
 $ mkdir build
@@ -28,7 +28,7 @@ read the documentation on Koinos CLI and familiarize yourself with the tool.
 After creating and opening your wallet, uploading a contract is simple. Place the `token.wasm` contract in the current working directory and invoke
 the upload command as follows:
 
-```sh
+```
 🔓 > upload token.wasm
 Contract uploaded with address <contract address>
 Submitted transaction with ID 0x12202687e8f3ccf8175e7b63a24862ee15b5481ce484ee128eeccba60b68ec69d2ae
@@ -42,7 +42,7 @@ contract. We will need the address of the contract, which is the address you use
 Because we are implementing a token contract the ABI is identical to the example provided [here](content/architecture/contract-abi.md).
 Copy the ABI example in to a file named `token.abi` in the current working directory and run the CLI.
 
-```sh
+```
 🔓 > register token <CONTRACT_ADDRESS> token.abi
 Contract 'token' at address <CONTRACT_ADDRESS> registered
 ```
@@ -50,7 +50,7 @@ Contract 'token' at address <CONTRACT_ADDRESS> registered
 
 After completing the contract registration you will find that you now have additional CLI capabilities. Let us exercise them. The wallet you used to upload the token contract has the authority to mint new tokens. You can mint tokens to yourself or create a different address altogether.
 
-```sh
+```
 🔓 > token.mint <TOKEN_RECEIVER> 100
 Calling token.mint with arguments 'to:"<TOKEN_RECEIVER>" value:100'
 Submitted transaction with id 1220ea179557850f9c659cae241334c9b26ab8a816d895726cdb0d08e1eea4e60577
@@ -59,7 +59,7 @@ Submitted transaction with id 1220ea179557850f9c659cae241334c9b26ab8a816d895726c
 
 Let us confirm the mint was successful by checking our token balance.
 
-```sh
+```
 🔓 > token.balance_of <TOKEN_RECEIVER>
 value:100
 ```
@@ -67,7 +67,7 @@ value:100
 
 Since we have just created the only 100 tokens in existence, the total supply should also be 100. Let us verify.
 
-```sh
+```
 🔓 > token.total_supply
 value:100
 ```

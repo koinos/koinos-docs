@@ -18,7 +18,7 @@ First, we will install the Protobuf dependency. While it is possible to install 
 we will build the dependency from source so that we may target the exact version of Protobuf required by the CDT without regard to version available in
 your preferred pacakage manager.
 
-```sh
+```console
 $ git clone --recursive https://github.com/protocolbuffers/protobuf.git
 $ cd protobuf
 $ git checkout v3.17.3
@@ -34,13 +34,13 @@ Because WASI SDK provides adequate release packages on GitHub, we will simply gr
 location.
 
 ##### macOS
-```sh
+```console
 $ wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sdk-12.0-macos.tar.gz
 $ tar -xvf wasi-sdk-12.0-macos.tar.gz -C ~/opt
 ```
 
 ##### Linux
-```sh
+```console
 $ wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sdk-12.0-linux.tar.gz -C ~/opt2
 $ tar -xvf wasi-sdk-12.0-linux.tar.gz -C ~/opt
 ```
@@ -49,7 +49,7 @@ $ tar -xvf wasi-sdk-12.0-linux.tar.gz -C ~/opt
 
 We will only need to clone this repository. We leverage the `protoc` plugin provided by this repository for serialization within the virtual machine.
 
-```sh
+```console
 $ cd ~/opt
 $ git clone --recursive https://github.com/koinos/EmbeddedProto.git
 ```
@@ -61,7 +61,7 @@ and clone the repository.
 
 The CDT relies on WASI SDK in order to build. We let the project know the location of WASI SDK using the environment variable `KOINOS_WASI_SDK_ROOT`.
 
-```sh
+```console
 $ export KOINOS_WASI_SDK_ROOT=~/opt/wasi-sdk-12.0
 $ git clone --recursive https://github.com/koinos/koinos-cdt.git
 $ cd koinos-cdt
@@ -78,7 +78,7 @@ CMake toolchain file, along with a few environment variables, you can now build 
 
 Assuming you have placed the Koinos CDT and the associated dependencies in `~/opt`, you can set the necessary environment variables as follows:
 
-```sh
+```console
 $ export KOINOS_WASI_SDK_ROOT=~/opt/wasi-sdk-12.0
 $ export KOINOS_PROTOBUF_ROOT=~/opt/protobuf-3.17.3
 $ export KOINOS_EMBEDDED_PROTO_ROOT=~/opt/EmbeddedProto
@@ -87,7 +87,7 @@ $ export KOINOS_CDT_ROOT=~/opt/koinos-cdt
 
 You are now ready to configure your smart contract project. From your project root directory, use the provided toolchain file and build:
 
-```sh
+```console
 $ mkdir build
 $ cd build
 $ cmake -DCMAKE_TOOLCHAIN_FILE=${KOINOS_CDT_ROOT}/cmake/koinos-wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Release ..

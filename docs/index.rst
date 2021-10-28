@@ -10,29 +10,29 @@ Koinos documentation
    :maxdepth: 3
    :caption: Quickstart
 
-   content/quickstart/running-a-koinos-node
-   content/quickstart/developer-guide
-   content/quickstart/contract-developer-guide
+   quickstart/running-a-koinos-node
+   quickstart/developer-guide
+   quickstart/contract-developer-guide
 
 .. toctree::
    :maxdepth: 3
    :caption: API
 
-   content/api/api
-   content/api/json-rpc
+   api/api
+   api/json-rpc
 
 .. toctree::
    :maxdepth: 3
    :caption: Architecture & design
 
-   content/architecture/microservice
-   content/architecture/interprocess-communication
-   content/architecture/serialization
-   content/architecture/contract-abi
+   architecture/microservice
+   architecture/interprocess-communication
+   architecture/serialization
+   architecture/contract-abi
 
 .. toctree::
    :maxdepth: 3
    :caption: Step-by-step guides
 
-   content/tutorials/using-the-faucet-on-discord
-   content/tutorials/deploying-token
+   tutorials/using-the-faucet-on-discord
+   tutorials/deploying-token

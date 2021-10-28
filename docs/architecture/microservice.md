@@ -18,7 +18,7 @@ The Koinos cluster implements the Koinos protocol leveraging the benefits of mic
 |[Koinos Mempool](https://github.com/koinos/koinos-mempool)                    |C++|Storing transactions that have yet to be included in blocks|
 |[Koinos Transaction Store](https://github.com/koinos/koinos-transaction-store)|Golang|Storing transaction information|
 |[Koinos Block Producer](https://github.com/koinos/koinos-block-producer)      |C++|The production of blocks|
-|[Koinos JSONRPC](https://github.com/koinos/koinos-jsonrpc)                    |Golang|Providing API access from outside the cluster|
+|[Koinos JSON-RPC](https://github.com/koinos/koinos-jsonrpc)                   |Golang|Providing API access from outside the cluster|
 
 Communication between microservices is accomplished by taking advantage of the battle hardened _Advanced Message Queue Protocol_ ([AMQP 0.9.1](https://www.amqp.org/specification/0-9-1/amqp-org-download)) as implemented by [RabbitMQ](https://www.rabbitmq.com/). Each microservice maintains a connection to RabbitMQ which it uses to send and receive _Remote Procedure Calls_ (RPC) as well as broadcast messages. Microservices avoid the need for polling by utilizing broadcast messages in order to implement an event driven paradigm.
 

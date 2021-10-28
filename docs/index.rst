@@ -16,10 +16,10 @@ Koinos documentation
 
 .. toctree::
    :maxdepth: 3
-   :caption: API
+   :caption: RPC
 
-   api/api
-   api/json-rpc
+   rpc/rpc-protocol
+   rpc/json-rpc
 
 .. toctree::
    :maxdepth: 3

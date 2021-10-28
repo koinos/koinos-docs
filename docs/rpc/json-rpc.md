@@ -1,6 +1,6 @@
 # JSON-RPC
 
-Koinos supports external APIs via JSON-RPC. Each microservice defines its own API calls. The JSON-RPC microservice acts as a translation layer between JSON-RPC and the internal message format. Koinos uses a dotted decimal system to route API requests to the correct microservice. Microserives can be called with their fully qualified namespace or by the microservice name.  For example, to call `get_head_info` in the Chain microservice you would call `"method":"koinos.rpc.chain.get_head_info"` or `"method":"chain.get_head_info"`.
+Koinos supports user APIs via JSON-RPC. Each microservice defines its own API calls. The JSON-RPC microservice acts as a translation layer between JSON-RPC and the internal message format. Koinos uses a dotted decimal system to route API requests to the correct microservice. Microservices can be called with their fully qualified namespace or by the microservice name.  For example, to call `get_head_info` in the Chain microservice you would call `"method":"koinos.rpc.chain.get_head_info"` or `"method":"chain.get_head_info"`.
 
 ## Descriptor files
 
@@ -14,7 +14,7 @@ All current APIs are defined in [Koinos Proto](https://github.com/koinos/koinos-
 
 ### Get block
 
-In `koinos/rpc/block_store/block_store_rpc.proto`, there is `get_blocks_by_id_request`. This corresponds to the API call `block_store.get_blocks_by_id`. The corresponding jsonrpc call would be:
+In `koinos/rpc/block_store/block_store_rpc.proto`, there is `get_blocks_by_id_request`. This corresponds to the API call `block_store.get_blocks_by_id`. The corresponding JSON-RPC call would be:
 
 ```sh
 curl -d '{"jsonrpc":"2.0", "method":"block_store.get_blocks_by_id", "params":{"block_id":["EiCX+ssYyo0m73WLY0VZ2W8EZKYs9s34zvwmE4h2EUh7lQ=="], "return_block":true, "return_receipt":false}, "id":0}' http://localhost:8080/

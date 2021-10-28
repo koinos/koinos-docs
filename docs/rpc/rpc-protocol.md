@@ -1,4 +1,4 @@
-# Protocol documentation
+# RPC protocol
 <a name="top"></a>
 
 - [koinos/rpc/mempool/mempool_rpc.proto](#koinos/rpc/mempool/mempool_rpc.proto)
@@ -53,7 +53,7 @@
     - [submit_transaction_request](#koinos.rpc.chain.submit_transaction_request)
     - [submit_transaction_response](#koinos.rpc.chain.submit_transaction_response)
 
-- [Scalar Value Types](#scalar-value-types)
+- [Scalar value types](#scalar-value-types)
 
 
 

@@ -12,20 +12,20 @@ You will need a modern C++ compiler as well as CMake to build Koinos C++ project
 
 #### macOS
 
-```sh
+```console
 $ brew install cmake
 ```
 
-> _If you have Xcode installed, you will have Apple Clang, which should be sufficient for Koinos projects._
+> _**Note:** If you have Xcode installed, you will have Apple Clang, which should be sufficient for Koinos projects._
 
-```sh
+```console
 $ brew install cmake clang
 ```
-> _If you opt to not use Xcode or its compiler, you may install Clang using brew._
+> _**Note:** If you opt to not use Xcode or its compiler, you may install Clang using brew._
 
 #### Debian/Ubuntu
 
-```sh
+```console
 $ sudo apt install build-essentials libgmp cmake
 ```
 
@@ -33,7 +33,7 @@ $ sudo apt install build-essentials libgmp cmake
 
 Currently, [Koinos Types](https://github.com/koinos/koinos-types) requires the installation of Python3 as well as some additional python packages. Ensure that Python3 is installed and install the necessary python packages.
 
-```sh
+```console
 $ pip3 install --user dataclasses_json Jinja2 importlib_resources pluginbase gitpython
 ```
 
@@ -41,7 +41,7 @@ $ pip3 install --user dataclasses_json Jinja2 importlib_resources pluginbase git
 
 For this example we will use the [Koinos Chain](https://github.com/koinos/koinos-chain) microservice. Let's begin by cloning the repository.
 
-```sh
+```console
 $ git clone --recursive https://github.com/koinos/koinos-chain.git
 ```
 
@@ -53,7 +53,7 @@ You may also choose to build Debug or Release files.
 
 Below find some common CMake incantations.
 
-```sh
+```console
 # Unix Makefile (Release mode)
 $ mkdir build
 $ cd build
@@ -61,7 +61,7 @@ $ cmake -DCMAKE_BUILD_TYPE=Release ..
 $ make -j
 ```
 
-```sh
+```console
 # Unix Makefile (Debug mode)
 $ mkdir build
 $ cd build
@@ -69,7 +69,7 @@ $ cmake -DCMAKE_BUILD_TYPE=Debug ..
 $ make -j
 ```
 
-```sh
+```console
 # Xcode project
 $ mkdir build
 $ cd build
@@ -83,7 +83,7 @@ Koinos C++ projects use a combination of Boost test and CTest for unit testing. 
 
 After compilation, one may navigate to the `tests/` directory and invoke `ctest` to execute test suites.
 
-```sh
+```console
 # Running the test suite concurrently
 $ cd build/tests
 $ ctest -j
@@ -148,7 +148,7 @@ Total Test time (real) =  27.92 sec
 
 It may be useful to re-run a particular test and test suite during iterative development. To achieve this we can invoke individual tests.
 
-```sh
+```console
 $ ./koinos_tests -t statedb_tests/basic_test -l message
 Running 1 test case...
 Creating book
@@ -160,7 +160,7 @@ Erasing book
 
 It may be useful to start a test but have it wait for the debugger to be attached. Boost provides this feature, you can leverage it by adding `--wait_for_debugger` to the test binary invocation.
 
-```sh
+```console
 ./koinos_tests -t statedb_tests/basic_test -l message --wait_for_debugger
 Press any key to continue...
 
@@ -181,21 +181,21 @@ Koinos projects using Golang leverage the built-in language facilities where pos
 
 For this example we will use the [Koinos Block Store](https://github.com/koinos/koinos-block-store) microservice. Let's begin by cloning the repository.
 
-```sh
+```console
 $ git clone --recursive https://github.com/koinos/koinos-block-store.git
 ```
 
-> _Koinos makes heavy use of git submodules, so we recommend using `--recursive` when cloning a repository._
+> _**Note:** Koinos makes heavy use of git submodules, so we recommend using `--recursive` when cloning a repository._
 
 Now that we have the code, let's grab all the necessary dependencies of the project.
 
-```sh
+```console
 $ go get ./...
 ```
 
 Keeping with our `build/` convention, we can compile the Golang binary.
 
-```sh
+```console
 $ mkdir build
 $ go build -o build/koinos_block_store cmd/koinos-block-store/main.go
 ```
@@ -204,7 +204,7 @@ $ go build -o build/koinos_block_store cmd/koinos-block-store/main.go
 
 Because Golang provides us with built-in unit test facilities, running tests is a simple invocation.
 
-```sh
+```console
 $ go test -v ./...
 ?   	github.com/koinos/koinos-block-store/cmd/koinos-block-store	[no test files]
 === RUN   TestBadgerBackendBasic

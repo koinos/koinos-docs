@@ -21,7 +21,7 @@ from recommonmark.transform import AutoStructify
 
 project = 'Koinos documentation'
 copyright = '2021, Koinos Group'
-author = 'Ron Hamenahem'
+author = 'Koinos Group'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'

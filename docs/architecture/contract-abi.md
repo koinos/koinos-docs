@@ -1,6 +1,6 @@
 # Contract ABI
 
-To interact with smart contracts, Koinos tooling requires a application binary interface (ABI). This ABI is a json file that describes what functions a contract has available and how to interact with it. Here is an example ABI for the KOIN Contract.
+To interact with smart contracts, Koinos tooling requires an Application Binary Interface (ABI). This ABI is a json file that describes what functions a contract has available and how to interact with it. Here is an example ABI for the KOIN Contract.
 
 ``` json
 {
@@ -133,9 +133,9 @@ message mana_balance_object {
 
 The base64 encoded string for the field `types` is a base64 encoded protobuf descriptor for these types. To generate this descriptor you can run the following commands in `koinos-proto`.
 
-``` bash
+```console
 $ protoc --descriptor_set_out=koin.pb koinos/contracts/token/token.proto koinos/options.proto
 $ cat koin.pb | base64
 ```
 
-**Note:** You need to include both the contract proto file (`koinos/contracts/token/token.proto` and any non-protobuf files it includes (`koinos/options.proto`). This will create the smallest possible ABI that can be used with various Koinos tooling.
+> _**Note:** You need to include both the contract proto file (`koinos/contracts/token/token.proto` and any non-protobuf files it includes (`koinos/options.proto`). This will create the smallest possible ABI that can be used with various Koinos tooling._

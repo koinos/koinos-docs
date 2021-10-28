@@ -1,7 +1,5 @@
 # Microservice architecture
 
-## Preamble
-
 A microservice architecture has many advantages over a more traditional monolithic architecture. By breaking up a complex application into a set of loosely coupled services, software becomes highly maintainable and easily verifiable while providing a great degree of deployment flexibility. Improving or replacing microservices become a trivial task - this allows for low-risk upgrade paths. An additional benefit that should not be underestimated is the ability to choose the programming language best fit for the microservice at hand.
 
 With a microservice architecture, onboarding engineers becomes a more feasible task as engineers can more easily master one or more services without having to understand the details of the larger complicated system. This will lead to more productive hires and higher quality contributions.
@@ -20,7 +18,7 @@ The Koinos cluster implements the Koinos protocol leveraging the benefits of mic
 |[Koinos Mempool](https://github.com/koinos/koinos-mempool)                    |C++|Storing transactions that have yet to be included in blocks|
 |[Koinos Transaction Store](https://github.com/koinos/koinos-transaction-store)|Golang|Storing transaction information|
 |[Koinos Block Producer](https://github.com/koinos/koinos-block-producer)      |C++|The production of blocks|
-|[Koinos JSONRPC](https://github.com/koinos/koinos-jsonrpc)                    |Golang|Providing API access from outside the cluster|
+|[Koinos JSON-RPC](https://github.com/koinos/koinos-jsonrpc)                   |Golang|Providing API access from outside the cluster|
 
 Communication between microservices is accomplished by taking advantage of the battle hardened _Advanced Message Queue Protocol_ ([AMQP 0.9.1](https://www.amqp.org/specification/0-9-1/amqp-org-download)) as implemented by [RabbitMQ](https://www.rabbitmq.com/). Each microservice maintains a connection to RabbitMQ which it uses to send and receive _Remote Procedure Calls_ (RPC) as well as broadcast messages. Microservices avoid the need for polling by utilizing broadcast messages in order to implement an event driven paradigm.
 

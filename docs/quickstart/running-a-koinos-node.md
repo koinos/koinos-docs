@@ -8,10 +8,9 @@ The Koinos cluster is comprised of multiple microservices. To simplify the deplo
 2. Clone (or download) the Koinos repository from [github](http://github.com/koinos/koinos)
 3. Open the terminal in the downloaded directory and run the following command:
 
-    ```
-    $ docker-compose up
-    ```
-<br/><br/>
+```console
+$ docker compose --profile all up
+```
 
 ## Installing on Windows
 
@@ -19,20 +18,17 @@ The Koinos cluster is comprised of multiple microservices. To simplify the deplo
 2. Clone (or download) the Koinos repository from [github](http://github.com/koinos/koinos)
 3. Edit the first line in the .env file to read:
 
-    ```
-    BASEDIR=c:\koinos
-    ```
+```console
+BASEDIR=c:\koinos
+```
 
 4. Open the terminal in the downloaded directory and run the following command:
 
-    ```
-    $ docker-compose up
-    ```
-
+```console
+$ docker-compose up
+```
 
 ---
-<br />
-<br />
 
 <center>
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=64NWplpcmqU
@@ -134,12 +130,12 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `instance-id`: An ID that uniquely identifies the instance
  - `reset`: Reset the database
 
-## JSON RPC
+## JSON-RPC
 
  - `basedir`: Koinos base directory
  - `amqp`: AMQP server URL
  - `log-level`: The log filtering level
  - `instance-id`: An ID that uniquely identifies the instance
  - `descriptors`: The directory containing protobuf descriptors for rpc message types
- - `endpoint`: Http listen endpoint
+ - `endpoint`: HTTP listen endpoint
  - `listen`: Multiaddr to listen on

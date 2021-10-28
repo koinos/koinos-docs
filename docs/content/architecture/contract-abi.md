@@ -133,7 +133,7 @@ message mana_balance_object {
 
 The base64 encoded string for the field `types` is a base64 encoded protobuf descriptor for these types. To generate this descriptor you can run the following commands in `koinos-proto`.
 
-``` bash
+```sh
 $ protoc --descriptor_set_out=koin.pb koinos/contracts/token/token.proto koinos/options.proto
 $ cat koin.pb | base64
 ```

@@ -1,8 +1,6 @@
 # Protocol documentation
 <a name="top"></a>
 
-## Table of contents
-
 - [koinos/rpc/mempool/mempool_rpc.proto](#koinos/rpc/mempool/mempool_rpc.proto)
     - [check_pending_account_resources_request](#koinos.rpc.mempool.check_pending_account_resources_request)
     - [check_pending_account_resources_response](#koinos.rpc.mempool.check_pending_account_resources_response)

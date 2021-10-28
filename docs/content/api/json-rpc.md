@@ -1,7 +1,5 @@
 # JSON-RPC
 
-## Preamble
-
 Koinos supports external APIs via JSON-RPC. Each microservice defines its own API calls. The JSON-RPC microservice acts as a translation layer between JSON-RPC and the internal message format. Koinos uses a dotted decimal system to route API requests to the correct microservice. Microserives can be called with their fully qualified namespace or by the microservice name.  For example, to call `get_head_info` in the Chain microservice you would call `"method":"koinos.rpc.chain.get_head_info"` or `"method":"chain.get_head_info"`.
 
 ## Descriptor files

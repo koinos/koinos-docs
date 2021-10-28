@@ -30,7 +30,7 @@ To create a new wallet, use the command `create <filename> <password>`. The new 
 
 To open a previously created wallet, use the command `open <filename> <password>`.
 
-To import an existing WIF private key, use the commands `import <wif> <filename> <password>`.
+To import an existing Wallet Import Format (WIF) private key, use the commands `import <wif> <filename> <password>`.
 
 To close an open wallet, simply use the `close` command.
 
@@ -38,9 +38,9 @@ Any of the commands which take a password may be called with it omitted. In this
 
 ## Other useful commands
 
-To check the balance of a given public address, use the commands `balance <address>`.
+To check the balance of a given public address, use the command `balance <address>`.
 
-To transfer tKOIN from the currently open wallet, use the commands `transfer <amount> <address>`.
+To transfer tKOIN from the currently open wallet, use the command `transfer <amount> <address>`.
 
 ## Smart contract management
 
@@ -69,4 +69,3 @@ When you are done adding commands to the session, `session submit` will send the
 ## Non-interactive mode
 
 Commands can be executed without using interactive mode. The `--execute` command-line parameter takes a semicolon separated list of commands, executes them, then returns to the terminal.
-

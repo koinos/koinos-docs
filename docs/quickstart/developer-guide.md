@@ -16,12 +16,12 @@ You will need a modern C++ compiler as well as CMake to build Koinos C++ project
 $ brew install cmake
 ```
 
-> _If you have Xcode installed, you will have Apple Clang, which should be sufficient for Koinos projects._
+> _**Note:** If you have Xcode installed, you will have Apple Clang, which should be sufficient for Koinos projects._
 
 ```sh
 $ brew install cmake clang
 ```
-> _If you opt to not use Xcode or its compiler, you may install Clang using brew._
+> _**Note:** If you opt to not use Xcode or its compiler, you may install Clang using brew._
 
 #### Debian/Ubuntu
 
@@ -185,7 +185,7 @@ For this example we will use the [Koinos Block Store](https://github.com/koinos/
 $ git clone --recursive https://github.com/koinos/koinos-block-store.git
 ```
 
-> _Koinos makes heavy use of git submodules, so we recommend using `--recursive` when cloning a repository._
+> _**Note:** Koinos makes heavy use of git submodules, so we recommend using `--recursive` when cloning a repository._
 
 Now that we have the code, let's grab all the necessary dependencies of the project.
 

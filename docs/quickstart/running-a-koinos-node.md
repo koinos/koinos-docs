@@ -141,5 +141,5 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `log-level`: The log filtering level
  - `instance-id`: An ID that uniquely identifies the instance
  - `descriptors`: The directory containing protobuf descriptors for rpc message types
- - `endpoint`: Http listen endpoint
+ - `endpoint`: HTTP listen endpoint
  - `listen`: Multiaddr to listen on

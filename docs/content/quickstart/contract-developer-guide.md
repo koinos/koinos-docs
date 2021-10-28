@@ -2,7 +2,7 @@
 
 ## Setting up your environment
 
-For the purposes of this tutorial, we will install the CDT as well as all of the dependencies to `~/opt`. This is just a suggestion
+For the purposes of this tutorial, we will install the Contract Development Kit (CDT) as well as its dependencies to `~/opt`. This is just a suggestion
 and will work if you decide another location is more appropriate for you.
 
 ### Retrieving dependencies
@@ -14,7 +14,7 @@ The Koinos CDT has three dependencies.
 
 #### Protocol buffers
 
-First, we will install the Protobuf dependency. While it is possible to install this via a package manager such as Homebrew (macOS) or Aptitude (Ubuntu),
+First, we will install the Protobuf dependency. While it is possible to install this via a package manager such as Homebrew or Aptitude,
 we will build the dependency from source so that we may target the exact version of Protobuf required by the CDT without regard to version available in
 your preferred pacakage manager.
 
@@ -30,7 +30,7 @@ $ make -j install
 
 #### WASI SDK
 
-Since WASI SDK provides adequate release packages on GitHub, we will simply grab the package for our operating system and extract it to the correct
+Because WASI SDK provides adequate release packages on GitHub, we will simply grab the package for our operating system and extract it to the correct
 location.
 
 ##### macOS
@@ -56,10 +56,10 @@ $ git clone --recursive https://github.com/koinos/EmbeddedProto.git
 
 ### Building the CDT
 
-In order to build Koinos smart contracts you must first install the Koinos CDT. Navigate to the [Koinos CDT repository](https://github.com/koinos/koinos-cdt)
+In order to build Koinos smart contracts you must first install the Koinos CDT. Navigate to the [Koinos CDT](https://github.com/koinos/koinos-cdt)
 and clone the repository.
 
-The CDT relies on WASI SDK in order to build, we let the repository know the location of WASI SDK with the environment variable `KOINOS_WASI_SDK_ROOT`.
+The CDT relies on WASI SDK in order to build. We let the project know the location of WASI SDK using the environment variable `KOINOS_WASI_SDK_ROOT`.
 
 ```sh
 $ export KOINOS_WASI_SDK_ROOT=~/opt/wasi-sdk-12.0
@@ -85,10 +85,12 @@ $ export KOINOS_EMBEDDED_PROTO_ROOT=~/opt/EmbeddedProto
 $ export KOINOS_CDT_ROOT=~/opt/koinos-cdt
 ```
 
-You are now ready to configure your smart contract project, use the provided toolchain file and build like so:
+You are now ready to configure your smart contract project. From your project root directory, use the provided toolchain file and build:
 
 ```sh
-$ cmake -DCMAKE_TOOLCHAIN_FILE=${KOINOS_CDT_ROOT}/cmake/koinos-wasm-toolchain.cmake ..
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_TOOLCHAIN_FILE=${KOINOS_CDT_ROOT}/cmake/koinos-wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Release ..
 $ make -j
 ```
 
@@ -96,5 +98,4 @@ After building your smart contract you will find two important artifacts in your
 - The WASM binary (`*.wasm`)
 - A type descriptor file (`*.pb`)
 
-At the moment, we must manually create an ABI file to use with `koinos-cli` -- this will require utilizing the type descriptor file. For more information
-on how that file is structured see the [Contract ABI](../architecture/contract-abi.md) documentation.
+At the moment, we must manually create an Application Binary Interface (ABI) file to use with `koinos-cli`. This will require utilizing the type descriptor file. For more information on how that file is structured see the [Contract ABI](../architecture/contract-abi.md) documentation.

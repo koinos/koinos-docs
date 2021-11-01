@@ -60,7 +60,7 @@ message div_result {
 
 ## Writing the implementation
 
-Each smart contract must defined a `main()`. Within `main()` we will get the contract's arguments and entry points and dispatch to the correct function from there. Currently, this must be implemented manually. There is a decent amount of boiler plate currently to deserialize and serialize data. This all comes from the generated Protobuf types.
+Each smart contract must define a `main()`. Within `main()` we will get the contract's arguments and entry points and dispatch to the correct function from there. Currently, this must be implemented manually. There is a decent amount of boiler plate currently to deserialize and serialize data. This all comes from the generated Protobuf types.
 
 ```c++
 #include <koinos/system/system_calls.hpp>
@@ -207,7 +207,7 @@ This will create two build artifacts, `build/src/contract.wasm` and `build/types
 
 We will use the [Koinos Command Line Interface (CLI)](https://github.com/koinos/koinos-cli) to interact with this contract on the blockchain. We need the Application Binary Interface (ABI) to inform the CLI how to invoke methods on the contract. For more information about the ABI file please refer to the [Contract ABI](../architecture/contract-abi.md) section.
 
-The contract examples repo already contains the [ABI file](https://github.com/koinos/koinos-contract-examples/contracts/calculator/calc.abi). The ABI File contains JSON information about each of the entry points as well as the base64 encoded protobuf descriptor file (`types.pb`) that was generated during compilation. Enbcoding the base64 descriptor file can be done with a simple command.
+The contract examples repo already contains the [ABI file](https://github.com/koinos/koinos-contract-examples/contracts/calculator/calc.abi). The ABI File contains JSON information about each of the entry points as well as the base64 encoded protobuf descriptor file (`types.pb`) that was generated during compilation. Encoding the base64 descriptor file can be done with a simple command.
 
 ```console
 $ cat types/types.pb | base64

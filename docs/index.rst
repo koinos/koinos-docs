@@ -13,6 +13,7 @@ Koinos documentation
    quickstart/running-a-koinos-node
    quickstart/developer-guide
    quickstart/contract-developer-guide
+   quickstart/cli
 
 .. toctree::
    :maxdepth: 3

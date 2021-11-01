@@ -18,7 +18,7 @@ Some commands require a node RPC endpoint. This can be specified either when sta
 
 Here is an example of launching from the command line with an RPC:
 
-```
+```console
 $ koinos-cli --rpc http://192.241.131.189:8080
 ```
 

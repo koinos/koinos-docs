@@ -17,7 +17,7 @@ All current APIs are defined in [Koinos Proto](https://github.com/koinos/koinos-
 In `koinos/rpc/block_store/block_store_rpc.proto`, there is `get_blocks_by_id_request`. This corresponds to the API call `block_store.get_blocks_by_id`. The corresponding JSON-RPC call would be:
 
 ```console
-curl -d '{"jsonrpc":"2.0", "method":"block_store.get_blocks_by_id", "params":{"block_id":["EiCX+ssYyo0m73WLY0VZ2W8EZKYs9s34zvwmE4h2EUh7lQ=="], "return_block":true, "return_receipt":false}, "id":0}' http://localhost:8080/
+$ curl -d '{"jsonrpc":"2.0", "method":"block_store.get_blocks_by_id", "params":{"block_id":["EiCX+ssYyo0m73WLY0VZ2W8EZKYs9s34zvwmE4h2EUh7lQ=="], "return_block":true, "return_receipt":false}, "id":0}' http://localhost:8080/
 ```
 
 This should return something like this:
@@ -29,7 +29,7 @@ This should return something like this:
 ### Get head block
 
 ```console
-curl -d '{"jsonrpc":"2.0", "method":"chain.get_head_info", "params":{}, "id":1}' http://localhost:8080/
+$ curl -d '{"jsonrpc":"2.0", "method":"chain.get_head_info", "params":{}, "id":1}' http://localhost:8080/
 ```
 
 ```json

@@ -2,7 +2,7 @@
 
 Within a few steps, you can deploy your own token on the Koinos blockchain. This tutorial will guide you through the
 steps required. Please note that a binary file will be available to download and you can skip to the section that explains
-uploading a contract using the Koinos CLI.
+uploading a contract using the Koinos Command Line Interface (CLI).
 
 ## Building the token contract
 

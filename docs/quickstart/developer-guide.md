@@ -29,14 +29,6 @@ $ brew install cmake clang
 $ sudo apt install build-essentials libgmp cmake
 ```
 
-#### Python
-
-Currently, [Koinos Types](https://github.com/koinos/koinos-types) requires the installation of Python3 as well as some additional python packages. Ensure that Python3 is installed and install the necessary python packages.
-
-```console
-$ pip3 install --user dataclasses_json Jinja2 importlib_resources pluginbase gitpython
-```
-
 ### Building projects
 
 For this example we will use the [Koinos Chain](https://github.com/koinos/koinos-chain) microservice. Let's begin by cloning the repository.

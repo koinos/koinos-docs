@@ -4,7 +4,7 @@ This tutorial aims to demonstrate how to create smart contracts using custom typ
 
 ## Setting up the project
 
-C++ smart contracts are built using either Docker or the CMake build system. For this tutorial, we will use CMake. We will assume you have already set up your CDT. If you have not, the [Contract developer guide](../quickstart/contract_developer-guide.md) documents this process. Let us begin by setting up our directory structure.
+C++ smart contracts are built using either Docker or the CMake build system. For this tutorial, we will use CMake. We will assume you have already set up your CDT. If you have not, the [Contract developer guide](../quickstart/contract-developer-guide.md) documents this process. Let us begin by setting up our directory structure.
 
 ```console
 $ cp -R cmake_project calculator_contract

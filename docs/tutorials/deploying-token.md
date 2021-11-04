@@ -73,4 +73,4 @@ Now you have a general idea of how the token contract works. Check out the other
 
 ## Customizing the token
 
-Cloning the [Example Contracts](https://github.com/koinos/koinos-example-contracts) and modifying the `symbol` and `name` of the token example is a great place to start customizing your token.
+Cloning the [Example Contracts](https://github.com/koinos/koinos-contract-examples) and modifying the `symbol` and `name` of the token example is a great place to start customizing your token.

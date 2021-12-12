@@ -2,6 +2,22 @@
 
 The Koinos cluster is comprised of multiple microservices. To simplify the deployment of the Koinos cluster, it is recommended to use the provided Docker compose script to launch a local node. The most time consuming part would be installing Docker, after that its just a matter of cloning the repository and running a single command.
 
+## Quickstart For Ubuntu 20.04 LTS (focal)
+
+Copy and paste the following commands into a fresh Ubuntu 20.04 LTS host to bring up a Koinos node.
+
+```console
+apt update -y
+apt upgrade -y
+apt install -y docker.io git
+curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+git clone https://github.com/koinos/koinos.git koinos
+cd koinos
+docker-compose up -d
+docker-compose logs -f  # to view log output in realtime
+```
+
 ## Installing on macOS/Linux
 
 1. Download and install [Docker](https://www.docker.com/products/docker-desktop)

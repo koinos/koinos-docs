@@ -1,6 +1,6 @@
 # System calls
 
-System calls are how requests to the Koinos Blockchain Framework are made. Each system call provides important functionality to be utilized from smart contracts or other parts of the framework. 
+System calls are how requests to the Koinos Blockchain Framework are made. Each system call provides important functionality to be utilized from smart contracts or other parts of the framework.
 
 Each system call has its base functionality implemented natively in a function known as a "thunk". What differentiates a system call from its thunk, is that the system call can have its functionality overridden by a special type of smart contract known as a "system contract".
 
@@ -27,7 +27,7 @@ While any system call can be overridden by a contract that simply calls the unde
 |`get_head_info`|Requires state access|
 |`get_last_irreversible_block`|Requires state access|
 |`get_next_object`|Requires state access|
-|`get_object_result`|Requires state access|
+|`get_object`|Requires state access|
 |`get_prev_object`|Requires state access|
-|`put_object_result`|Requires state access|
-|`set_contract_result`|Requires contract return accesson execution environment|
+|`put_object`|Requires state access|
+|`set_contract`|Requires contract return accesson execution environment|

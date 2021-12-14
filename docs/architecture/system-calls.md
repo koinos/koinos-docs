@@ -1,6 +1,12 @@
-# Overriding System Calls
+# System calls
 
-While any system call can be overridden by calling the underlying thunk, the underlying functionality of some of them cannot be reproduced in the VM. **Tabe 1** lists system calls which cannot be fully replaced by an override, and the reason it cannot be overridden.
+System calls are how requests to the Koinos Blockchain Framework are made. Each system call provides important functionality to be utilized from smart contracts or other parts of the framework. 
+
+Each system calls has its base functionality implemented natively in a function known as a "thunk". What differentiates a system call from its thunk, is that the system call can have its functionality overridden by a special type of smart contract known as a "system contract".
+
+## Overriding system calls
+
+While any system call can be overridden by a contract that simply calls the underlying thunk, the underlying functionality of some of them cannot be reproduced in the VM. **Table 1** lists system calls which cannot be fully replaced by an override, and the reason it cannot be overridden.
 
 > _**Table 1.** System calls which cannot be overridden_
 

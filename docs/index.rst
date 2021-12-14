@@ -30,7 +30,7 @@ Koinos documentation
    architecture/interprocess-communication
    architecture/serialization
    architecture/contract-abi
-   architecture/overriding-system-calls
+   architecture/system-calls
 
 .. toctree::
    :maxdepth: 3

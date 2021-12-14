@@ -30,6 +30,7 @@ Koinos documentation
    architecture/interprocess-communication
    architecture/serialization
    architecture/contract-abi
+   architecture/system-calls
 
 .. toctree::
    :maxdepth: 3

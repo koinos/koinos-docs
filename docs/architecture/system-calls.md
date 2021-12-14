@@ -2,7 +2,7 @@
 
 System calls are how requests to the Koinos Blockchain Framework are made. Each system call provides important functionality to be utilized from smart contracts or other parts of the framework. 
 
-Each system calls has its base functionality implemented natively in a function known as a "thunk". What differentiates a system call from its thunk, is that the system call can have its functionality overridden by a special type of smart contract known as a "system contract".
+Each system call has its base functionality implemented natively in a function known as a "thunk". What differentiates a system call from its thunk, is that the system call can have its functionality overridden by a special type of smart contract known as a "system contract".
 
 ## Overriding system calls
 

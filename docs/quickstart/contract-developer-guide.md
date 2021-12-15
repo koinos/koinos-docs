@@ -125,7 +125,7 @@ $ cmake -DCMAKE_TOOLCHAIN_FILE=${KOINOS_CDT_ROOT}/cmake/koinos-wasm-toolchain.cm
 $ make -j
 ```
 
-There is a skeleton cmake project in [Koinos Contract Examples](https://github.com/koinos/koinos-contract-examples/cmake_project) that you can use for your own smart contracts.
+There is a skeleton cmake project in [Koinos Contract Examples](https://github.com/koinos/koinos-contract-examples) that you can use for your own smart contracts.
 
 After building your smart contract you will find two important artifacts in your build directory.
 - The WASM binary (`*.wasm`)

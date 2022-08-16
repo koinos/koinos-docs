@@ -94,7 +94,7 @@ message total_supply_result {
 }
 
 message balance_of_arguments {
-   bytes owner = 1 [(koinos_bytes_type) = ADDRESS];
+   bytes owner = 1 [(btype) = ADDRESS];
 }
 
 message balance_of_result {
@@ -102,8 +102,8 @@ message balance_of_result {
 }
 
 message transfer_arguments {
-   bytes from = 1 [(koinos_bytes_type) = ADDRESS];
-   bytes to = 2 [(koinos_bytes_type) = ADDRESS];
+   bytes from = 1 [(btype) = ADDRESS];
+   bytes to = 2 [(btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
 }
 
@@ -112,7 +112,7 @@ message transfer_result {
 }
 
 message mint_arguments {
-   bytes to = 1 [(koinos_bytes_type) = ADDRESS];
+   bytes to = 1 [(btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
 

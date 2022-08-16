@@ -55,9 +55,10 @@ You can run optional microservices by enabling the associated docker compose pro
 
  - `block_production` to enable the block production.
  - `jsonrpc` to enable JSON-RPC API handling.
- - `transaction_history` to enable transaction history tracking.
+ - `transaction_store` to enable transaction history tracking.
+ - `contract_meta_store` to enable service of contract ABIs.
 
-These profiles can be set with the `--profile` options (i.e. `docker-compose --profile api up `) or by setting the `COMPOSE_PROFILES` environment variable during invocation or in `.env`.
+These profiles can be set with the `--profile` options (i.e. `docker-compose --profile jsonrpc up `) or by setting the `COMPOSE_PROFILES` environment variable during invocation or in `.env`.
 
 For more information on docker compose profiles, please read the official [documentation](https://docs.docker.com/compose/profiles/).
 
@@ -67,21 +68,29 @@ These options can be set in the `config.yml`. If an option is shared by multiple
 
 ## Chain
 
+ - `help`: Print this help message and exit
+ - `version`: Print version string and exit
  - `basedir`: Koinos base directory
  - `amqp`: AMQP server URL
  - `log-level`: The log filtering level
  - `instance-id`: An ID that uniquely identifies the instance
- - `genesis-key`: The genesis key file
+ - `statedir`: The location of the blockchain state files (absolute path or relative to basedir/chain)
+ - `jobs`: The number of worker jobs
+ - `genesis-data`: The genesis data file
  - `statedir`: The location of the blockchain state files (absolute path or relative to basedir/chain)
  - `database-config`: The location of the database configuration file (absolute path or relative to basedir/chain)
+ - `read-compute-bandwidth-limit`: The compute bandwidth when reading contracts via the API
+ - `fork-algorithm`: The fork resolution algorithm to use. Can be 'fifo', or 'block-time'. (Default: 'fifo')
  - `reset`: Reset the database
 
 ## Mempool
 
+ - `help`: Print this help message and exit
  - `basedir`: Koinos base directory
  - `amqp`: AMQP server URL
  - `log-level`: The log filtering level
  - `instance-id`: An ID that uniquely identifies the instance
+ - `jobs`: The number of worker jobs
 
 ## Block Store
 
@@ -95,19 +104,19 @@ These options can be set in the `config.yml`. If an option is shared by multiple
 
  - `basedir`: Koinos base directory
  - `amqp`: AMQP server URL
+ - `seed`: Seed string with which the node will generate an ID (A randomized seed will be generated if none is provided)
+ - `peer`: Address of a peer to which to connect (may specify multiple)
+ - `direct`: Address of a peer to connect using gossipsub.WithDirectPeers (may specify multiple) (should be reciprocal)
  - `log-level`: The log filtering level
  - `instance-id`: An ID that uniquely identifies the instance
  - `checkpoint`: Block checkpoint in the form height:blockid (may specify multiple times)
- - `direct`: Address of a peer to connect using gossipsub.WithDirectPeers (may specify multiple) (should be reciprocal)
  - `force-gossip`: Force gossip mode
- - `gossip`: Enable gossip mode (default true)
+ - `disable-gossip`: Disable gossip mode
  - `listen`: The multiaddress on which the node will listen
- - `peer`: Address of a peer to which to connect (may specify multiple)
- - `pex`: Exchange peers with other nodes (default true)
- - `seed`: Seed string with which the node will generate an ID (A randomized seed will be generated if none is provided)
 
 ## Block Producer
 
+ - `help`: Print this help message and exit
  - `basedir`: Koinos base directory
  - `amqp`: AMQP server URL
  - `log-level`: The log filtering level
@@ -117,10 +126,14 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `work-groups`: The number of worker groups
  - `private-key-file`: The private key file
  - `pow-contract-id`: The PoW contract ID
- - `stale-production-threshold`: The distance of time in seconds from head where production should begin (-1 to disable)
+ - `pob-contract-id`: The PoB contract ID
+ - `vhp-contract-id`: The VHP contract ID
+ - `gossip-production`: Use p2p gossip status to determine block production
  - `resources-lower-bound`: The lower bound of resource utilization a newly created block will be considered adequate for submission
  - `resources-upper-bound`: The upper bound of resource utilization a newly created block should not exceed
  - `max-inclusion-attempts`: The maximum transaction inclusion attempts per block
+ - `approve-proposals`: A list a proposal to approve when producing a block
+ - `producer`: The beneficiary address used during PoB production
 
 ## Transaction Store
 
@@ -139,3 +152,11 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `descriptors`: The directory containing protobuf descriptors for rpc message types
  - `endpoint`: HTTP listen endpoint
  - `listen`: Multiaddr to listen on
+
+## Contract Meta Store
+
+ - `basedir`: Koinos base directory
+ - `amqp`: AMQP server URL
+ - `log-level`: The log filtering level
+ - `instance-id`: An ID that uniquely identifies the instance
+ - `reset`: Reset the database

@@ -33,7 +33,7 @@ Communication between microservices is accomplished by taking advantage of the b
       A <--> F[Koinos Block Producer]
       A <--> G[Koinos JSONRPC]
       A <--> H[Koinos Transaction Store]
-      A <--> I[Koins Contract Meta Store]
+      A <--> I[Koinos Contract Meta Store]
 ```
 > _**Figure 1.** A diagram demonstrating the interprocess communication data flow within a Koinos cluster._
 

@@ -1,44 +1,48 @@
 # Contract developer guide
 
-## Build with docker
+## Official SDKs
 
-There is a provided Docker image that contains all dependencies required to build a smart contract. You will need to install [Docker Desktop](https://docs.docker.com/desktop/) on Mac and Windows or use Docker from the terminal on Linux. The CDT images are uploaded to [Docker Hub](https://hub.docker.com/r/koinos/koinos-cdt). You can pull the image from `koinos/koinos-cdt`. The tag `latest` will point to the most recent build of the CDT. Any release versions will be tagged appropriatelt (e.g. `v0.2.0` will be `koinos/koinos-cdt:v0.2.0`)
+There are currently two officially supported SDKs for building Koinos contracts: Assemblyscript and C++
 
-```console
-$ docker pull koinos/koinos-cdt
-```
+## Assemblyscript SDK
 
-Next, cd to whatever directory your contract lives in. This directory must contain all source and headers for your contract and any `.proto` files required for it. Only the contract you wish to build must be in the directory.
+### Creating new contracts with the Assemblyscript SDK
 
-```console
-$ docker run -t --mount type=bind,source="$(pwd)",target=/src --name <CONTRACT_NAME> koinos/koinos-cdt
-```
-
-You will see the compiler output from building the contract. If successful, there will be two build artifacts in your current directory.
-
-- The WASM binary (`contract.wasm`)
-- A type descriptor file (`types.pb`)
-
-At the moment, we must manually create an Application Binary Interface (ABI) file to use with `koinos-cli`. This will require utilizing the type descriptor file. For more information on how that file is structured see the [Contract ABI](../architecture/contract-abi.md) documentation.
-
-If building your contract failed, you will see the compilation errors in the terminal log. To rebuild your contract you can restart the continer.
+To get started, you will need to clone the `koinos-system-contracts-as` repository, and copy an existing contract.
 
 ```console
-$ docker start -a <CONTRACT_NAME>
+git clone https://github.com/koinos/koinos-system-contracts-as.git
+cd koinos-system-contracts-as/contracts/
+cp -r claim my-new-contract-name
 ```
 
-The CDT image is fully re-entrant and can be restarted any number of times.
+### Modifying the contract
 
-## Build manually
+For each endpoint, `assemble/index.ts` should be modified to handle the arguments and return.
 
-If you do not want to build using docker, you can set up the toolchain manually.
+For the entrypoint number, the convention used in the system contracts is using the first 8 hex characters of the SHA-256 hash of the entrypoint name.
 
-For the purposes of this tutorial, we will install the Contract Development Kit (CDT) as well as its dependencies to `~/opt`. This is just a suggestion
+Custom protobuf .pb files must go in `assemblyscript/proto`.
+
+### Building the contract
+
+Yarn is used to build the contract. From the contract directory:
+
+```console
+yarn install
+yarn build:release
+```
+
+The contracts's binary is now available at `build/contract.wasm`.
+
+## C++ SDK
+
+For the purposes of this tutorial, we will install the Koinos C++ SDK as well as its dependencies to `~/opt`. This is just a suggestion
 and will work if you decide another location is more appropriate for you.
 
 ### Retrieving dependencies
 
-The Koinos CDT has three dependencies.
+The Koinos C++ SDK has three dependencies.
 - Protobuf 3.17.3
 - WASI SDK 12.0
 - EmbeddedProto
@@ -46,7 +50,7 @@ The Koinos CDT has three dependencies.
 #### Protocol buffers
 
 First, we will install the Protobuf dependency. While it is possible to install this via a package manager such as Homebrew or Aptitude,
-we will build the dependency from source so that we may target the exact version of Protobuf required by the CDT without regard to version available in
+we will build the dependency from source so that we may target the exact version of Protobuf required by the C++ SDK without regard to version available in
 your preferred pacakage manager.
 
 ```console
@@ -85,35 +89,35 @@ $ cd ~/opt
 $ git clone --recursive https://github.com/koinos/EmbeddedProto.git
 ```
 
-### Building the CDT
+### Building the C++ SDK
 
-In order to build Koinos smart contracts you must first install the Koinos CDT. Navigate to the [Koinos CDT](https://github.com/koinos/koinos-cdt)
+In order to build Koinos smart contracts you must first install the Koinos C++ SDK. Navigate to the [Koinos C++ SDK](https://github.com/koinos/koinos-sdk-cpp)
 and clone the repository.
 
-The CDT relies on WASI SDK in order to build. We let the project know the location of WASI SDK using the environment variable `KOINOS_WASI_SDK_ROOT`.
+The C++ SDK relies on WASI SDK in order to build. We let the project know the location of WASI SDK using the environment variable `KOINOS_WASI_SDK_ROOT`.
 
 ```console
 $ export KOINOS_WASI_SDK_ROOT=~/opt/wasi-sdk-12.0
-$ git clone --recursive https://github.com/koinos/koinos-cdt.git
-$ cd koinos-cdt
+$ git clone --recursive https://github.com/koinos/koinos-sdk-cpp.git
+$ cd koinos-sdk-cpp
 $ mkdir build
 $ cd build
-$ cmake -DCMAKE_INSTALL_PREFIX=~/opt/koinos-cdt ..
+$ cmake -DCMAKE_INSTALL_PREFIX=~/opt/koinos-sdk-cpp ..
 $ make -j install
 ```
 
-## Using the Koinos CDT
+## Using the Koinos C++ SDK
 
 You are now prepared to compile Koinos smart contracts. Koinos smart contracts are built using the CMake build system. Using the provided
 CMake toolchain file, along with a few environment variables, you can now build contracts.
 
-Assuming you have placed the Koinos CDT and the associated dependencies in `~/opt`, you can set the necessary environment variables as follows:
+Assuming you have placed the Koinos C++ SDK and the associated dependencies in `~/opt`, you can set the necessary environment variables as follows:
 
 ```console
 $ export KOINOS_WASI_SDK_ROOT=~/opt/wasi-sdk-12.0
 $ export KOINOS_PROTOBUF_ROOT=~/opt/protobuf-3.17.3
 $ export KOINOS_EMBEDDED_PROTO_ROOT=~/opt/EmbeddedProto
-$ export KOINOS_CDT_ROOT=~/opt/koinos-cdt
+$ export KOINOS_SDK_ROOT=~/opt/koinos-sdk-cpp
 ```
 
 You are now ready to configure your smart contract project. From your project root directory, use the provided toolchain file and build:
@@ -121,7 +125,7 @@ You are now ready to configure your smart contract project. From your project ro
 ```console
 $ mkdir build
 $ cd build
-$ cmake -DCMAKE_TOOLCHAIN_FILE=${KOINOS_CDT_ROOT}/cmake/koinos-wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Release ..
+$ cmake -DCMAKE_TOOLCHAIN_FILE=${KOINOS_SDK_ROOT}/cmake/koinos-wasm-toolchain.cmake -DCMAKE_BUILD_TYPE=Release ..
 $ make -j
 ```
 

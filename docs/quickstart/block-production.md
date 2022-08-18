@@ -4,7 +4,7 @@ Koinos uses the novel consensus algorithm, Proof-of-Burn (PoB). To participate i
 
 ## Proof-of-Burn basics
 
-Proof-of-Burn has similiarities to both Proof-of-Work (PoW) and Proof-of-Stake (PoS) with some notable differences. Like Proof-of-Stake, no mining occurs to produce blocks; this places all physical nodes on an equal playing field. Hashing is simulated in Proof-of-Burn by burning KOIN in order to gain Virtual Hash Power (VHP). Aside from using VHP rather than physical machines performing hashes, the algorithm works similarly to Proof-of-Work.
+Proof-of-Burn has similarities to both Proof-of-Work (PoW) and Proof-of-Stake (PoS) with some notable differences. Like Proof-of-Stake, no mining occurs to produce blocks; this places all physical nodes on an equal playing field. Hashing is simulated in Proof-of-Burn by burning KOIN in order to gain Virtual Hash Power (VHP). Aside from using VHP rather than physical machines performing hashes, the algorithm works similarly to Proof-of-Work.
 
 ## Prerequisites
 

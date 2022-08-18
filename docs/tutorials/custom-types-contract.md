@@ -190,7 +190,7 @@ int main()
 ## Compiling the smart contract
 
 If you have not already prepared your environment please refer to the [Contract developer guide](../quickstart/contract-developer-guide.md). We
-will now use the [Koinos Software Developer Kit (SDK)](https://github.com/koinos/koinos-sdk-cpp) to compile the smart contract.
+will now use the [Koinos C++ Software Developer Kit (SDK)](https://github.com/koinos/koinos-sdk-cpp) to compile the smart contract.
 
 ```console
 $ mkdir build

@@ -11,6 +11,7 @@ Koinos documentation
    :caption: Quickstart
 
    quickstart/running-a-koinos-node
+   quickstart/block-production
    quickstart/developer-guide
    quickstart/contract-developer-guide
    quickstart/cli

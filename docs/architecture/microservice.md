@@ -12,13 +12,14 @@ The Koinos cluster implements the Koinos protocol leveraging the benefits of mic
 
 |Microservice|Language|Responsibilities|
 |---|---|---|
-|[Koinos Chain](https://github.com/koinos/koinos-chain)                        |C++|Processing blocks and maintaining the state of the chain|
-|[Koinos Block Store](https://github.com/koinos/koinos-block-store)            |Golang|Storing block information|
-|[Koinos P2P](https://github.com/koinos/koinos-p2p)                            |Golang|P2P communication between node clusters|
-|[Koinos Mempool](https://github.com/koinos/koinos-mempool)                    |C++|Storing transactions that have yet to be included in blocks|
-|[Koinos Transaction Store](https://github.com/koinos/koinos-transaction-store)|Golang|Storing transaction information|
-|[Koinos Block Producer](https://github.com/koinos/koinos-block-producer)      |C++|The production of blocks|
-|[Koinos JSON-RPC](https://github.com/koinos/koinos-jsonrpc)                   |Golang|Providing API access from outside the cluster|
+|[Koinos Chain](https://github.com/koinos/koinos-chain)                             |C++|Processing blocks and maintaining the state of the chain|
+|[Koinos Block Store](https://github.com/koinos/koinos-block-store)                 |Golang|Storing block information|
+|[Koinos P2P](https://github.com/koinos/koinos-p2p)                                 |Golang|P2P communication between node clusters|
+|[Koinos Mempool](https://github.com/koinos/koinos-mempool)                         |C++|Storing transactions that have yet to be included in blocks|
+|[Koinos Transaction Store](https://github.com/koinos/koinos-transaction-store)     |Golang|Storing transaction information|
+|[Koinos Block Producer](https://github.com/koinos/koinos-block-producer)           |C++|The production of blocks|
+|[Koinos JSON-RPC](https://github.com/koinos/koinos-jsonrpc)                        |Golang|Providing API access from outside the cluster|
+|[Koinos Contract Meta Store](https://github.com/koinos/koinos-contract-meta-store) |Golang|Providing ABI data for smart contracts|
 
 Communication between microservices is accomplished by taking advantage of the battle hardened _Advanced Message Queue Protocol_ ([AMQP 0.9.1](https://www.amqp.org/specification/0-9-1/amqp-org-download)) as implemented by [RabbitMQ](https://www.rabbitmq.com/). Each microservice maintains a connection to RabbitMQ which it uses to send and receive _Remote Procedure Calls_ (RPC) as well as broadcast messages. Microservices avoid the need for polling by utilizing broadcast messages in order to implement an event driven paradigm.
 
@@ -32,6 +33,7 @@ Communication between microservices is accomplished by taking advantage of the b
       A <--> F[Koinos Block Producer]
       A <--> G[Koinos JSONRPC]
       A <--> H[Koinos Transaction Store]
+      A <--> I[Koinos Contract Meta Store]
 ```
 > _**Figure 1.** A diagram demonstrating the interprocess communication data flow within a Koinos cluster._
 

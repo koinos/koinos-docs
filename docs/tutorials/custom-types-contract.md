@@ -118,7 +118,7 @@ calc::div_result calculator::div( int64_t x, int64_t y ) noexcept
    if ( y == 0 )
    {
       system::print( "cannot divide by zero" );
-      system::exit_contract( 1 );
+      system::exit( 1 );
    }
 
    res.set_value( x / y );
@@ -127,8 +127,7 @@ calc::div_result calculator::div( int64_t x, int64_t y ) noexcept
 
 int main()
 {
-   auto entry_point = system::get_entry_point();
-   auto args = system::get_contract_arguments();
+   auto [ entry_point, args ] = system::get_arguments();
 
    std::array< uint8_t, 32 > retbuf;
 
@@ -179,11 +178,10 @@ int main()
          system::exit_contract( 1 );
    }
 
-   std::string retval( reinterpret_cast< const char* >( buffer.data() ), buffer.get_size() );
-   system::set_contract_result_bytes( retval );
+   system::result r;
+   r.mutable_object().set( buffer.data(), buffer.get_size() );
 
-   system::exit_contract( 0 );
-   return 0;
+   system::exit( 0, r );
 }
 ```
 
@@ -192,7 +190,7 @@ int main()
 ## Compiling the smart contract
 
 If you have not already prepared your environment please refer to the [Contract developer guide](../quickstart/contract-developer-guide.md). We
-will now use the [Koinos Contract Developer Toolkit (CDT)](https://github.com/koinos/koinos-cdt) to compile the smart contract.
+will now use the [Koinos C++ Software Developer Kit (SDK)](https://github.com/koinos/koinos-sdk-cpp) to compile the smart contract.
 
 ```console
 $ mkdir build

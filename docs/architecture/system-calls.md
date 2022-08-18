@@ -16,18 +16,15 @@ While any system call can be overridden by a contract that simply calls the unde
 |`apply_set_system_call_operation`|Requires call to `get_transaction`|
 |`apply_set_system_contract_operation`|Requires call to `get_transaction`|
 |`apply_transaction`|Requires state access|
-|`call_contract`|Requires stack frame access|
+|`call`|Requires stack frame access|
 |`event`|Requires event recorder access|
-|`exit_contract`|Would cause infinite recursion|
+|`exit`|Would cause infinite recursion|
 |`get_caller`|Requires stack frame access and caller access on execution environment|
-|`get_contract_arguments`|Requires access to contract call arguments on execution environment|
-|`get_contract_arguments_size`|Requires access to contract call arguments on execution environment|
+|`get_arguments`|Requires access to contract call arguments on execution environment|
 |`get_contract_id`|Requires access to contract id on execution environment|
-|`get_entry_point`|Requires access to contract entry point on execution environment|
 |`get_head_info`|Requires state access|
 |`get_last_irreversible_block`|Requires state access|
 |`get_next_object`|Requires state access|
 |`get_object`|Requires state access|
 |`get_prev_object`|Requires state access|
 |`put_object`|Requires state access|
-|`set_contract`|Requires contract return accesson execution environment|

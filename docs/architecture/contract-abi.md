@@ -8,21 +8,21 @@ To interact with smart contracts, Koinos tooling requires an Application Binary 
       "name": {
          "argument"    : "koinos.contracts.token.name_arguments",
          "return"      : "koinos.contracts.token.name_result",
-         "entry_point" : "0x76ea4297",
+         "entry-point" : "0x76ea4297",
          "description" : "Returns the token's name",
          "read-only"   : true
       },
       "symbol": {
          "argument"    : "koinos.contracts.token.symbol_arguments",
          "return"      : "koinos.contracts.token.symbol_result",
-         "entry_point" : "0x7e794b24",
+         "entry-point" : "0x7e794b24",
          "description" : "Returns the token's symbol",
          "read-only"   : true
       },
       "decimals": {
          "argument"    : "koinos.contracts.token.decimals_arguments",
          "return"      : "koinos.contracts.token.decimals_result",
-         "entry_point" : "0x59dc15ce",
+         "entry-point" : "0x59dc15ce",
          "description" : "Return the token's decimal precision",
          "read-only"   : true
       },
@@ -36,21 +36,21 @@ To interact with smart contracts, Koinos tooling requires an Application Binary 
       "balance_of": {
          "argument"    : "koinos.contracts.token.balance_of_arguments",
          "return"      : "koinos.contracts.token.balance_of_result",
-         "entry_point" : "0x15619248",
+         "entry-point" : "0x15619248",
          "description" : "Checks the balance at an address",
          "read-only"   : true
       },
       "transfer": {
          "argument"    : "koinos.contracts.token.transfer_arguments",
          "return"      : "koinos.contracts.token.transfer_result",
-         "entry_point" : "0x62efa292",
+         "entry-point" : "0x62efa292",
          "description" : "Transfers the token",
          "read-only"   : false
       },
       "mint": {
          "argument"    : "koinos.contracts.token.mint_arguments",
          "return"      : "koinos.contracts.token.mint_result",
-         "entry_point" : "0xc2f82bdc",
+         "entry-point" : "0xc2f82bdc",
          "description" : "Mints the token",
          "read-only"   : false
       }
@@ -94,7 +94,7 @@ message total_supply_result {
 }
 
 message balance_of_arguments {
-   bytes owner = 1 [(koinos_bytes_type) = ADDRESS];
+   bytes owner = 1 [(btype) = ADDRESS];
 }
 
 message balance_of_result {
@@ -102,8 +102,8 @@ message balance_of_result {
 }
 
 message transfer_arguments {
-   bytes from = 1 [(koinos_bytes_type) = ADDRESS];
-   bytes to = 2 [(koinos_bytes_type) = ADDRESS];
+   bytes from = 1 [(btype) = ADDRESS];
+   bytes to = 2 [(btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
 }
 
@@ -112,7 +112,7 @@ message transfer_result {
 }
 
 message mint_arguments {
-   bytes to = 1 [(koinos_bytes_type) = ADDRESS];
+   bytes to = 1 [(btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
 

@@ -8,32 +8,28 @@ There are currently two officially supported SDKs for building Koinos contracts:
 
 ### Creating new contracts with the Assemblyscript SDK
 
-To get started, you will need to clone the `koinos-system-contracts-as` repository, and copy an existing contract.
+To get started, you will need to clone the `koinos-contract-template-as` repository, which contains a template contract.
 
 ```console
-git clone https://github.com/koinos/koinos-system-contracts-as.git
-cd koinos-system-contracts-as/contracts/
-cp -r claim my-new-contract-name
+git clone https://github.com/koinos/koinos-contract-template-as.git
 ```
 
-### Modifying the contract
+### Modifying the template contract
 
-For each endpoint, `assemble/index.ts` should be modified to handle the arguments and return.
+The code for you endpoints is in `assembly/Template.ts`. Feel free to rename this file to reflect your contract, as well as other files.
 
-For the entrypoint number, the convention used in the system contracts is using the first 8 hex characters of the SHA-256 hash of the entrypoint name.
-
-Custom protobuf .pb files must go in `assemblyscript/proto`.
+Protobuf types including the endpoint argument and return types are contained in `assembly/proto`, in files with the `.proto` extension.
 
 ### Building the contract
 
-Yarn is used to build the contract. From the contract directory:
+Yarn is used to build the contract. From the base directory:
 
 ```console
 yarn install
 yarn build:release
 ```
 
-The contracts's binary is now available at `build/contract.wasm`.
+The contracts's binary is now available at `build/contract.wasm`, and the ABI is now available at `abi/<contract-name>.abi`.
 
 ## C++ SDK
 

@@ -2,9 +2,9 @@
 
 ## Official SDKs
 
-There are currently two officially supported SDKs for building Koinos contracts: Assemblyscript and C++
+There are currently two officially supported SDKs for building Koinos contracts: AssemblyScript and C++
 
-## Assemblyscript SDK
+## AssemblyScript SDK
 
 ### Creating new contracts with the Assemblyscript SDK
 

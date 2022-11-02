@@ -80,7 +80,7 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `statedir`: The location of the blockchain state files (absolute path or relative to basedir/chain)
  - `database-config`: The location of the database configuration file (absolute path or relative to basedir/chain)
  - `read-compute-bandwidth-limit`: The compute bandwidth when reading contracts via the API
- - `fork-algorithm`: The fork resolution algorithm to use. Can be 'fifo', or 'block-time'. (Default: 'fifo')
+ - `fork-algorithm`: The fork resolution algorithm to use. Can be 'pob', 'fifo', or 'block-time'. (Default: 'pob')
  - `reset`: Reset the database
 
 ## Mempool

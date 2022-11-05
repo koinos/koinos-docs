@@ -25,7 +25,7 @@ Next, you will want your main account to hold VHP and KOIN for block production.
 
 ```console
 ./koinos-cli -r http://localhost:8080/
-🔐 > register pob 198RuEouhgiiaQm7uGfaXS6jqZr6g6nyoR
+🔐 > register pob 159myq5YUhhoVWu3wsHKHiJYKPKGUrGiyv
 🔐 > open <wallet_file> <password>
 ```
 
@@ -58,8 +58,8 @@ At this point, the chain has all the information required in order for us to pro
 ```yml
 block_producer:
   algorithm: pob
-  pob-contract-id: 198RuEouhgiiaQm7uGfaXS6jqZr6g6nyoR
-  vhp-contract-id: 1JZqj7dDrK5LzvdJgufYBJNUFo88xBoWC8
+  pob-contract-id: 159myq5YUhhoVWu3wsHKHiJYKPKGUrGiyv
+  vhp-contract-id: 1AdzuXSpC6K9qtXdCBgD5NUpDNwHjMgrc9
   producer: 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn
 ```
 

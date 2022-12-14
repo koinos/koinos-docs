@@ -8,10 +8,10 @@ There are currently two officially supported SDKs for building Koinos contracts:
 
 ### Creating new contracts with the Assemblyscript SDK
 
-To get started, you will need to clone the `koinos-contract-template-as` repository, which contains a template contract.
+To get started, you will need to clone the `koinos-contracts-as` repository, which contains a template contract.
 
 ```console
-git clone https://github.com/koinos/koinos-contract-template-as.git
+git clone https://github.com/koinos/koinos-contracts-as.git
 ```
 
 ### Modifying the template contract

@@ -121,7 +121,6 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `amqp`: AMQP server URL
  - `basedir`: Koinos base directory
  - `checkpoint`: Block checkpoint in the form height:blockid (may specify multiple times)
- - `direct`: Address of a peer to connect using gossipsub.WithDirectPeers (may specify multiple) (should be reciprocal)
  - `disable-gossip`: Disable gossip mode
  - `force-gossip`: Force gossip mode
  - `instance-id`: An ID that uniquely identifies the instance

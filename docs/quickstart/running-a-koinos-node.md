@@ -55,10 +55,11 @@ You can run optional microservices by enabling the associated docker compose pro
 
  - `block_production` to enable the block production.
  - `jsonrpc` to enable JSON-RPC API handling.
+ - `grpc` to enable gRPC API handling.
  - `transaction_store` to enable transaction history tracking.
  - `contract_meta_store` to enable service of contract ABIs.
  - `account_history` to enable account history tracking.
- - `api` to enable API related microservices (`jsonrpc`, `transaction_store`, `contract_meta_store`, and `account_history`).
+ - `api` to enable API related microservices (`jsonrpc`, `grpc`, `transaction_store`, `contract_meta_store`, and `account_history`).
  - `all` to enable all microservices.
 
 These profiles can be set with the `--profile` options (i.e. `docker-compose --profile jsonrpc up `) or by setting the `COMPOSE_PROFILES` environment variable during invocation or in `.env`.
@@ -178,6 +179,18 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `mq-timeout`: The timeout for MQ requests (default 5)
  - `version`: Print version and exit
  - `whitelist`: RPC targets to whitelist
+
+## GRPC
+
+ - `basedir`: Koinos base directory
+ - `amqp`: AMQP server URL
+ - `log-level`: The log filtering level
+ - `instance-id`: An ID that uniquely identifies the instance
+ - `jobs`: The number of worker jobs
+ - `mq-timeout`: The timeout for MQ requests
+ - `endpoint`: The endpoint the server listens on
+ - `whitelist`: RPC targets to whitelist
+ - `blacklist`: RPC targets to blacklist
 
 ## Contract Meta Store
 

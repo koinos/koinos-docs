@@ -180,7 +180,7 @@ These options can be set in the `config.yml`. If an option is shared by multiple
  - `version`: Print version and exit
  - `whitelist`: RPC targets to whitelist
 
-## GRPC
+## gRPC
 
  - `basedir`: Koinos base directory
  - `amqp`: AMQP server URL

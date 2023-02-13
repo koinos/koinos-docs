@@ -32,15 +32,6 @@ $ docker-compose up
 
 ---
 
-<center>
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=64NWplpcmqU
-" target="_blank"><img src="http://img.youtube.com/vi/64NWplpcmqU/0.jpg"
-alt="Install a koinos node video"  border="1" /></a>
-</center>
-
-<br />
-<br />
-
 ## Managing a node
 
 Nodes can be configured through two mechanisms, environment variables that change which servies are running, and the node config.

@@ -27,7 +27,7 @@ BASEDIR=c:\koinos
 5. Open the terminal in the downloaded directory and run the following command:
 
 ```console
-$ docker-compose up
+$ docker compose up
 ```
 
 ---
@@ -53,7 +53,7 @@ You can run optional microservices by enabling the associated docker compose pro
  - `api` to enable API related microservices (`jsonrpc`, `grpc`, `transaction_store`, `contract_meta_store`, and `account_history`).
  - `all` to enable all microservices.
 
-These profiles can be set with the `--profile` options (i.e. `docker-compose --profile jsonrpc up `) or by setting the `COMPOSE_PROFILES` environment variable during invocation or in `.env`.
+These profiles can be set with the `--profile` options (i.e. `docker compose --profile jsonrpc up`) or by setting the `COMPOSE_PROFILES` environment variable during invocation or in `.env`.
 
 For more information on docker compose profiles, please read the official [documentation](https://docs.docker.com/compose/profiles/).
 

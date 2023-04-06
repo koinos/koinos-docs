@@ -38,5 +38,7 @@ Koinos documentation
    :caption: Step-by-step guides
 
    tutorials/using-the-faucet-on-discord
-   tutorials/custom-types-contract
    tutorials/deploying-token
+   tutorials/typescript-deploy
+   tutorials/C++/custom-types-contract
+   tutorials/AssemblyScript/typescript-first-smart-contract

@@ -94,11 +94,6 @@ The Koinos blockchain  leverages Google's Protocol Buffers (Protobuf).
 [Protobuf website](https://developers.google.com/protocol-buffers)
 
 > Protocol buffers are Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data – think XML, but smaller, faster, and simpler.
-  
-How does Koinos leverage Protobuf?
-
-Simple, it's just everywhere in the codebase of the blockchain framework. It's used for interacting with the blockchain, it's used by the microservices that composed the blockchain framework and it's also used to store data on the blockchain. So, this means that since our smart contract most likely needs to store data and you're creating a smart contract for someone to use, you'll need to learn about Protobuf, but don't worry, it's super simple. It's just describing what's called messages that are just structures that you could find in any programming language. (a structure name and properties (a property type and a property name))
-
 
 The proto folder should look like this:
   

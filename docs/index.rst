@@ -36,9 +36,8 @@ Koinos documentation
 .. toctree::
    :maxdepth: 3
    :caption: Step-by-step guides
-
+   
    tutorials/using-the-faucet-on-discord
-   tutorials/deploying-token
-   tutorials/typescript-deploy
    tutorials/C++/custom-types-contract
+   tutorials/deploying-token
    tutorials/AssemblyScript/typescript-first-smart-contract

@@ -33,7 +33,7 @@ Each system call has its base functionality implemented natively in a function k
 |`consume_account_rc`|Consumes resource credits on an account|
 |`get_resource_limits`|Retrieves the current resource limits|
 |`consume_block_resources`|Consumes resource credits for the block|
-|`put_object`|Inserts data in to a key value store|
+|`put_object`|Inserts data into a key value store|
 |`remove_object`|Deletes data in the key value store|
 |`get_object`|Retrieves data from the key value store|
 |`get_next_object`|Iterates forward through the key value store|

@@ -38,7 +38,7 @@ The main function will then instantiate the contract class or execute procedural
 ### Read-only entry points
 
 Read-only entry points are often used to implement "getter" functions and can be called outside of a transaction. Most commonly, the read only entry points are called using the RPC method `read_contract`. Smart contract code that is executed
-in read-only mode is prevented from writing to any key value store and will be abruptly trapped and a permission denied exception will propagate if any attempt is made.
+in read-only mode is prevented from writing to any key value store. If the contract attempts to perform a write during read-only mode it will be abruptly trapped and a permission denied exception will be thrown.
 
 Given the following RPC request and response definitions:
 

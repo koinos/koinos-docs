@@ -72,7 +72,36 @@ Let us look at each command and break down what it does.
 
 If successful the output should look something like this:
 
-![build results image](./images/build-result.png "Build results")
+```
+[Describe]: contract
+
+[Log] Hello, World!
+ [Success]: ✔ should return 'hello, NAME!' RTrace: +21
+
+    [File]: assembly/__tests__/Myawesomecontract.spec.ts
+  [Groups]: 2 pass, 2 total
+  [Result]: ✔ PASS
+[Snapshot]: 0 total, 0 added, 0 removed, 0 different
+ [Summary]: 1 pass,  0 fail, 1 total
+    [Time]: 12.565ms
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  [Result]: ✔ PASS
+   [Files]: 1 total
+  [Groups]: 2 count, 2 pass
+   [Tests]: 1 pass, 0 fail, 1 total
+    [Time]: 2942.539ms
+┌───────────────────────────────┬───────┬───────┬──────┬──────┬───────────┐
+│ File                          │ Total │ Block │ Func │ Expr │ Uncovered │
+├───────────────────────────────┼───────┼───────┼──────┼──────┼───────────┤
+│ assembly/Myawesomecontract.ts │ 100%  │ 100%  │ 100% │ N/A  │           │
+├───────────────────────────────┼───────┼───────┼──────┼──────┼───────────┤
+│ total                         │ 100%  │ 100%  │ 100% │ N/A  │           │
+└───────────────────────────────┴───────┴───────┴──────┴──────┴───────────┘
+
+Done in 3.17s.
+```
 
 The CLI generates a boilerplate smart contract which allows us to quickly setup a new contract and make sure the development environment is working properly.
 
@@ -146,7 +175,7 @@ Inside each proto message are properties. In this case, `string name = 1;`, decl
 After creating or modifying the proto we will need to compile it so that the new AS files get generated. Again, we can use the CLI to do this.
 
 ```console
-$ koinos-sdk-as-cli build-all debug 0 myawesomecontract.proto
+$ yarn build:debug
 ```
 
 This command will re/generate `myawesomecontract.ts`, `index.ts`, and `myawesomecontract.boilerplate.ts`.
@@ -282,17 +311,25 @@ message add_result {
 Now we need to regenerate the ts proto files based on our changes.
 
 ```console
-$ koinos-sdk-as-cli build-all debug 0 myawesomecontract.proto
+$ yarn build:debug
 ```
 
 This will generate the new boilerplate files, we also get the following error, that is because we have not added the function `add` to our contract yet:
 
 ```
-ERROR TS2339: Property 'add' does not exist on type 'assembly/Myawesomecontract/Myawesomecontract'.
+ERROR TS2339: Property 'add' does not exist on type '~lib/object/Object'.
+    :
+ 27 │ const res = c.add(args);
+    │               ~~~
+    └─ in assembly/index.ts(27,21)
 
-       const res = c.add(args);
+ERROR TS1140: Type argument expected.
+    :
+ 28 │ retbuf = Protobuf.encode(res, ProtoNamespace.add_result.encode);
+    │                         ^
+    └─ in assembly/index.ts(28,31)
 
- in assembly/index.ts(28,21)
+FAILURE 2 compile error(s)
 ```
 
 To remedy this problem, let's open `Myawesomecontract.boilerplate.ts` and copy the following auto-generated code:
@@ -322,6 +359,7 @@ add(args: myawesomecontract.add_arguments): myawesomecontract.add_result {
   // "c" is just the addition of "a" and "b"
   // we use the "SafeMath" helper
   // this will ensure that our result won't overflow/underflow
+  // It can be imported from "@koinos/sdk-as"
   const c = SafeMath.add(a, b);
 
   const res = new myawesomecontract.add_result();

@@ -27,6 +27,7 @@ Koinos documentation
    :maxdepth: 3
    :caption: Architecture & design
 
+   architecture/smart-contracts
    architecture/microservice
    architecture/interprocess-communication
    architecture/serialization

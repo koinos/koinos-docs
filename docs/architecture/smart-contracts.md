@@ -33,7 +33,7 @@ of shared key value stores.
 ## Entry points
 
 To inform the blockchain which function you are calling within a smart contract an entry point is provided. The Koinos Blockchain Framework will take the request, whether it is a read or write, load up the contract and pass the entry point as a parameter.
-The main function will then instantiate the contract class or execute procedurally and execute the corresponding code whether it a member function or inline code. Entry points come in two flavors: read and write.
+The main function will then instantiate the contract class or execute procedurally and execute the corresponding code whether it is a member function or inline code. Entry points come in two flavors: read and write.
 
 ### Read-only entry points
 

@@ -1,13 +1,13 @@
 # Smart contracts
 
-The Koinos Blockchain Framework is a bare bones minimal blockchain implementation that is fully customization through the use of smart contracts. Smart contracts can implement both feature rich
+The Koinos Blockchain Framework is a bare bones minimal blockchain implementation that is fully customizable through the use of smart contracts. Smart contracts can implement both feature rich
 decentralized applications and core system functionality. The information in this documented is intended to be SDK agnostic and explain the core functionality of the Koinos Virtual Machine and its
 implementation.
 
-Because Koinos uses [Fizzy](https://github.com/wasmx/fizzy) for its WASM (WebAssembly) virtual machine, the blockchain is agnostic to the language the smart has been written -- this allows
+Because Koinos uses [Fizzy](https://github.com/wasmx/fizzy) for its WASM (WebAssembly) virtual machine, the blockchain is agnostic to the language the smart contract has been written -- this allows
 support for a multitude of programming languages for development.
 
-Smart contracts come in two flavors: user and system. User contracts have a basic set of feature that allow the developer to
+Smart contracts come in two flavors: user and system. User contracts have a basic set of features that allow the developer to
 write decentralized applications. System contracts have all the features available to user contracts, with the additional ability of access the system contract space.
 
 ## Contract space

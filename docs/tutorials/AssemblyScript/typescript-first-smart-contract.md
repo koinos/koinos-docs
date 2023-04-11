@@ -1,4 +1,4 @@
-# Simple AS Smart Contract
+# AssemblyScript smart contract tutorial
 
 _Originally published by Roamin on [Hashnode](https://hashnode.com/@Roamin)_
 
@@ -28,7 +28,7 @@ $ $(yarn global bin)/koinos-sdk-as-cli -V
 
 Alternatively, you can add `$(yarn global bin)` to your `PATH` and run `koinos-sdk-as-cli` directly (The remainder of this guide assumes this).
 
-The output should read `1.0.0` or the current version of the [AS SDK CLI Node package](https://www.npmjs.com/package/@koinos/sdk-as-cli).
+The output should read `1.0.2` or the current version of the [AS SDK CLI Node package](https://www.npmjs.com/package/@koinos/sdk-as-cli).
 
 ## Create the smart contract
 

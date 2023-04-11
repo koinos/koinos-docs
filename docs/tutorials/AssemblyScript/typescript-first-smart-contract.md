@@ -83,7 +83,7 @@ If successful the output should look something like this:
   [Result]: ✔ PASS
 [Snapshot]: 0 total, 0 added, 0 removed, 0 different
  [Summary]: 1 pass,  0 fail, 1 total
-    [Time]: 12.565ms
+    [Time]: 12.109ms
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -91,7 +91,7 @@ If successful the output should look something like this:
    [Files]: 1 total
   [Groups]: 2 count, 2 pass
    [Tests]: 1 pass, 0 fail, 1 total
-    [Time]: 2942.539ms
+    [Time]: 3035.096ms
 ┌───────────────────────────────┬───────┬───────┬──────┬──────┬───────────┐
 │ File                          │ Total │ Block │ Func │ Expr │ Uncovered │
 ├───────────────────────────────┼───────┼───────┼──────┼──────┼───────────┤
@@ -100,7 +100,7 @@ If successful the output should look something like this:
 │ total                         │ 100%  │ 100%  │ 100% │ N/A  │           │
 └───────────────────────────────┴───────┴───────┴──────┴──────┴───────────┘
 
-Done in 3.17s.
+Done in 3.28s.
 ```
 
 The CLI generates a boilerplate smart contract which allows us to quickly setup a new contract and make sure the development environment is working properly.
@@ -317,19 +317,20 @@ $ yarn build:debug
 This will generate the new boilerplate files, we also get the following error, that is because we have not added the function `add` to our contract yet:
 
 ```
-ERROR TS2339: Property 'add' does not exist on type '~lib/object/Object'.
-    :
- 27 │ const res = c.add(args);
-    │               ~~~
-    └─ in assembly/index.ts(27,21)
+ERROR TS2339: Property 'add' does not exist on type 'assembly/Myawesomecontract/Myawesomecontract'.
+
+       const res = c.add(args);
+                     ~~~
+ in assembly/index.ts(27,21)
 
 ERROR TS1140: Type argument expected.
-    :
- 28 │ retbuf = Protobuf.encode(res, ProtoNamespace.add_result.encode);
-    │                         ^
-    └─ in assembly/index.ts(28,31)
+
+       retbuf = Protobuf.encode(res, ProtoNamespace.add_result.encode);
+                               ^
+ in assembly/index.ts(28,31)
 
 FAILURE 2 compile error(s)
+
 ```
 
 To remedy this problem, let's open `Myawesomecontract.boilerplate.ts` and copy the following auto-generated code:
@@ -390,7 +391,37 @@ Let's run our tests to make sure everything is working.
 $ yarn test
 ```
 
-![test results](./images/tests-result.png "Test results")
+```
+[Describe]: contract
+
+[Log] Hello, World!
+ [Success]: ✔ should return 'hello, NAME!' RTrace: +21
+ [Success]: ✔ should add 2 numbers RTrace: +15
+
+    [File]: assembly/__tests__/Myawesomecontract.spec.ts
+  [Groups]: 2 pass, 2 total
+  [Result]: ✔ PASS
+[Snapshot]: 0 total, 0 added, 0 removed, 0 different
+ [Summary]: 2 pass,  0 fail, 2 total
+    [Time]: 12.685ms
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  [Result]: ✔ PASS
+   [Files]: 1 total
+  [Groups]: 2 count, 2 pass
+   [Tests]: 2 pass, 0 fail, 2 total
+    [Time]: 3102ms
+┌───────────────────────────────┬───────┬───────┬──────┬──────┬───────────┐
+│ File                          │ Total │ Block │ Func │ Expr │ Uncovered │
+├───────────────────────────────┼───────┼───────┼──────┼──────┼───────────┤
+│ assembly/Myawesomecontract.ts │ 100%  │ 100%  │ 100% │ N/A  │           │
+├───────────────────────────────┼───────┼───────┼──────┼──────┼───────────┤
+│ total                         │ 100%  │ 100%  │ 100% │ N/A  │           │
+└───────────────────────────────┴───────┴───────┴──────┴──────┴───────────┘
+
+Done in 3.34s.
+```
 
 We just added a new function to the contract and also made sure that it works.
 

@@ -13,7 +13,7 @@ $ head ~/.koinos/block_producer/000.log | grep "Public address"
 It is also displayed when you first start the node although it usually scrolls out of view very quickly.
 
 
-Once you have your public address you can join our [Discord](https://discord.com/invite/GErGNsu) server and request some _**tKOIN**_ in the `#koinos` channel by sending the following message to the faucet bot:
+Once you have your public address you can join our [Discord](https://discord.com/invite/GErGNsu) server and request some _**tKOIN**_ in the `#faucet` channel by sending the following message to the faucet bot:
 
 ```
 !faucet <public address>

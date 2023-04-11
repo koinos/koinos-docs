@@ -1,2 +1,7 @@
 venv/
 docs/_build/
+ENV_DIR/
+.DS_Store
+/bin
+/lib
+pyvenv.cfg

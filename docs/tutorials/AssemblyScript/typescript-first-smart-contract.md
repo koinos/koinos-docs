@@ -350,7 +350,7 @@ add(args: myawesomecontract.add_arguments): myawesomecontract.add_result {
 }
 ```
 
-Open `Myawesomecontract.ts` and paste the new function. Let's implement the `add` function as follows:
+Open `Myawesomecontract.ts` and paste the new function within the class. Let's implement the `add` function as follows:
 
 ```ts
 add(args: myawesomecontract.add_arguments): myawesomecontract.add_result {
@@ -370,6 +370,12 @@ add(args: myawesomecontract.add_arguments): myawesomecontract.add_result {
 
   return res;
 }
+```
+
+Make sure to modify the `import` line of `@koinos/sdk-as` to the following:
+
+```ts
+import { System, SafeMath } from "@koinos/sdk-as";
 ```
 
 Now that our new function has been implemented, let's add a new unit test. Head over to `Myawesomecontract.spec.ts` and add the following unit test:
@@ -424,6 +430,12 @@ Done in 3.34s.
 ```
 
 We just added a new function to the contract and also made sure that it works.
+
+Now that our smart contract is ready for deployment, let us build it in release mode:
+
+```console
+$ yarn build:release
+```
 
 ## Upload to the Blockchain
 

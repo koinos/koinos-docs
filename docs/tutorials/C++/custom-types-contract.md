@@ -4,7 +4,7 @@ This tutorial aims to demonstrate how to create smart contracts using custom typ
 
 ## Setting up the project
 
-C++ smart contracts are built using either Docker or the CMake build system. For this tutorial, we will use CMake. We will assume you have already set up your CDT. If you have not, the [Contract developer guide](../quickstart/contract-developer-guide.md) documents this process. Let us begin by setting up our directory structure.
+C++ smart contracts are built using either Docker or the CMake build system. For this tutorial, we will use CMake. We will assume you have already set up your CDT. If you have not, the [Contract developer guide](../../quickstart/contract-developer-guide.md) documents this process. Let us begin by setting up our directory structure.
 
 ```console
 $ cp -R cmake_project calculator_contract
@@ -189,7 +189,7 @@ int main()
 
 ## Compiling the smart contract
 
-If you have not already prepared your environment please refer to the [Contract developer guide](../quickstart/contract-developer-guide.md). We
+If you have not already prepared your environment please refer to the [Contract developer guide](../../quickstart/contract-developer-guide.md). We
 will now use the [Koinos C++ Software Developer Kit (SDK)](https://github.com/koinos/koinos-sdk-cpp) to compile the smart contract.
 
 ```console
@@ -203,7 +203,7 @@ This will create two build artifacts, `build/src/contract.wasm` and `build/types
 
 ## Creating the ABI file
 
-We will use the [Koinos Command Line Interface (CLI)](https://github.com/koinos/koinos-cli) to interact with this contract on the blockchain. We need the Application Binary Interface (ABI) to inform the CLI how to invoke methods on the contract. For more information about the ABI file please refer to the [Contract ABI](../architecture/contract-abi.md) section.
+We will use the [Koinos Command Line Interface (CLI)](https://github.com/koinos/koinos-cli) to interact with this contract on the blockchain. We need the Application Binary Interface (ABI) to inform the CLI how to invoke methods on the contract. For more information about the ABI file please refer to the [Contract ABI](../../architecture/contract-abi.md) section.
 
 The contract examples repo already contains the [ABI file](https://github.com/koinos/koinos-contract-examples/blob/master/contracts/calculator/calc.abi). The ABI File contains JSON information about each of the entry points as well as the base64 encoded protobuf descriptor file (`types.pb`) that was generated during compilation. Encoding the base64 descriptor file can be done with a simple command.
 

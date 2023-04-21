@@ -1,73 +1,123 @@
 # AssemblyScript smart contract tutorial
 
 _Originally published by Roamin on [Hashnode](https://hashnode.com/@Roamin)_
+_Edited by Kui He to include updates for M1_
 
-In this tutorial we will create a simple smart contract in AssemblyScript, compile it to a Web Assembly, and deploy it to the Koinos Harbinger test network.
+In this tutorial we will setup our machien to be able to create a simple smart contract in AssemblyScript, compile it to a Web Assembly, and deploy it to the Koinos Harbinger test network.
 
 ## Setting up the dev environment
 
 ### Install NodeJS
 
-We will need NodeJS installed in order to develop, build, and deploy the smart contract. If it is not yet installed on your system please head over to [the NodeJS website](https://nodejs.org/) and follow the installation guide.
+NodeJS is necessary to develop, build, and deploy the smart contract. Follow the instructions at [the NodeJS website](https://nodejs.org/) for installation guide specific to your machine.
+
+Notes for Installation on Mac M1s:
+Newer version of NodeJs may not work properly with the Koinos SDK. We have tested to ensure that version 16.13.1 works.
+You may find an error with NodeJS when compiling smart contracts that appears similar to this output:
+```
+npm ERR! command /usr/local/bin/node /usr/local/lib/node_modules/npm/bin/npm-cli.js install --force
+--cache=/Users/motoengineer/.npm --prefer-offline=false --prefer-online=false --offline=false --no-progress --no-save
+--no-audit --include=dev --include=peer --include=optional --no-package-lock-only --no-dry-run
+```
+If you find this error, try running this command:
+```
+sudo chown -R 501:20 "/Users/{username}/.npm"
+```
+
+### Install Protobuff
+Protobuf is necessary to build .proto files for Koinos Smart Contracts. Follow the instructions at the [Protobuf githubrepo](https://github.com/protocolbuffers/protobuf) for the binarys specific to your machine.
+
+Installation Method 1:
+For Mac M1 Machines, you will need the aarch_64 binary.
+For Mac Intel machines, you will use the universal binary.
+For Linux, you will use the x86 binary or aarch_64 binary, depending on your CPU architecture.
+
+Installation Method 2:
+For Intel Macs using homebrew package manager, you may easily install protobuff for your Intel Mac using the following command:
+```
+brew install protobuf
+```
+
+For Mac M1 Machines using homebrew package manager, you may easily install protobuf for your M1 silicone chip using the following command:
+```
+arch -arm64 brew install protobuf
+```
+
+After installation, verify protobuf is installed using the following command:
+```
+protoc --version
+```
+The response should be (exact version may vary):
+```
+libprotoc 3.21.12
+```
+Verify the directory for protoc is in your $PATH using teh following command:
+```
+which protoc
+```
+The output should match the directory of homebrew.
+
+You are now ready to install the Koinos Assembly Script SDK CLI
+
 
 ### Download the SDK CLI
 
-In this example we will be using the [Yarn package manger](https://yarnpkg.com/getting-started/install), but NPM will work as well.
+Again, we will be using Yarn Package Manager, but NPM will work as well.
 
 Install the Koinos AssemblyScript CLI by running this command:
 
-```console
-$ yarn global add @koinos/sdk-as-cli
+```
+yarn global add @koinos/sdk-as-cli
 ```
 
 The AS CLI should be installed globally, we can check by running this command:
 
-```console
-$ $(yarn global bin)/koinos-sdk-as-cli -V
 ```
-
-Alternatively, you can add `$(yarn global bin)` to your `PATH` and run `koinos-sdk-as-cli` directly (The remainder of this guide assumes this).
+$(yarn global bin)/koinos-sdk-as-cli -V
+```
 
 The output should read `1.0.2` or the current version of the [AS SDK CLI Node package](https://www.npmjs.com/package/@koinos/sdk-as-cli).
 
+For the remainder of this guide, we will be calling `koinos-sdk-as-cli` directly. To do this, be sure to add add `$(yarn global bin)` to your `PATH` to be able to use the CLI directly.
+
+You are now ready to begin using the SDK.
+
 ## Create the smart contract
+The `koinos-sdk-as-cli` helps you setup the an entire development folder using the `create` command. This development folder is a boilerplate that will help you get started writing smart contracts immediately. We will begin by creating a project called `myawesomecontract`. To intiate this boilerplate, we run the following command:
 
-To create the smart contract boilerplate we can run the following command:
-
-```console
-$ koinos-sdk-as-cli create myawesomecontract
+```
+koinos-sdk-as-cli create myawesomecontract
 ```
 
-The AS CLI command `create` takes one argument which is the name of the contract in this case the smart contract is called `myawesomecontract`.
+The `koinos-sdk-as-cli` command `create` takes one arguement which is the name that will be used for both the project folder and the smart contract file.
 
 The output should look something like this:
 
 ```
-Generating contract at "/Users/rr/Documents/blockchain/tutorial/myawesomecontract"...
+Generating contract at "/Users/tutorial/myawesomecontract"...
 
 Contract successfully generated!
 
 You're all set! Run the following set of commands to verify that the generated contract is correctly setup:
 
-  cd /Users/rr/Documents/blockchain/tutorial/myawesomecontract && yarn install && yarn build:debug && yarn test
+  cd /Users/tutorial/myawesomecontract && yarn install && yarn build:debug && yarn test
 ```
 
-At the end of the output, the CLI logs a set of commands that we can run to check to build and test our contract. Move to the `myawesomecontract` directory using the commands above, replacing the directory with yours.
+After successfully running the `create` command, the `koinos-sdk-as-cli` will create a folder called `myawesomecontract` (or whatever arguement you passed to the create command). It will also output a set of commands that will change directory into your project folder and then run an install, build and test to ensure the boilerplate is functioning correctly. Simply copy the provided command to run it. It will appear similar to command above, but with your specific directory. You may also do this manually by running the following command:
 
-```console
-$ cd /Users/rr/Documents/blockchain/tutorial/myawesomecontact
+```
+cd /Users/tutorial/myawesomecontact
+```
+Once you are in your project directory, run the following commands:
+
+```
+yarn install && yarn build:debug && yarn test
 ```
 
-Now run the following commands:
+Here is a breakdown for each command what it does:
 
-```console
-$ yarn install && yarn build:debug && yarn test
-```
-
-Let us look at each command and break down what it does.
-
-- `yarn install`: Installs all the dependencies needed to compile and test a Koinos smart contract. This only needs to be ran once.
-- `yarn build:debug`: Compiles the smart contract into Web Assembly using a debug build.
+- `yarn install`: Installs all the dependencies needed to compile and test a Koinos smart contract. This only needs to be ran once per a project folder. It must be executed inside the project folder.
+- `yarn build:debug`: Compiles the smart contract into Web Assembly using a debug build. You should run this each time you change your smart contract so you can test it.
 - `yarn test`: Runs the unit tests on the compiled smart contract.
 
 If successful the output should look something like this:
@@ -103,7 +153,7 @@ If successful the output should look something like this:
 Done in 3.28s.
 ```
 
-The CLI generates a boilerplate smart contract which allows us to quickly setup a new contract and make sure the development environment is working properly.
+After running through this process, you now have a fully setup boilerplate development environment that has been tested to function correctly. You can begin to immediately write a smart contracts!
 
 ### The generated smart contract code
 

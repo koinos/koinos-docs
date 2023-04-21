@@ -30,9 +30,9 @@ Protobuf is necessary to build .proto files for Koinos Smart Contracts. Follow t
 Installation Method 1:\
 For Mac M1 Machines, you will need the aarch_64 binary.\
 For Mac Intel machines, you will use the universal binary.\
-For Linux, you will use the x86 binary or aarch_64 binary, depending on your CPU architecture.\
+For Linux, you will use the x86 binary or aarch_64 binary, depending on your CPU architecture.
 
-Follow the installation within the downloaded zip for installation instructions.\
+Follow the installation within the downloaded zip for installation instructions.
 
 Installation Method 2 (recommended):\
 For Intel Macs using homebrew package manager, you may easily install protobuff for your Intel Mac using the following command:

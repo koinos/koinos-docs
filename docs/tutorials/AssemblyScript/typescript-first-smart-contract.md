@@ -80,7 +80,7 @@ $(yarn global bin)/koinos-sdk-as-cli -V
 
 The output should read `1.0.2` or the current version of the [AS SDK CLI Node package](https://www.npmjs.com/package/@koinos/sdk-as-cli).
 
-For the remainder of this guide, we will be calling `koinos-sdk-as-cli` directly. To do this, be sure to add add `$(yarn global bin)` to your `PATH` to be able to use the CLI directly.
+For the remainder of this guide, we will be calling `koinos-sdk-as-cli` directly. To do this, be sure to add `$(yarn global bin)` to your `PATH` to be able to use the CLI directly if it hasn't done this automatically.
 
 You are now ready to begin using the SDK.
 

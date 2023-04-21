@@ -105,7 +105,7 @@ You're all set! Run the following set of commands to verify that the generated c
   cd /Users/tutorial/myawesomecontract && yarn install && yarn build:debug && yarn test
 ```
 
-After successfully running the `create` command, the `koinos-sdk-as-cli` will create a folder called `myawesomecontract` (or whatever arguement you passed to the create command). It will also output a set of commands that will change directory into your project folder and then run an install, build and test to ensure the boilerplate is functioning correctly. Simply copy the provided command to run it. It will appear similar to command above, but with your specific directory. You may also do this manually by running the following command:
+After successfully running the `create` command, the `koinos-sdk-as-cli` will create a folder called `myawesomecontract` (or whatever arguement you passed to the `create` command). It will also output a set of commands that will change directory into your project folder, install the required dependencies, build and test to ensure the boilerplate folder is functioning correctly. Simply copy the provided command to run it. It will appear similar to command above, but with your specific directory. You may also do this manually by running the following command,(again replace with your specific directory):
 
 ```
 cd /Users/tutorial/myawesomecontact

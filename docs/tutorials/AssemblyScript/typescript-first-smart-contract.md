@@ -27,12 +27,12 @@ sudo chown -R 501:20 "/Users/{username}/.npm"
 ### Install Protobuff
 Protobuf is necessary to build .proto files for Koinos Smart Contracts. Follow the instructions at the [Protobuf githubrepo](https://github.com/protocolbuffers/protobuf) for the binarys specific to your machine.
 
-Installation Method 1:
-For Mac M1 Machines, you will need the aarch_64 binary. 
-For Mac Intel machines, you will use the universal binary. 
-For Linux, you will use the x86 binary or aarch_64 binary, depending on your CPU architecture. 
+Installation Method 1:\
+For Mac M1 Machines, you will need the aarch_64 binary. \
+For Mac Intel machines, you will use the universal binary. \
+For Linux, you will use the x86 binary or aarch_64 binary, depending on your CPU architecture. \
 
-Installation Method 2:
+Installation Method 2:\
 For Intel Macs using homebrew package manager, you may easily install protobuff for your Intel Mac using the following command:
 ```
 brew install protobuf

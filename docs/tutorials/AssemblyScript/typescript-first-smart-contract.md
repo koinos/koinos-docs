@@ -24,7 +24,7 @@ If you find this error, try running this command:
 sudo chown -R 501:20 "/Users/{username}/.npm"
 ```
 
-### Install Protobuff
+### Install Protobuf
 Protobuf is necessary to build .proto files for Koinos Smart Contracts. Follow the instructions at the [Protobuf githubrepo](https://github.com/protocolbuffers/protobuf) for the binarys specific to your machine.
 
 Installation Method 1:\
@@ -35,7 +35,7 @@ For Linux, you will use the x86 binary or aarch_64 binary, depending on your CPU
 Follow the installation within the downloaded zip for installation instructions.
 
 Installation Method 2 (recommended):\
-For Intel Macs using homebrew package manager, you may easily install protobuff for your Intel Mac using the following command:
+For Intel Macs using homebrew package manager, you may easily install protobuf for your Intel Mac using the following command:
 ```
 brew install protobuf
 ```

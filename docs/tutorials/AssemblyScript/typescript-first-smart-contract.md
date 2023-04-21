@@ -3,7 +3,7 @@
 _Originally published by Roamin on [Hashnode](https://hashnode.com/@Roamin)_
 _Edited by Kui He to include updates for M1_
 
-In this tutorial we will setup our machien to be able to create a simple smart contract in AssemblyScript, compile it to a Web Assembly, and deploy it to the Koinos Harbinger test network.
+In this tutorial we will setup our machine to be able to create a simple smart contract in AssemblyScript, compile it to a Web Assembly, and deploy it to the Koinos Harbinger test network.
 
 ## Setting up the dev environment
 

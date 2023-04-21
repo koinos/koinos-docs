@@ -51,13 +51,13 @@ protoc --version
 ```
 The response should be (exact version may vary):
 ```
-libprotoc 3.21.12
+>libprotoc 3.21.12
 ```
 Verify the directory for protoc is in your $PATH using teh following command:
 ```
 which protoc
 ```
-The output should match the directory of homebrew.
+The output should match the directory of homebrew $PATH.
 
 You are now ready to install the Koinos Assembly Script SDK CLI
 

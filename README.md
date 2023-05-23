@@ -1,3 +1,5 @@
+**Notice:** This repo has been deprecated. To contribute to documentation please go to https://github.com/koinos/koinos/blob/master/docs.
+
 # Koinos Documentation
 
   

@@ -82,6 +82,10 @@ markdown_extensions:
 nav:
   - Overview:
     - overview/index.md
+    - overview/tokenomics.md
+    - Advanced:
+      - overview/advanced/cli.md
+      - overview/advanced/rc-limit.md
   - Developers:
     - developers/index.md
   - Validators:

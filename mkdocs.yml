@@ -55,9 +55,6 @@ theme:
   favicon: assets/koinos-icon-dark.png
   logo: assets/koinos-mark-light.svg
 
-extra_css:
-  - stylesheets/extra.css
-
 extra:
   social:
     - icon: fontawesome/brands/github

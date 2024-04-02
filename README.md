@@ -2,23 +2,54 @@
 
 # Koinos Documentation
 
-  
+This repo contains the Koinos documentation site. This site is built using [MkDocs](https://www.mkdocs.org/).
 
-This repo contains the Koinos documentation site. The site is built using the [Sphinx](https://www.sphinx-doc.org/en/master/index.html) documentation generator.
+MkDocs is a Python utility to generate a simple website from Markdown content. All Koinos documentation is done in Markdown, so no web development experience is required to contribute to the documentation.
 
-  
+### Installation
 
-## Installation
+#### Setup Virtual Environment
 
-To run the generator locally, clone the repo and follow the instructions below using Python 3. 
+Newer versions of Python now require use of Python virtual environments (in addition to them being best practices for a while now). Start by creating a new virtual environment. It can located anywhere called anything you want, but `docs-venv` is ignored by git for this project.
 
-  
+```
+python3 -m venv docs-venv
+```
 
-1. Install the dependenices listed in requirements.txt
+This will create a new venv in the directory docs-venv. To use the venv, you must first activate it.
+
+```
+source docs-venv/bin/activate
+```
+
+When you are done with the venv, you can deactivate it.
+
+```
+deactivate
+```
+
+#### Run Koinos Docs
+
+With the created venv active...
+
+1. Install dependencies.
+
 ```
 pip install -r requirements.txt
 ```
-2. Run the sphinx-build command to build the site serve it on localhost:8000 (autobuild will live-reload when changes are made)
+
+2. Run MkDocs.
+
 ```
-sphinx-autobuild docs docs/_build/html
+mkdocs serve
+```
+
+This will serve a local version of the site to `http://localhost:8000/`. Changes you make to the site will be automatically reflected here allowing for instant feedback.
+
+#### Build Koinos Docs
+
+MkDocs can also build Koinos Docs as a static site that can be served using Apache.
+
+```
+mkdocs build
 ```

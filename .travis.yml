@@ -1,9 +1,0 @@
-os: linux
-dist: focal
-
-branches:
-  only:
-    - master
-
-script:
-  - scripts/deploy.sh

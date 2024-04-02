@@ -1,7 +1,16 @@
-venv/
-docs/_build/
-ENV_DIR/
+docs-venv
+site
+
+# Mac files
 .DS_Store
-/bin
-/lib
-pyvenv.cfg
+
+# Python temp files
+*.pyc
+*.pyo
+__pycache__
+
+# Editor cache files
+*~*
+*#*
+
+.vscode/

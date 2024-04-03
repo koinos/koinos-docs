@@ -3,8 +3,8 @@ site_url: https://docs.koinos.io
 
 site_description: Documentation for Koinos
 
-repo_name: koinos/koinos-docs
-repo_url: https://github.com/koinos/koinos-docs
+repo_name: koinos
+repo_url: https://github.com/koinos/koinos
 
 edit_uri: https://github.com/koinos/koinos-docs/master/docs/
 

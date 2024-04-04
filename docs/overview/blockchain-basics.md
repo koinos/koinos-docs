@@ -69,7 +69,7 @@ Play Web3 games where you control your own in-game assets, manage your financial
 
 ---
 ## Join the Web3 revolution
-You're not alone! Join our growing community of dedicated blockchain developers, users, and enthusiasts on both [Telegram](https://t.me/joinchat/SXe6mLnb8Ssywlq9) and [Discord](https://discord.koinos.io) today!
+You're not alone! Join our growing community of dedicated blockchain developers, users, and enthusiasts on both [Telegram](https://telegram.koinos.io) and [Discord](https://discord.koinos.io) today!
 
 ---
 Want to learn more? Let's keep going!

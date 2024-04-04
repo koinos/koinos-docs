@@ -1,5 +1,5 @@
-# Getting started
-Welcome to the Koinos documentation! In this section, we will provide you with a comprehensive introduction to the fundamental concepts and features of the Koinos blockchain.
+# Overview
+Welcome to the Koinos overview! In this section, we will provide you with a comprehensive introduction to the fundamental concepts and features of the Koinos blockchain.
 
 ---
 ## Blockchain Basics

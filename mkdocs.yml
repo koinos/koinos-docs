@@ -1,9 +1,9 @@
-site_name: Koinos Docs
+site_name: Koinos Documentation
 site_url: https://docs.koinos.io
 
 site_description: Documentation for Koinos
 
-repo_name: koinos/koinos
+repo_name: koinos
 repo_url: https://github.com/koinos/koinos
 
 edit_uri: https://github.com/koinos/koinos-docs/master/docs/
@@ -82,10 +82,12 @@ markdown_extensions:
 nav:
   - Overview:
     - overview/index.md
+    - overview/blockchain-basics.md
+    - overview/proof-of-burn.md
     - overview/tokenomics.md
-    - Advanced:
-      - overview/advanced/cli.md
-      - overview/advanced/rc-limit.md
+    - overview/smart-contracts.md
+    - overview/koinos-vm.md
+    - overview/wasm.md
   - Developers:
     - developers/index.md
   - Validators:

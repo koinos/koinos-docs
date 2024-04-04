@@ -68,8 +68,8 @@ For end users, the ability to interact with their favorite decentralized applica
 Play Web3 games where you control your own in-game assets, manage your financial future with DeFi, be free of censorship all without paying a dime in transaction fees!
 
 ---
-## Join the revolution
-You're not alone! Join our growing community of dedicated blockchain developers, users, and enthusiasts on both [Telegram](https://t.me/joinchat/SXe6mLnb8Ssywlq9) and [Discord](https://discord.com/invite/GErGNsu) today!
+## Join the Web3 revolution
+You're not alone! Join our growing community of dedicated blockchain developers, users, and enthusiasts on both [Telegram](https://t.me/joinchat/SXe6mLnb8Ssywlq9) and [Discord](https://discord.koinos.io) today!
 
 ---
 Want to learn more? Let's keep going!

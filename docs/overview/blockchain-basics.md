@@ -49,7 +49,7 @@ dApps can serve various purposes, including decentralized finance (DeFi), gaming
 ## What is Web3?
 Web3 refers to the vision of a new, decentralized iteration of the internet that is built on blockchain technology and decentralized protocols. It represents a paradigm shift from the current centralized web (Web 2.0) to a more open, transparent, and user-centric internet ecosystem.
 
-Overall, Web3 represents a vision for a more decentralized, user-centric internet that fosters innovation, transparency, and financial inclusivity. It aims to address some of the limitations and challenges of the current centralized web, such as data privacy concerns, censorship, and lack of user control.
+Overall, Web3 represents a vision for a more decentralized, user-centric internet that fosters innovation, transparency, and financial accessibility. It aims to address some of the limitations and challenges of the current centralized web, such as data privacy concerns, censorship, and lack of user control.
 
 ---
 ## Why do we need decentralization?
@@ -57,7 +57,7 @@ Decentralization is essential because it provides resilience against single poin
 
 Moreover, decentralization enhances security by distributing data across a network, making it harder for malicious actors to compromise. It also promotes innovation by lowering barriers to entry and fostering competition among participants.
 
-Additionally, decentralization empowers individuals by giving them greater control over their personal data and financial assets, promoting financial inclusivity and transparency in governance and decision-making processes.
+Additionally, decentralization empowers individuals by giving them greater control over their personal data and financial assets, promoting financial accessibility and transparency in governance and decision-making processes.
 
 ---
 ## Why Koinos?
@@ -77,7 +77,7 @@ Play Web3 games where you control your own in-game assets, manage your financial
 
 ---
 ## Join the Web3 revolution
-You're not alone! Join our growing community of dedicated blockchain developers, users, and enthusiasts on both [Telegram](https://t.me/joinchat/SXe6mLnb8Ssywlq9) and [Discord](https://discord.koinos.io) today!
+You're not alone! Join our growing community of dedicated blockchain developers, users, and enthusiasts on both [Telegram](https://telegram.koinos.io) and [Discord](https://discord.koinos.io) today!
 
 ---
 Want to learn more? Let's keep going!

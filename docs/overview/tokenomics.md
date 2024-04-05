@@ -42,7 +42,7 @@ There is an interesting dichotomy in these two forms of utility because they are
 
 ---
 ## Distribution
-The KOIN distribution was a completely fair launch. There were no tokens allocated to the team. There were no tokens allocated to investors. The KOIN mining was announced in advanced and free open-source mining software was provided for anyone that wanted to participate. The mining phase lasted four one year, which provided ample time for anyone to participate in it that wanted to.
+The KOIN distribution was a completely fair launch. There were no tokens allocated to the team. There were no tokens allocated to investors. The KOIN mining was announced in advanced and free open-source mining software was provided for anyone that wanted to participate. The mining phase lasted for one year, which provided ample time for anyone to participate in it that wanted to.
 
 This launch sets KOIN apart from almost every other token that did some sort of pre-sale (e.g. initial coin offering or initial exchange offering) or air-drop based on a pre-sale token. There was no "ninja" or "insta" mining due to the advanced notice and provision of the mining software by the core team. This combination of factors puts KOIN in rarified company with Bitcoin and scarce others for fairest token launches and distributions.
 

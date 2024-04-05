@@ -1,5 +1,4 @@
 # Proof-of-Burn
-
 Proof-of-Burn (PoB) is the consensus algorithm used by the Koinos blockchain. It shares properties with both Proof-of-Work (PoW) and Proof-of-Stake (PoS). At a high level, Proof-of-Burn emulates the economics Proof-of-Work while being efficient like Proof-of-Stake.
 
 ## What is Proof-of-Work?
@@ -11,7 +10,7 @@ The costs associated with mining include the initial investment in hardware, ele
 
 Miners must carefully consider these costs when deciding whether mining is profitable for them. The profitability of mining depends on various factors, including the current price of the cryptocurrency being mined, network difficulty, and operational expenses.
 
-### Comparing Proof-of-Burn and Proof-of-Work
+### Proof-of-Burn versus Proof-of-Work
 Like Proof-of-Work, a potential block producer has an upfront cost which gives them access to hash power, or in the case of Proof-of-Burn virtual hash power. Instead of purchasing mining rigs in the real world, they are purchasing virtual mining rigs that only exist on the blockchain itself.
 
 While using the Proof-of-Burn algorithm, more hash power does not equate to more electricity used. Regardless of the amount of virtual hash power, a Proof-of-Burn block producer will have a constant and low energy cost.
@@ -19,7 +18,7 @@ While using the Proof-of-Burn algorithm, more hash power does not equate to more
 ## What is Proof-of-Stake?
 Proof-of-Stake (PoS) is a consensus mechanism used in blockchain networks to validate and authenticate transactions. In PoS, block producers are chosen to create new blocks and validate transactions based on the number of cryptocurrency tokens they hold and are willing to "stake" as collateral. Block producers are selected to create blocks and validate transactions based on a combination of factors such as their stake size, the length of time they have held their stake, or other predetermined criteria. PoS aims to provide a more energy-efficient alternative to Proof-of-Work (PoW) while still maintaining security and decentralization within the blockchain network.
 
-### Comparing Proof-of-Burn and Proof-of-Stake
+### Proof-of-Burn versus Proof-of-Stake
 Similar to Proof-of-Stake, mining blocks does not consume large amounts of electricity. It is therefore accessible to more participants to produce blocks competitively because profitability is not tied to hardware access or cheap electricity.
 
 In traditional Proof-of-Stake blockchains a block producer stakes his coin to gain the privilege of producing blocks. The network ensures that the block producer is behaving as expected. If the network finds the block producer misbehaving, it will slash or deduct a penalty from their staked coin. 

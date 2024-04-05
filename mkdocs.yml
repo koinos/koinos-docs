@@ -83,6 +83,7 @@ nav:
   - Overview:
     - overview/index.md
     - overview/blockchain-basics.md
+    - overview/mana.md
     - overview/proof-of-burn.md
     - overview/tokenomics.md
     - overview/smart-contracts.md

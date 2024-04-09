@@ -11,6 +11,17 @@ However, there is a key distinction, a blockchain is decentralized. Rather than 
 
 There are many use-cases for blockchain but most commonly people leverage blockchain technology as a way to store data, transfer value, and even run programs.
 
+<center>
+```mermaid
+flowchart RL;
+A[Block ID: 4\nPrevious Block ID: 3\nTransactions...] --> B;
+B[Block ID: 3\nPrevious Block ID: 2\nTransactions...] --> C;
+C[Block ID: 2\nPrevious Block ID: 1\nTransactions...] --> D;
+D[Block ID: 1\nPrevious Block ID: 0\nTransactions...];
+```
+_**Figure 1.** A diagram depicting the basic structure of a blockchain._
+</center>
+
 ---
 ## What is a cryptocurrency?
 Cryptocurrency is a type of digital or virtual currency that uses cryptography for security and operates on decentralized networks based on blockchain technology. Unlike traditional currencies issued by governments, cryptocurrencies are typically decentralized and not controlled by any single authority. They enable secure, peer-to-peer transactions without the need for intermediaries like banks.

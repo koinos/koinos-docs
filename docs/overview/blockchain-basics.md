@@ -37,6 +37,14 @@ In cryptocurrency, the terms "coin" and "token" are often used interchangeably, 
 In summary, coins are native currencies of their own blockchain networks, while tokens are digital assets or utilities built on existing blockchain platforms.
 
 ---
+## What is a consensus algorithm?
+A consensus algorithm is a set of rules or protocols that enable multiple participants in a distributed network to reach an agreement on the validity of transactions or data. In the context of blockchain technology, consensus algorithms are essential for maintaining the integrity and security of the network. They ensure that all nodes (participants) in the network agree on the state of the ledger and the order of transactions.
+
+Consensus algorithms vary depending on the design and goals of the blockchain network. They dictate how nodes communicate, propose, validate, and agree upon new blocks of transactions. Common consensus algorithms include Proof-of-Work (PoW), Proof-of-Stake (PoS), Proof-of-Burn(PoB), Practical Byzantine Fault Tolerance (PBFT), Delegated Proof-of-Stake (DPoS), and many others.
+
+Overall, consensus algorithms play a crucial role in decentralized systems by enabling trustless transactions and ensuring the immutability of the ledger without the need for a central authority.
+
+---
 ## What is a smart contract?
 A smart contract is a self-executing contract with the terms of the agreement directly written into code. It is deployed and executed on a blockchain platform such as Koinos. Smart contracts allow for the automation and enforcement of agreements without the need for intermediaries.
 

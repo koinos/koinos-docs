@@ -3,6 +3,7 @@ The Koinos blockchain employs an innovative on-chain governance system designed 
 
 Because the core functionality of Koinos is implemented via [smart contracts](smart-contracts.md), protocol upgrades propagate through the network therefore avoiding cumbersome hard-forks. This feature promotes network cohesion and faciliates the smooth operation during feature upgrades and enhancements. In addition, it allows validators to continue supporting the network without shutting down their node and manually ugprading their software.
 
+---
 ## Proposals
 Proposals are transactions that upon approval have special privileges to make changes to the system. A proposal is submitted to the governance contract and goes through three distinct phases.
 
@@ -15,6 +16,19 @@ When the review period has concluded the proposal enters the voting period. Duri
 ### Phase 3: The application delay
 The application delay is a period set aside for the network to prepare for the upcoming proposal. There may be implications for block producers or smart contracts. This gives the relevant parties time to adjust for the changes coming down the pike. The application delay phase lasts approximately one week.
 
+<center>
+```mermaid
+flowchart TD;
+A(Submit) --> B;
+B[Phase 1: Review period] --> C;
+C[Phase 2: Voting period] --> D{Accepted?};
+D -->|Pass| E[Phase 3: Application delay];
+D -->|Fail| F(Discard);
+E --> G(Apply);
+```
+</center>
+
+---
 ## Governance thresholds
 Not all proposals are created equal. Some proposals simply add a new feature. Other proposals could affect governance itself. For this reason there are different voting thresholds that must be met in order to consider a proposal accepted.
 

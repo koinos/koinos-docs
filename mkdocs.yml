@@ -71,11 +71,14 @@ extra:
       link: https://www.youtube.com/@koinosgroup
 
 markdown_extensions:
+  - admonition
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
   - toc:
       permalink: true
 
@@ -92,6 +95,13 @@ nav:
     - developers/index.md
   - Validators:
     - validators/index.md
+  - Exchanges:
+    - exchanges/index.md
+    - Technologies:
+      - exchanges/cli.md
+      - exchanges/koilib.md
+      - exchanges/jsonrpc.md
+    - exchanges/offline-signing.md
   - Architecture:
     - architecture/index.md
   - Resources:

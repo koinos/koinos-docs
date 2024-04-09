@@ -32,16 +32,10 @@ Smart contracts play a crucial role in the functionality of the Koinos blockchai
 [Understanding decentralized applications »](smart-contracts.md)
 
 ---
-## Koinos Virtual Machine (KVM)
-The Koinos Virtual Machine (KVM) is a powerful execution environment that enables the deployment and execution of smart contracts on the Koinos blockchain. Leveraging the KVM, developers can write smart contracts using a variety of programming languages and deploy them securely on the network.
+## Governance
+Blockchain governance refers to the processes and structures put in place to manage and regulate decentralized blockchain networks. It encompasses decision-making mechanisms, protocol upgrades, consensus mechanisms, and dispute resolution mechanisms within the blockchain ecosystem.
 
-[Learn about the Koinos runtime »](koinos-vm.md)
-
----
-## WebAssembly (WASM)
-At the heart of the KVM lies WebAssembly (WASM), a binary instruction format that enables high-performance execution of smart contracts. WASM provides a secure and efficient runtime environment for executing code on the Koinos blockchain, ensuring optimal performance and reliability.
-
-[Understand the underlying technology »](wasm.md)
+[Learn more about on-chain governance »](governance.md)
 
 ---
 In the following sections, we will explore each of these concepts in more detail, providing you with a deeper understanding of how the Koinos blockchain operates and how you can leverage its capabilities to build innovative decentralized applications. Let's dive in!

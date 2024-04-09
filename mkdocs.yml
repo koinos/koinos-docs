@@ -87,8 +87,7 @@ nav:
     - overview/proof-of-burn.md
     - overview/tokenomics.md
     - overview/smart-contracts.md
-    - overview/koinos-vm.md
-    - overview/wasm.md
+    - overview/governance.md
   - Developers:
     - developers/index.md
   - Validators:

@@ -42,7 +42,7 @@ theme:
     - navigation.indexes
     # - navigation.instant
     # - navigation.prune
-    # - navigation.sections
+    - navigation.sections
     - navigation.tabs
     # - navigation.tabs.sticky
     - navigation.top
@@ -101,7 +101,15 @@ nav:
       - exchanges/cli.md
       - exchanges/koilib.md
       - exchanges/jsonrpc.md
-    - exchanges/offline-signing.md
+    - Common Tasks:
+      - exchanges/head-block.md
+      - exchanges/create-wallet.md
+      - exchanges/account-balance.md
+      - exchanges/mana.md
+      - exchanges/offline-signing.md
+      - exchanges/multisig.md
+      - exchanges/finality.md
+      - exchanges/account-history.md
   - Architecture:
     - architecture/index.md
   - Resources:

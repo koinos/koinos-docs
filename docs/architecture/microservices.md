@@ -18,6 +18,7 @@ _**Table 1.** A table containing information about the core microservices of a K
 |[Koinos Transaction Store](https://github.com/koinos/koinos-transaction-store)     |Golang|Storing transaction information|
 |[Koinos Block Producer](https://github.com/koinos/koinos-block-producer)           |C++|The production of blocks|
 |[Koinos JSON-RPC](https://github.com/koinos/koinos-jsonrpc)                        |Golang|Providing API access from outside the cluster|
+|[Koinos gRPC](https://github.com/koinos/koinos-grpc)                               |C++|Providing API access from outside the cluster|
 |[Koinos Contract Meta Store](https://github.com/koinos/koinos-contract-meta-store) |Golang|Providing ABI data for smart contracts|
 
 ---

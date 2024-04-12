@@ -1,0 +1,2676 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Koinos REST API",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "components": {
+    "parameters": {
+      "X-JSON-RPC-URL": {
+        "name": "X-JSON-RPC-URL",
+        "schema": {
+          "type": "string"
+        },
+        "in": "header",
+        "description": "Override default JSON RPC URL used for querying the blockchain"
+      }
+    },
+    "schemas": {
+      "ContractAbi": {
+        "type": "object",
+        "properties": {
+          "contract_id": {
+            "type": "string"
+          },
+          "abi": {
+            "type": "string"
+          }
+        }
+      },
+      "ForkHeads": {
+        "type": "object",
+        "properties": {
+          "last_irreversible_block": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "height": {
+                "type": "string"
+              },
+              "previous": {
+                "type": "string"
+              }
+            }
+          },
+          "fork_heads": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "height": {
+                  "type": "string"
+                },
+                "previous": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "FtInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "decimals": {
+            "type": "number"
+          },
+          "total_supply": {
+            "type": "string"
+          }
+        }
+      },
+      "HeadInfo": {
+        "type": "object",
+        "properties": {
+          "head_topology": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "height": {
+                "type": "string"
+              },
+              "previous": {
+                "type": "string"
+              }
+            }
+          },
+          "last_irreversible_block": {
+            "type": "string"
+          },
+          "head_state_merkle_root": {
+            "type": "string"
+          },
+          "head_block_time": {
+            "type": "string"
+          }
+        }
+      },
+      "NftInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "total_supply": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "ResourceLimits": {
+        "type": "object",
+        "properties": {
+          "resource_limit_data": {
+            "type": "object",
+            "properties": {
+              "disk_storage_limit": {
+                "type": "string"
+              },
+              "disk_storage_cost": {
+                "type": "string"
+              },
+              "network_bandwidth_limit": {
+                "type": "string"
+              },
+              "network_bandwidth_cost": {
+                "type": "string"
+              },
+              "compute_bandwidth_limit": {
+                "type": "string"
+              },
+              "compute_bandwidth_cost": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Value": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Accounts",
+      "description": "Groups all endpoints related to account information, such as retrieving account balances, nonces, and other account address-specific data."
+    },
+    {
+      "name": "Blocks",
+      "description": "Encompasses all endpoints related to querying block information on the Koinos blockchain."
+    },
+    {
+      "name": "Chain",
+      "description": "Groups endpoints that provide information about the blockchain's current state, such as chain ID, block head info, fork heads, and resource limits."
+    },
+    {
+      "name": "Contracts",
+      "description": "Includes endpoints for interacting with smart contracts deployed on the Koinos blockchain, covering contract ABI, reading the contract state, etc."
+    },
+    {
+      "name": "Decode",
+      "description": "Endpoints under the 'Decode' tag are used for decoding encoded blockchain data, such as operations and event logs, making them human-readable and easier to interpret."
+    },
+    {
+      "name": "Fungible Tokens",
+      "description": "Groups endpoints that deal with fungible token operations, including querying token balances, total supply, general information, etc."
+    },
+    {
+      "name": "Koinos Account Protocol (KAP)",
+      "description": "Endpoints under the 'Koinos Account Protocol (KAP)' tag focus on the KAP name, including retrieving account addresses from names and vice versa."
+    },
+    {
+      "name": "KoinDX",
+      "description": "Dedicated to endpoints related to KoinDX features, covering token pair information and quotes for token swaps."
+    },
+    {
+      "name": "Non Fungible Tokens",
+      "description": "Encompasses all endpoints related to Non Fungible Tokens on the Koinos blockchain, including querying an account's NFT balance, total supply, NFT's uri, etc."
+    },
+    {
+      "name": "Nicknames",
+      "description": "Endpoints under this tag focus on the 'Nicknames' service, including querying the nicknames owned by an account and the account associated with a particular nickname."
+    },
+    {
+      "name": "Transactions",
+      "description": "Groups endpoints handling transaction related operations, including querying transaction details, preparing a transaction, and submitting it."
+    }
+  ],
+  "security": [],
+  "paths": {
+    "/api/account/{account}/balance/{contract_id}": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Retrieves the balance of a specific fungible token for a given account. The balance is determined by the contract address of the token. The example demonstrates how to query the balance of the token with contract ID 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL for the account with address 1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS.",
+        "summary": "Retrieves the balance of a specific fungible token for a given account.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+            },
+            "description": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL is the contract address of the fungible token.  Alternatively, the name of the contract, KOIN, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet.",
+            "required": true
+          },
+          {
+            "name": "account",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "example": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+            },
+            "description": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS is the account address of the fungible token.  Alternatively, the nickname of the address, burnkoin, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string",
+                      "example": "16134.92705173"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/account/{account}/history": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Returns the transaction history by inputting either a their Koinos address, a system contract name, or a KAP name. Feel free to test the placeholder values and the respective response below before testing out your own data.",
+        "summary": "Fetches the transaction history for a specific account.",
+        "parameters": [
+          {
+            "name": "account",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "example": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+            },
+            "description": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS is the account address of the fungible token.  Alternatively, the nickname of the address, burnkoin, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet. The same logic applies to contract addresses such as 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL.",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": 2
+            },
+            "description": "Number of records to be returned",
+            "required": true
+          },
+          {
+            "name": "sequence_number",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sequence number offset",
+            "required": false
+          },
+          {
+            "name": "ascending",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Arrange records in ascending or descending order.",
+            "required": false
+          },
+          {
+            "name": "irreversible",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Choose if irreversible history records should be returned or not.",
+            "required": false
+          },
+          {
+            "name": "decode_operations",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Whether or not the operations should be decoded",
+            "required": false
+          },
+          {
+            "name": "decode_events",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Whether or not the events should be decoded",
+            "required": false
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "trx": {
+                        "type": "object",
+                        "properties": {
+                          "transaction": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "header": {
+                                "type": "object"
+                              },
+                              "operations": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object"
+                                }
+                              },
+                              "signatures": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "receipt": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "payer": {
+                                "type": "string"
+                              },
+                              "max_payer_rc": {
+                                "type": "string"
+                              },
+                              "rc_limit": {
+                                "type": "string"
+                              },
+                              "rc_used": {
+                                "type": "string"
+                              },
+                              "disk_storage_used": {
+                                "type": "string"
+                              },
+                              "network_bandwidth_used": {
+                                "type": "string"
+                              },
+                              "compute_bandwidth_used": {
+                                "type": "string"
+                              },
+                              "events": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "seq_num": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "trx": "... (transaction details)"
+                  },
+                  {
+                    "seq_num": "1",
+                    "trx": "... (transaction details)"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/account/{account}/mana": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Return the account's available mana.",
+        "summary": "Obtains the current mana balance for a specified account.",
+        "parameters": [
+          {
+            "name": "account",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "example": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+            },
+            "description": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS is the account address of the fungible token.  Alternatively, the nickname of the address, burnkoin, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "19.43467354"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/account/{account}/next_nonce": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Returns the account's next nonce",
+        "summary": "Retrieves the next nonce value for a given account.",
+        "parameters": [
+          {
+            "name": "account",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "example": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+            },
+            "description": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS is the account address of the fungible token.  Alternatively, the nickname of the address, burnkoin, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "KAo="
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/account/{account}/nonce": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "description": "Returns the account's nonce",
+        "summary": "Fetches the current nonce of a specified account.",
+        "parameters": [
+          {
+            "name": "account",
+            "schema": {
+              "type": "string",
+              "example": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+            },
+            "in": "path",
+            "description": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS is the account address of the fungible token.  Alternatively, the nickname of the address, burnkoin, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "KAk="
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/block/{block_id}": {
+      "get": {
+        "tags": [
+          "Blocks"
+        ],
+        "description": "Input a block id or number. Return data about that block and its receipt.",
+        "summary": "Return data about that block and its receipt.",
+        "parameters": [
+          {
+            "name": "block_id",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "example": 1
+            },
+            "description": "The block id or number",
+            "required": true
+          },
+          {
+            "name": "return_block",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Whether or not the block content should be returned"
+          },
+          {
+            "name": "return_receipt",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Whether or not the receipts content should be returned"
+          },
+          {
+            "name": "decode_operations",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Whether or not the operations should be decoded"
+          },
+          {
+            "name": "decode_events",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Whether or not the events should be decoded"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Block",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "block_id": {
+                      "type": "string"
+                    },
+                    "block_height": {
+                      "type": "string"
+                    },
+                    "block": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "header": {
+                          "type": "object",
+                          "properties": {
+                            "previous": {
+                              "type": "string"
+                            },
+                            "height": {
+                              "type": "string"
+                            },
+                            "timestamp": {
+                              "type": "string"
+                            },
+                            "previous_state_merkle_root": {
+                              "type": "string"
+                            },
+                            "transaction_merkle_root": {
+                              "type": "string"
+                            },
+                            "signer": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "signature": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "receipt": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "height": {
+                          "type": "string"
+                        },
+                        "network_bandwidth_used": {
+                          "type": "string"
+                        },
+                        "compute_bandwidth_used": {
+                          "type": "string"
+                        },
+                        "network_bandwidth_charged": {
+                          "type": "string"
+                        },
+                        "compute_bandwidth_charged": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "block_id": "0x1220abe84016383095fde9ece4f0bee9cac4b371565eb9efb9827186d731bd5e6dac",
+                  "block_height": "1",
+                  "block": {
+                    "id": "0x1220abe84016383095fde9ece4f0bee9cac4b371565eb9efb9827186d731bd5e6dac",
+                    "header": {
+                      "previous": "0x12200000000000000000000000000000000000000000000000000000000000000000",
+                      "height": "1",
+                      "timestamp": "1667675722652",
+                      "previous_state_merkle_root": "EiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                      "transaction_merkle_root": "EiDjsMRCmPwcFJr79MiZb7kkJ65B5GSbk0yklZkbeFK4VQ==",
+                      "signer": "19XRaiEsjNmDn4pd498hRVkJ4ymtRTWsVZ"
+                    },
+                    "signature": "IDcDaVomEqOm3mmHbpyEUdBbomT8jyodKM-7ozfcfRsIBELv05LjAj7cAshQqV-1SUVe-ELW4k4gWEzQf8LPcfU="
+                  },
+                  "receipt": {
+                    "id": "0x1220abe84016383095fde9ece4f0bee9cac4b371565eb9efb9827186d731bd5e6dac",
+                    "height": "1",
+                    "network_bandwidth_used": "250",
+                    "compute_bandwidth_used": "59653",
+                    "network_bandwidth_charged": "250",
+                    "compute_bandwidth_charged": "58900"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/chain/fork_heads": {
+      "get": {
+        "tags": [
+          "Chain"
+        ],
+        "description": "Returns the chain's fork heads",
+        "summary": "Retrieves the current fork heads of the Koinos blockchain, indicating any divergences in the chain.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fork Heads",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForkHeads"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/chain/head_info": {
+      "get": {
+        "tags": [
+          "Chain"
+        ],
+        "description": "Returns the chain's head info",
+        "summary": "Provides information about the current head of the blockchain, including its height and id.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Head Info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HeadInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/chain/id": {
+      "get": {
+        "tags": [
+          "Chain"
+        ],
+        "description": "Returns the chain id",
+        "summary": "Fetches the unique identifier of the blockchain, commonly known as the chain ID.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Value"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/chain/resource_limits": {
+      "get": {
+        "tags": [
+          "Chain"
+        ],
+        "description": "Returns the chain's resource limits",
+        "summary": "Obtains information about the resource limits and usage for the blockchain, such as computational power and network bandwidth.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource Limits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceLimits"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contract/{contract_id}/abi": {
+      "get": {
+        "tags": [
+          "Contracts"
+        ],
+        "description": "Returns the contract's ABI",
+        "summary": "Retrieves the ABI (Application Binary Interface) of the specified contract, detailing its methods and protobuf definitions.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
+            "required": true,
+            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contract Abi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContractAbi"
+                },
+                "example": {
+                  "contract_id": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+                  "abi": {
+                    "methods": {
+                      "name": {
+                        "argument": "koinos.contracts.token.name_arguments",
+                        "return": "koinos.contracts.token.name_result",
+                        "entry-point": "0x82a3537f",
+                        "description": "Returns the token name",
+                        "read-only": true,
+                        "entry_point": 2191741823,
+                        "read_only": true
+                      }
+                    },
+                    "types": "CpUJCiJrb2lub3Mv...",
+                    "koilib_types": {
+                      "nested": {
+                        "koinos": {
+                          "nested": {
+                            "contracts": {
+                              "nested": {
+                                "token": {
+                                  "nested": {
+                                    "name_arguments": {
+                                      "fields": {}
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contract/{contract_id}/read/{method}": {
+      "get": {
+        "tags": [
+          "Contracts"
+        ],
+        "description": "Read the contract contract using the method and arguments provided",
+        "summary": "Executes a specified 'read' method on the given contract and returns the result, without making any state changes.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
+            "required": true,
+            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+          },
+          {
+            "name": "method",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Method of the contract to call",
+            "required": true,
+            "example": "balance_of"
+          },
+          {
+            "name": "arguments",
+            "in": "query",
+            "schema": {
+              "type": "object"
+            },
+            "example": {
+              "owner": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Call response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "value": "1607990396956"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contracts"
+        ],
+        "description": "Read the contract using the method and arguments provided",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
+            "required": true,
+            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+          },
+          {
+            "name": "method",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Method of the contract to call",
+            "required": true,
+            "example": "balance_of"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "requestBody": {
+          "description": "Arguments for the method call",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "owner": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Call response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "value": "1607990396956"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/decode/events": {
+      "post": {
+        "tags": [
+          "Decode"
+        ],
+        "description": "This endpoint takes an array of \"encoded\" events and returns an array of \"decoded\" events. Feel free to test the example request body and response below before testing out your own data.",
+        "summary": "Decodes a series of blockchain events, translating them from encoded formats into human-readable forms.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "requestBody": {
+          "description": "Input is expected to be an array of \"encoded\" events.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "source": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "string"
+                    },
+                    "impacted": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "sequence": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "source": "18tWNU7E4yuQzz7hMVpceb9ixmaWLVyQsr",
+                    "name": "koinos.contracts.token.burn_event",
+                    "data": "ChkA7-Mh3yERswBXFp2UPvegxIiGAauR1O_zEM2RkHE=",
+                    "impacted": [
+                      "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+                    ]
+                  },
+                  {
+                    "sequence": 1,
+                    "source": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+                    "name": "koinos.contracts.token.mint_event",
+                    "data": "ChkA7-Mh3yERswBXFp2UPvegxIiGAauR1O_zELW7zHU=",
+                    "impacted": [
+                      "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Call response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "source": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "from": {
+                            "type": "string"
+                          },
+                          "to": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "impacted": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "sequence": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "source": "18tWNU7E4yuQzz7hMVpceb9ixmaWLVyQsr",
+                      "name": "koinos.contracts.token.burn_event",
+                      "data": {
+                        "from": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS",
+                        "value": "237242573"
+                      },
+                      "impacted": [
+                        "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+                      ]
+                    },
+                    {
+                      "sequence": 1,
+                      "source": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+                      "name": "koinos.contracts.token.mint_event",
+                      "data": {
+                        "to": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS",
+                        "value": "246619573"
+                      },
+                      "impacted": [
+                        "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/decode/operations": {
+      "post": {
+        "tags": [
+          "Decode"
+        ],
+        "description": "This endpoint takes an array of 'encoded' operations and returns an array of 'decoded' operations. Feel free to test the example request body and response below before testing out your own data.",
+        "summary": "Decodes and interprets blockchain operations, providing details in a format that is easily understandable.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "requestBody": {
+          "description": "Input is expected to be an array of 'encoded' operations.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "call_contract": {
+                      "type": "object",
+                      "properties": {
+                        "contract_id": {
+                          "type": "string"
+                        },
+                        "entry_point": {
+                          "type": "integer"
+                        },
+                        "args": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "call_contract": {
+                      "contract_id": "1D53GFQkL5TkQ9okuf6r3Gta3oeTMVgGJW",
+                      "entry_point": 3870180098,
+                      "args": "ChkALjP9GqkHsiTOnObJQiiQHSg6AtqVbaeREODhtjM="
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Call response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "call_contract": {
+                      "contract_id": "1D53GFQkL5TkQ9okuf6r3Gta3oeTMVgGJW",
+                      "entry_point": "set_latest_price",
+                      "args": {
+                        "token_address": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+                        "price": "107852000"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ft/{contract_id}/balance/{account}": {
+      "get": {
+        "tags": [
+          "Fungible Tokens"
+        ],
+        "description": "Returns the fungible token balance for a specific account",
+        "summary": "Retrieves the balance of a specific fungible token for a given account.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
+            "required": true,
+            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+          },
+          {
+            "name": "account",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Koinos address of the account, name of the account (for system contracts) or KAP name",
+            "required": true,
+            "example": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "16182.6312157"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ft/{contract_id}/decimals": {
+      "get": {
+        "tags": [
+          "Fungible Tokens"
+        ],
+        "description": "Returns the number of decimals for a fungible token",
+        "summary": "Fetches the decimal precision used by a specific fungible token.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
+            "required": true,
+            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token decimals",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "integer",
+                      "format": "int32"
+                    }
+                  }
+                },
+                "example": {
+                  "value": 8
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ft/{contract_id}/info": {
+      "get": {
+        "tags": [
+          "Fungible Tokens"
+        ],
+        "description": "Returns the fungible token's information such as name, symbol, decimals, and total supply",
+        "summary": "Provides comprehensive information about a specific fungible token, including name, symbol, and total supply.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
+            "required": true,
+            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fungible Token Information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "symbol": {
+                      "type": "string"
+                    },
+                    "decimals": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "total_supply": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "name": "Koin",
+                  "symbol": "KOIN",
+                  "decimals": 8,
+                  "total_supply": "33437554.76476687"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ft/{contract_id}/name": {
+      "get": {
+        "tags": [
+          "Fungible Tokens"
+        ],
+        "description": "Returns the name of the fungible token",
+        "summary": "Retrieves the name of a specific fungible token.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
+            "required": true,
+            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token Name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "Koin"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ft/{contract_id}/symbol": {
+      "get": {
+        "tags": [
+          "Fungible Tokens"
+        ],
+        "description": "Returns the symbol of the fungible token",
+        "summary": "Fetches the symbol of a specific fungible token.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
+            "required": true,
+            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token Symbol",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "KOIN"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ft/{contract_id}/total_supply": {
+      "get": {
+        "tags": [
+          "Fungible Tokens"
+        ],
+        "description": "Returns the total supply of the fungible token",
+        "summary": "Retrieves the total supply of a specific fungible token.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
+            "required": true,
+            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Total Supply of the Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "33437643.54790607"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/kap/{name}/address": {
+      "get": {
+        "tags": [
+          "Koinos Account Protocol (KAP)"
+        ],
+        "description": "Returns the address associated with a Koinos Account Protocol (KAP) name",
+        "summary": "Fetches the Koinos blockchain address associated with a specific KAP name.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "KAP name to retrieve the address for",
+            "required": true,
+            "example": "kuixi.koin"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "KAP Address",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "address": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/kap/{account}/names": {
+      "get": {
+        "tags": [
+          "Koinos Account Protocol (KAP)"
+        ],
+        "description": "Returns the Koinos Account Protocol (KAP) names associated with an account",
+        "summary": "Retrieves the KAP names associated with a specific account address.",
+        "parameters": [
+          {
+            "name": "account",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Koinos address of the account, name of the account (for system contracts) or KAP name",
+            "required": true,
+            "example": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of KAP Names",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "names": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "domain": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "owner": {
+                            "type": "string"
+                          },
+                          "expiration": {
+                            "type": "string"
+                          },
+                          "grace_period_end": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "names": [
+                    {
+                      "domain": "koin",
+                      "name": "pizzapizza",
+                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
+                      "expiration": "1723302395510",
+                      "grace_period_end": "1728486395510"
+                    },
+                    {
+                      "domain": "koin",
+                      "name": "何逵熙",
+                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
+                      "expiration": "1776607888050",
+                      "grace_period_end": "1781791888050"
+                    },
+                    {
+                      "domain": "koin",
+                      "name": "darren",
+                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
+                      "expiration": "1779715794620",
+                      "grace_period_end": "1784899794620"
+                    },
+                    {
+                      "domain": "koin",
+                      "name": "kuixihe",
+                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
+                      "expiration": "1997279134440",
+                      "grace_period_end": "2002463134440"
+                    },
+                    {
+                      "domain": "koin",
+                      "name": "ronald",
+                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
+                      "expiration": "1713639181670",
+                      "grace_period_end": "1718823181670"
+                    },
+                    {
+                      "domain": "koin",
+                      "name": "888",
+                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
+                      "expiration": "1712880076090",
+                      "grace_period_end": "1718064076090"
+                    },
+                    {
+                      "domain": "koin",
+                      "name": "kuixi",
+                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
+                      "expiration": "1776527066000",
+                      "grace_period_end": "1781711066000"
+                    },
+                    {
+                      "domain": "koin",
+                      "name": "frankie",
+                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
+                      "expiration": "1780680322360",
+                      "grace_period_end": "1785864322360"
+                    },
+                    {
+                      "domain": "koin",
+                      "name": "grayson",
+                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
+                      "expiration": "1779715794620",
+                      "grace_period_end": "1784899794620"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/koindx/pair/{token_a}/{token_b}/get_quote/{amount_a}": {
+      "get": {
+        "tags": [
+          "KoinDX"
+        ],
+        "description": "Returns the quote for a given amount of token A in terms of token B",
+        "summary": "Returns the quote for a given amount of token A in terms of token B",
+        "parameters": [
+          {
+            "name": "token_a",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The token symbol or Koinos address for the first token in the pair",
+            "required": true,
+            "example": "koin"
+          },
+          {
+            "name": "token_b",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The token symbol or Koinos address for the second token in the pair",
+            "required": true,
+            "example": "vhp"
+          },
+          {
+            "name": "amount_a",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The amount of token A for which to get the quote",
+            "required": true,
+            "example": 1
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quote for Token A in terms of Token B",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "amount_a": {
+                      "type": "string"
+                    },
+                    "amount_b": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "amount_a": "1",
+                  "amount_b": "1.15892599"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/koindx/pair/{token_a}/{token_b}/info": {
+      "get": {
+        "tags": [
+          "KoinDX"
+        ],
+        "description": "Returns information about a pair of tokens on koindx.com, including address, total supply, reserves, and other details.",
+        "summary": "Returns information about a pair of tokens on koindx.com, including address, total supply, reserves, and other details.",
+        "parameters": [
+          {
+            "name": "token_a",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The token symbol or Koinos address for the first token in the pair",
+            "required": true,
+            "example": "koin"
+          },
+          {
+            "name": "token_b",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The token symbol or Koinos address for the second token in the pair",
+            "required": true,
+            "example": "vhp"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed Information about the Token Pair",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string"
+                    },
+                    "last_k": {
+                      "type": "string"
+                    },
+                    "block_time": {
+                      "type": "string"
+                    },
+                    "total_supply": {
+                      "type": "string"
+                    },
+                    "token_a": {
+                      "type": "object",
+                      "properties": {
+                        "address": {
+                          "type": "string"
+                        },
+                        "decimals": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "reserve_a": {
+                      "type": "string"
+                    },
+                    "token_b": {
+                      "type": "object",
+                      "properties": {
+                        "address": {
+                          "type": "string"
+                        },
+                        "decimals": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "reserve_b": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "address": "1NqLghiFRwkXZR7NBFHHiCJkF5gLHyJap1",
+                  "last_k": "433521619319741500846139424",
+                  "block_time": "1700537446380",
+                  "total_supply": "207950.4194428",
+                  "token_a": {
+                    "address": "vhp",
+                    "decimals": 8
+                  },
+                  "reserve_a": "224194.27627671",
+                  "token_b": {
+                    "address": "koin",
+                    "decimals": 8
+                  },
+                  "reserve_b": "193450.03684994"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/nft/{contract_id}/balance/{account}": {
+      "get": {
+        "tags": [
+          "Non Fungible Tokens"
+        ],
+        "description": "Returns the non fungible token's account balance.",
+        "summary": "Retrieves the balance of Non Fungible Tokens under a specific contract address for a given account address.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the NFT contract.",
+            "required": true,
+            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
+          },
+          {
+            "name": "account",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the account to query.",
+            "required": true,
+            "example": "1DrBJQkSK1Zh7JW7XjQxcRU96NBVnew7iR"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account Balance in NFTs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "5"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/nft/{contract_id}/info": {
+      "get": {
+        "tags": [
+          "Non Fungible Tokens"
+        ],
+        "description": "Returns information about the non fungible token, such as its name, symbol, total supply, and URI.",
+        "summary": "Provides comprehensive information about a specific Non Fungible Token contract, including such as its name, symbol, total supply, and URI.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the NFT contract.",
+            "required": true,
+            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information about the Non Fungible Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "symbol": {
+                      "type": "string"
+                    },
+                    "total_supply": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "name": "OG-REX",
+                  "symbol": "REX",
+                  "total_supply": "350",
+                  "uri": "https://ogrex.io/api/rex/"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/nft/{contract_id}/name": {
+      "get": {
+        "tags": [
+          "Non Fungible Tokens"
+        ],
+        "description": "Returns the name of the non fungible token.",
+        "summary": "Fetches the name of a specific Non Fungible Token as defined in the contract.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the NFT contract.",
+            "required": true,
+            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Name of the Non Fungible Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "OG-REX"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/nft/{contract_id}/symbol": {
+      "get": {
+        "tags": [
+          "Non Fungible Tokens"
+        ],
+        "description": "Returns the symbol of the non fungible token.",
+        "summary": "Retrieves the symbol associated with a specific Non Fungible Token contract.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the NFT contract.",
+            "required": true,
+            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Symbol of the Non Fungible Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "REX"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/nft/{contract_id}/total_supply": {
+      "get": {
+        "tags": [
+          "Non Fungible Tokens"
+        ],
+        "description": "Returns the total supply of the non fungible token.",
+        "summary": "Retrieves the total supply of Non Fungible Tokens issued under a specific contract.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the NFT contract.",
+            "required": true,
+            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Total Supply of the Non Fungible Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "350"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/nft/{contract_id}/uri": {
+      "get": {
+        "tags": [
+          "Non Fungible Tokens"
+        ],
+        "description": "Returns the URI associated with the non fungible token contract.",
+        "summary": "Obtains the Uniform Resource Identifier (URI) for a Non Fungible Token contract, typically pointing to metadata.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the NFT contract.",
+            "required": true,
+            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "URI of the Non Fungible Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "https://ogrex.io/api/rex/"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/nicknames/{account}/address": {
+      "get": {
+        "tags": [
+          "Nicknames"
+        ],
+        "description": "Retrieves the owner address associated with a given nickname.",
+        "summary": "Fetches the Koinos blockchain address associated with a given nickname.",
+        "parameters": [
+          {
+            "name": "account",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The nickname used to retrieve the owner's address.",
+            "required": true,
+            "example": "@jga"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owner's Address of the Nickname",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "address": "1MdqwaSBy6rbasPJ9vmg2pZFJSVZ29GFpZ"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/nicknames/{account}/names": {
+      "get": {
+        "tags": [
+          "Nicknames"
+        ],
+        "description": "Takes an account address and returns the nicknames owned by that account.",
+        "summary": "Retrieves a list of nicknames associated with a specific Koinos blockchain account address.",
+        "parameters": [
+          {
+            "name": "account",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The account address or nickname for which to retrieve owned nicknames.",
+            "required": true,
+            "example": "@jga"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Nicknames Owned by the Account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "names": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "names": [
+                    "acidyo",
+                    "aggroed",
+                    "anomadsoul",
+                    "asgarth",
+                    "binance",
+                    "bitfinex",
+                    "bitflyer"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transaction/{transaction_id}": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Returns detailed information about a specific transaction.",
+        "summary": "Retrieves detailed information about a specific transaction by its ID.",
+        "parameters": [
+          {
+            "name": "transaction_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The unique identifier of the transaction",
+            "required": true,
+            "example": "0x1220552e1d8798d7174053229c740a9908fffb7b4cbe7b9fff4605943723540a940f"
+          },
+          {
+            "name": "return_receipt",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Specifies whether the transaction receipt should be included in the response"
+          },
+          {
+            "name": "decode_operations",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Specifies whether the operations within the transaction should be decoded"
+          },
+          {
+            "name": "decode_events",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Specifies whether the events within the transaction should be decoded"
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed Transaction Information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "transaction": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "header": {
+                          "type": "object",
+                          "properties": {
+                            "chain_id": {
+                              "type": "string"
+                            },
+                            "rc_limit": {
+                              "type": "string"
+                            },
+                            "nonce": {
+                              "type": "string"
+                            },
+                            "operation_merkle_root": {
+                              "type": "string"
+                            },
+                            "payer": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "operations": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string"
+                              },
+                              "data": {
+                                "type": "object"
+                              }
+                            }
+                          }
+                        },
+                        "signatures": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "timestamp": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "containing_blocks": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "receipt": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "payer": {
+                          "type": "string"
+                        },
+                        "max_payer_rc": {
+                          "type": "string"
+                        },
+                        "rc_limit": {
+                          "type": "string"
+                        },
+                        "rc_used": {
+                          "type": "string"
+                        },
+                        "network_bandwidth_used": {
+                          "type": "string"
+                        },
+                        "compute_bandwidth_used": {
+                          "type": "string"
+                        },
+                        "state_delta_entries": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "object_space": {
+                                "type": "object",
+                                "properties": {
+                                  "system": {
+                                    "type": "boolean"
+                                  },
+                                  "zone": {
+                                    "type": "string"
+                                  },
+                                  "id": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "key": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "transaction": {
+                    "id": "0x1220552e1d8798d7174053229c740a9908fffb7b4cbe7b9fff4605943723540a940f",
+                    "header": {
+                      "chain_id": "EiBZK_GGVP0H_fXVAM3j6EAuz3-B-l3ejxRSewi7qIBfSA==",
+                      "rc_limit": "200000000",
+                      "nonce": "KOLwAw==",
+                      "operation_merkle_root": "EiCHTrIa6ArkSCYET7W9pivvrmlMf5SUi8gKaCPzUwtVAQ==",
+                      "payer": "17CmTGbriMyCypF6WdTRJGhzur3SoJXAG5"
+                    },
+                    "operations": [
+                      null
+                    ],
+                    "signatures": [
+                      "H8bPkFWRI2bE--9vVoJveBFjziv0ZifxYJUa2mUBSNnrXKPBxC9AkQ7Q__3R6wuQ0qdO2ApxP1tPWRLBELdB2uQ="
+                    ],
+                    "timestamp": "1700541332810"
+                  },
+                  "containing_blocks": [
+                    "0x122029c7af4c3bb0dea862c875cc12fe8e0d79fcd8490a8388dcb0ceeb6c16ac5d85"
+                  ],
+                  "receipt": {
+                    "id": "0x1220552e1d8798d7174053229c740a9908fffb7b4cbe7b9fff4605943723540a940f",
+                    "payer": "17CmTGbriMyCypF6WdTRJGhzur3SoJXAG5",
+                    "max_payer_rc": "47500000000",
+                    "rc_limit": "200000000",
+                    "rc_used": "17913994",
+                    "network_bandwidth_used": "286",
+                    "compute_bandwidth_used": "687846",
+                    "state_delta_entries": [
+                      {
+                        "object_space": {
+                          "system": true,
+                          "zone": "example_zone",
+                          "id": "example_id"
+                        },
+                        "key": "example_key",
+                        "value": "example_value",
+                        "additional_detail": {
+                          "detail_key1": "detail_value1",
+                          "detail_key2": "detail_value2"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transaction/prepare": {
+      "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "description": "This endpoint takes a transaction and an optional provider and/or payer, then returns a prepared transaction object.",
+        "summary": "Prepares a transaction for submission.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "requestBody": {
+          "description": "Arguments for preparing a transaction",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "header": {
+                    "type": "object",
+                    "properties": {
+                      "rc_limit": {
+                        "type": "string"
+                      },
+                      "payer": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "operations": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "call_contract": {
+                          "type": "object",
+                          "properties": {
+                            "contract_id": {
+                              "type": "string"
+                            },
+                            "entry_point": {
+                              "type": "integer"
+                            },
+                            "args": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "header": {
+                  "rc_limit": "200000000",
+                  "payer": "17CmTGbriMyCypF6WdTRJGhzur3SoJXAG5"
+                },
+                "operations": [
+                  {
+                    "call_contract": {
+                      "contract_id": "1D53GFQkL5TkQ9okuf6r3Gta3oeTMVgGJW",
+                      "entry_point": 3870180098,
+                      "args": "ChkALjP9GqkHsiTOnObJQiiQHSg6AtqVbaeREODhtjM="
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Prepared Transaction Object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "header": {
+                      "type": "object",
+                      "properties": {
+                        "chain_id": {
+                          "type": "string"
+                        },
+                        "rc_limit": {
+                          "type": "string"
+                        },
+                        "nonce": {
+                          "type": "string"
+                        },
+                        "operation_merkle_root": {
+                          "type": "string"
+                        },
+                        "payer": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "operations": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "call_contract": {
+                          "type": "object",
+                          "properties": {
+                            "contract_id": {
+                              "type": "string"
+                            },
+                            "entry_point": {
+                              "type": "integer"
+                            },
+                            "args": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "header": {
+                    "chain_id": "EiBZK_GGVP0H_fXVAM3j6EAuz3-B-l3ejxRSewi7qIBfSA==",
+                    "rc_limit": "200000000",
+                    "nonce": "KOjwAw==",
+                    "operation_merkle_root": "EiCHTrIa6ArkSCYET7W9pivvrmlMf5SUi8gKaCPzUwtVAQ==",
+                    "payer": "17CmTGbriMyCypF6WdTRJGhzur3SoJXAG5"
+                  },
+                  "operations": [
+                    {
+                      "call_contract": {
+                        "contract_id": "1D53GFQkL5TkQ9okuf6r3Gta3oeTMVgGJW",
+                        "entry_point": 3870180098,
+                        "args": "ChkALjP9GqkHsiTOnObJQiiQHSg6AtqVbaeREODhtjM="
+                      }
+                    }
+                  ],
+                  "id": "0x1220bb67dfdbdeea69d84bd11f1ffc358b9a846463cc2969ecab93c561b4a25b8d5e"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/transaction/submit": {
+      "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "description": "This endpoint takes a transaction and submits it to the JSON RPC node.",
+        "summary": "Submits a prepared transaction to the blockchain network for processing.",
+        "parameters": [
+          {
+            "name": "broadcast",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Sets whether this transaction is broadcasted globally or not. Defaults to true.",
+            "required": false
+          },
+          {
+            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+          }
+        ],
+        "requestBody": {
+          "description": "Arguments",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Call response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

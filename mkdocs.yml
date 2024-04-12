@@ -82,6 +82,9 @@ markdown_extensions:
   - toc:
       permalink: true
 
+plugins:
+  - swagger-ui-tag
+
 nav:
   - Overview:
     - overview/index.md

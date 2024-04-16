@@ -91,6 +91,8 @@ nav:
   - Developers:
     - developers/index.md
     - developers/as-sdk.md
+    - Guides:
+      - developers/guides/calculator.md
   - Validators:
     - validators/index.md
   - Architecture:

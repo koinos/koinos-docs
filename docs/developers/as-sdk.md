@@ -6,24 +6,33 @@ To begin, you must first install NodeJS. Follow the official guide to [install N
 
 As of the time of writing let's check the version of `node` in use.
 ```sh
-❯ node -v
+node -v
+```
+
+```{ .txt .no-copy }
 v18.13.0
 ```
 
 The Koinos AssemblyScript SDK uses Yarn v1, so let's first install it.
 ```sh
-❯ npm install -g yarn
+npm install -g yarn
 ```
 
 Ensure that `yarn` is in your executable path and the correct version.
 ```sh
-❯ yarn -v
+yarn -v
+```
+
+```{ .txt .no-copy }
 1.22.22
 ```
 
 Next, we will install the Koinos AssemblyScript SDK CLI.
 ```sh
-❯ yarn global add @koinos/sdk-as-cli
+yarn global add @koinos/sdk-as-cli
+```
+
+```{ .txt .no-copy }
 yarn global v1.22.22
 [1/4] Resolving packages...
 [2/4] Fetching packages...
@@ -36,7 +45,10 @@ Done in 12.15s
 
 Let's verify the program was properly installed and exists in our path.
 ```sh
-❯ koinos-sdk-as-cli -V
+koinos-sdk-as-cli -V
+```
+
+```{ .txt .no-copy }
 1.0.2
 ```
 
@@ -44,7 +56,10 @@ Let's verify the program was properly installed and exists in our path.
 In order to verify that we've installed the necessary components correctly we will create and build a hello world contract. From your preferred working directory let's instruct `koinos-sdk-as-cli` to create a `helloworld` contract.
 
 ```sh
-❯ koinos-sdk-as-cli create helloworld
+koinos-sdk-as-cli create helloworld
+```
+
+```{ .txt .no-copy }
 Generating contract at "/home/$USER/Workspace/helloworld" ...
 
 Contract successfully generated!
@@ -56,7 +71,10 @@ You're all set! Run the following set of commands to verify that the generated c
 
 Now let's go into the newly created directory and follow the instructions to build and test. First let's use `yarn install` to download the dependencies followed by `yarn build:debug` to compile the contract.
 ```sh
-❯ yarn install
+yarn install
+```
+
+```{ .txt .no-copy }
 yarn install v1.22.22
 info No lockfile found.
 [1/4] Resolving packages...
@@ -77,7 +95,13 @@ warning Workspaces can only be enabled in private projects.
 [4/4] Building fresh packages...
 success Saved lockfile.
 Done in 79.88s.
-❯ yarn build:debug
+```
+
+```sh
+yarn build:debug
+```
+
+```{ .txt .no-copy }
 yarn run v1.22.22
 $ koinos-sdk-as-cli build-all debug 0 helloworld.proto
 Generating ABI file...
@@ -100,7 +124,10 @@ Done in 10.91s.
 
 Finally, we will run the unit tests to ensure that the compiled contract is working as expected.
 ```sh
-❯ yarn test
+yarn test
+```
+
+```{ .txt .no-copy }
 yarn run v1.22.22
 $ koinos-sdk-as-cli run-tests
 Running tests...

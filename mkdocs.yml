@@ -42,7 +42,7 @@ theme:
     - navigation.indexes
     # - navigation.instant
     # - navigation.prune
-    # - navigation.sections
+    - navigation.sections
     - navigation.tabs
     # - navigation.tabs.sticky
     - navigation.top
@@ -71,13 +71,19 @@ extra:
       link: https://www.youtube.com/@koinosgroup
 
 markdown_extensions:
+  - admonition
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
   - toc:
       permalink: true
+
+plugins:
+  - swagger-ui-tag
 
 nav:
   - Overview:
@@ -91,11 +97,35 @@ nav:
   - Developers:
     - developers/index.md
     - developers/as-sdk.md
+    - developers/rest.md
     - Guides:
       - developers/guides/calculator.md
   - Validators:
     - validators/index.md
+  - Exchanges:
+    - exchanges/index.md
+    - Technologies:
+      - exchanges/cli.md
+      - exchanges/koilib.md
+      - exchanges/jsonrpc.md
+    - Common Tasks:
+      - exchanges/head-block.md
+      - exchanges/create-wallet.md
+      - exchanges/account-balance.md
+      - exchanges/mana.md
+      - exchanges/offline-signing.md
+      - exchanges/multisig.md
+      - exchanges/finality.md
+      - exchanges/account-history.md
   - Architecture:
     - architecture/index.md
+    - architecture/microservices.md
+    - architecture/interprocess-communication.md
+    - architecture/proof-of-burn.md
+    - architecture/serialization.md
+    - architecture/smart-contracts.md
+    - architecture/contract-abi.md
+    - architecture/resources.md
+    - architecture/system-calls.md
   - Resources:
     - resources/index.md

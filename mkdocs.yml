@@ -96,6 +96,7 @@ nav:
     - overview/governance.md
   - Developers:
     - developers/index.md
+    - developers/rest.md
   - Validators:
     - validators/index.md
   - Exchanges:

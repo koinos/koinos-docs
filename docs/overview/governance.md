@@ -1,7 +1,7 @@
 # Governance
 The Koinos blockchain employs an innovative on-chain governance system designed to ensure decentralized decision-making and network evolution. Through its on-chain governance model, Koinos enables block producers to actively participate in protocol upgrades, parameter adjustments, and the introduction of new features directly on the blockchain.
 
-Because the core functionality of Koinos is implemented via [smart contracts](smart-contracts.md), protocol upgrades propagate through the network therefore avoiding cumbersome hard-forks. This feature promotes network cohesion and faciliates the smooth operation during feature upgrades and enhancements. In addition, it allows validators to continue supporting the network without shutting down their node and manually ugprading their software.
+Because the core functionality of Koinos is implemented via [smart contracts](smart-contracts.md), protocol upgrades propagate through the network therefore avoiding cumbersome hard-forks. This feature promotes network cohesion and facilitates the smooth operation during feature upgrades and enhancements. In addition, it allows validators to continue supporting the network without shutting down their node and manually ugprading their software.
 
 ---
 ## Proposals
@@ -36,4 +36,4 @@ Not all proposals are created equal. Some proposals simply add a new feature. Ot
 For proposals that do not attempt to alter the governance system itself a standard threshold of 60% applies. In practice, this means that 60% or better of all blocks during the voting period must approve of said proposal.
 
 ### Governance threshold
-Proposals that would change the governance itself has a higher barrier of acceptannce. In this case, a higher threshold of 75% applies. As one would except, this means that 75% of all blocks submitted during the voting period must approve the given proposal.
+Proposals that would change the governance itself has a higher barrier of acceptance. In this case, a higher threshold of 75% applies. As one would except, this means that 75% of all blocks submitted during the voting period must approve the given proposal.

@@ -96,6 +96,7 @@ nav:
     - overview/governance.md
   - Developers:
     - developers/index.md
+    - developers/as-sdk.md
     - developers/rest.md
   - Validators:
     - validators/index.md
@@ -116,5 +117,13 @@ nav:
       - exchanges/account-history.md
   - Architecture:
     - architecture/index.md
+    - architecture/microservices.md
+    - architecture/interprocess-communication.md
+    - architecture/proof-of-burn.md
+    - architecture/serialization.md
+    - architecture/smart-contracts.md
+    - architecture/contract-abi.md
+    - architecture/resources.md
+    - architecture/system-calls.md
   - Resources:
     - resources/index.md

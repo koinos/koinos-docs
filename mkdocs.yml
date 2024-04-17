@@ -91,6 +91,7 @@ nav:
   - Developers:
     - developers/index.md
     - developers/as-sdk.md
+    - developers/payer-payee.md
   - Validators:
     - validators/index.md
   - Architecture:

@@ -82,6 +82,9 @@ markdown_extensions:
   - toc:
       permalink: true
 
+plugins:
+  - swagger-ui-tag
+
 nav:
   - Overview:
     - overview/index.md
@@ -94,6 +97,7 @@ nav:
   - Developers:
     - developers/index.md
     - developers/as-sdk.md
+    - developers/rest.md
   - Validators:
     - validators/index.md
   - Exchanges:

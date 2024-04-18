@@ -99,6 +99,7 @@ nav:
     - developers/as-sdk.md
     - developers/payer-payee.md
     - developers/rest.md
+    - developers/transactions.md
     - Guides:
       - developers/guides/calculator.md
   - Validators:

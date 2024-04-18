@@ -69,4 +69,4 @@ Now that we understand each field of a transaction, let's perform a step-by-step
 Now, you can leverage an API node's `submit_transaction` RPC call to execute the transaction on the blockchain.
 
 ### What happens next?
-The blockchain will check the transaction for validity and then execute it as if it were placed on the head block without placing in a block. If the transaction succeeds, it will find itself in the mempool and broadcasts through the network. Once a block producer includes it into a block, it will find itself on the blockchain. Read more about [Finality](../exchanges/finality.md) to understand when a transaction can be considered irreversible.
+The blockchain will check the transaction for validity and then execute it as if it were placed on the head block without placing in a block. If the transaction succeeds, it will find itself in the mempool and it broadcasts through the network. Once a block producer includes it into a block, it will find itself on the blockchain. Read more about [Finality](../exchanges/finality.md) to understand when a transaction can be considered irreversible.

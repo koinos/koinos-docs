@@ -61,6 +61,7 @@ vi assembly/proto/calculator.proto
 
 We can remove the boilerplate code and replace it with our standard calculator arguments and results.
 ```proto
+<!-- calculator.proto -->
 syntax = "proto3";
 
 package calculator;
@@ -152,6 +153,7 @@ mv assembly/Calculator.boilerplate.ts assembly/Calculator.ts
 
 Finally, let's open our implementation file and write some simple arithmetic to complete our calculator's functionality.
 ```ts
+// Calculator.ts
 import { System, Protobuf, authority } from "@koinos/sdk-as";
 import { calculator } from "./proto/calculator";
 
@@ -206,6 +208,7 @@ vi assembly/__tests__/Calculator.spec.ts
 Let's add the following test code.
 
 ```ts
+// Calculator.spec.ts
 import { Calculator } from '../Calculator';
 import { calculator } from '../proto/calculator';
 

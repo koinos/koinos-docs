@@ -98,6 +98,7 @@ nav:
     - developers/index.md
     - developers/as-sdk.md
     - developers/payer-payee.md
+    - developers/rc-limits.md
     - developers/rest.md
     - developers/transactions.md
     - Guides:

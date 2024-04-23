@@ -100,6 +100,7 @@ nav:
     - developers/payer-payee.md
     - developers/rc-limits.md
     - developers/rest.md
+    - developers/protobuf.md
     - developers/transactions.md
     - Guides:
       - developers/guides/calculator.md

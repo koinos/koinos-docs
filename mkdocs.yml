@@ -100,6 +100,7 @@ nav:
     - developers/payer-payee.md
     - developers/rc-limits.md
     - developers/rest.md
+    - developers/testnet.md
     - developers/resource-management.md
     - developers/deploy-contract.md
     - developers/protobuf.md

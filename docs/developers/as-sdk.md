@@ -182,6 +182,7 @@ Assemblyscript Folder:assemblyscript
 
 Done in 3.20s.
 ```
+For more information about the unit test framework used in the Koinos AssemblyScript SDK, check out the official [as-pect](https://as-pect.gitbook.io/as-pect/as-api) documentation.
 
 ## Next steps
 If your output matches that of this guide, congratulations you have successful installed and used the Koinos AssemblyScript SDK. For next steps, check out the smart contract guides!

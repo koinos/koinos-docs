@@ -60,7 +60,12 @@ vi assembly/proto/calculator.proto
 ```
 
 We can remove the boilerplate code and replace it with our standard calculator arguments and results.
-```proto
+
+```proto linenums="1"
+/**
+ * @file assembly/proto/calculator.proto
+ * @brief Defines inputs and outputs of the calculator smart contract.
+ */
 syntax = "proto3";
 
 package calculator;
@@ -148,10 +153,16 @@ The second file that was generated is `assembly/Calculator.boilerplate.ts`. This
 ```sh
 rm assembly/Calculator.ts
 mv assembly/Calculator.boilerplate.ts assembly/Calculator.ts
+vi assembly/Calculator.ts
 ```
 
 Finally, let's open our implementation file and write some simple arithmetic to complete our calculator's functionality.
-```ts
+
+```ts linenums="1"
+/**
+ * @file assembly/Calculator.ts
+ * @brief Implements calculator smart contract functionality.
+ */
 import { System, Protobuf, authority } from "@koinos/sdk-as";
 import { calculator } from "./proto/calculator";
 
@@ -205,7 +216,11 @@ vi assembly/__tests__/Calculator.spec.ts
 
 Let's add the following test code.
 
-```ts
+```ts linenums="1"
+/**
+ * @file assembly/__tests__/Calculator.spec.ts
+ * @brief Implements unit tests for the calculator smart contract.
+ */
 import { Calculator } from '../Calculator';
 import { calculator } from '../proto/calculator';
 
@@ -267,12 +282,12 @@ Running tests...
 yarn asp --verbose --config as-pect.config.js
 yarn run v1.22.22
 $ /home/sgerbino/Workspace/calculator/node_modules/.bin/asp --verbose --config as-pect.config.js
-       ___   _____                       __    
-      /   | / ___/      ____  ___  _____/ /_   
-     / /| | \__ \______/ __ \/ _ \/ ___/ __/   
-    / ___ |___/ /_____/ /_/ /  __/ /__/ /_     
-   /_/  |_/____/     / .___/\___/\___/\__/     
-                    /_/                        
+       ___   _____                       __
+      /   | / ___/      ____  ___  _____/ /_
+     / /| | \__ \______/ __ \/ _ \/ ___/ __/
+    / ___ |___/ /_____/ /_/ /  __/ /__/ /_
+   /_/  |_/____/     / .___/\___/\___/\__/
+                    /_/
 
 ⚡AS-pect⚡ Test suite runner [6.2.4]
 

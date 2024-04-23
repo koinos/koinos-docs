@@ -59,7 +59,7 @@ _**Table 2.** A table defining each field within a transaction._
 Now that we understand each field of a transaction, let's perform a step-by-step guide on how to construct a transaction.
 
 1. Grab the chain ID of the blockchain you wish to transact on. Use it for the `chain_id` in the transaction header.
-2. Create an array of operations you would like to perform. Serialize each operation and derive the merkle root. Place it in the `operation_merkle_root` of the transaction header. Place to array of operations in the `operations` field of the transaction.
+2. Create an array of operations you would like to perform. Serialize each operation and derive the merkle root. Place it in the `operation_merkle_root` of the transaction header. Place the array of operations in the `operations` field of the transaction.
 3. Retrieve or create the next nonce for the account. This is either the payee if it exists or the payer if the payee does not exist. Place the serialized nonce into the `nonce` field.
 4. Fill in the `payer` and optionally the `payee` field with the appropriate accounts.
 5. Serialize the transaction header and derive the SHA2-256 of the bytes. This is our transaction ID, place it in the `id` field of the transaction.

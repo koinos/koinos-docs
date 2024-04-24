@@ -105,6 +105,7 @@ nav:
     - developers/deploy-contract.md
     - developers/protobuf.md
     - developers/transactions.md
+    - developers/authority.md
     - Guides:
       - developers/guides/calculator.md
   - Validators:

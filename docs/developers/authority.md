@@ -17,7 +17,7 @@ The "call contract" authority is used when a contract is requesting the authoriz
 
 ---
 ### Transaction application
-The "transaction application" authority is used when an address is involved in a transaction. This covers both paying for a transaction (when the address is paying the mana for the transaction) and being the payee (when another address is paying for the transaction, but your address' nonce is being incremented). This authority can only be called by the system. This can be used to pay for other user's transactions. For example, if a a dAPP with a token can use ownership of the token to confer mana rights using the "transaction application" authority.
+The "transaction application" authority is used when an address is involved in a transaction. This covers both paying for a transaction (when the address is paying the mana for the transaction) and being the payee (when another address is paying for the transaction, but your address' nonce is being incremented). This authority can only be called by the system. This can be used to pay for other user's transactions. For example, if a dApp with a token can use ownership of the token to confer mana rights using the "transaction application" authority.
 
 ---
 ### Upload contract
@@ -177,7 +177,7 @@ Transaction with ID 0x122084a33c2c0937f9e995335b13d7cf64e0bf7e17e891f4661981f935
 Mana cost: 0.19303811 (Disk: 2, Network: 18965, Compute: 345999)
 ```
 
-The upload works as expected, but now if we try to upload the contract again, we should get a failure because we overrode the upload contract authority and permanently set it to not authorize, locking the contract.
+The upload works as expected, but now if we try to upload the contract again, we should get a failure because we have overridden the upload contract authority and permanently set it to not authorize, locking the contract.
 
 ```{ .txt, .no-copy }
 🔓 > address
@@ -189,7 +189,7 @@ cannot upload contract, account 1EfSZM93JJi5jkpzUFbTw1kojvTCrwJfom has not autho
 
 Notice how we have the wallet open with the address `1EfSZM93JJi5jkpzUFbTw1kojvTCrwJfom`, yet the address has not authorized the transaction. That is the override at work!
 
-Because we only overrode the upload contract authority, we should still be able to transfer tokens from address.
+Because we have only overridden the upload contract authority, we should still be able to transfer tokens from address.
 
 ```{ .txt, .no-copy }
 🔓 > tkoin.transfer 147ABaHVxtpoSpfpZ8yry7eaFAjV87trGR 10
@@ -198,6 +198,6 @@ Transaction with ID 0x1220b58a042fa2b6cb5489e7261f6d68305dd7e915644a905558470058
 Mana cost: 0.03170468 (Disk: 0, Network: 313, Compute: 576126)
 ```
 
-As expected, transferring tokens still works with the address because the only authority we overrode was contract upload.
+As expected, transferring tokens still works with the address because the only authority we have overridden was contract upload.
 
 Authority overrides are an extremely powerful feature of Koinos that grants the developer an incredible amount of control, flexibility, and creativity in how they design smart contracts in order to implement any possible authorization scheme.

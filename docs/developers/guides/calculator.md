@@ -61,9 +61,9 @@ vi assembly/proto/calculator.proto
 
 We can remove the boilerplate code and replace it with our standard calculator arguments and results.
 
-```proto linenums="1"
+```proto linenums="1" title="assembly/proto/calculator.proto"
 /**
- * @file assembly/proto/calculator.proto
+ * @file  calculator.proto
  * @brief Defines inputs and outputs of the calculator smart contract.
  */
 syntax = "proto3";
@@ -158,9 +158,9 @@ vi assembly/Calculator.ts
 
 Finally, let's open our implementation file and write some simple arithmetic to complete our calculator's functionality.
 
-```ts linenums="1"
+```ts linenums="1" title="assembly/Calculator.ts"
 /**
- * @file assembly/Calculator.ts
+ * @file  Calculator.ts
  * @brief Implements calculator smart contract functionality.
  */
 import { System, Protobuf, authority } from "@koinos/sdk-as";
@@ -216,9 +216,9 @@ vi assembly/__tests__/Calculator.spec.ts
 
 Let's add the following test code.
 
-```ts linenums="1"
+```ts linenums="1" title="assembly/__tests__/Calculator.spec.ts"
 /**
- * @file assembly/__tests__/Calculator.spec.ts
+ * @file  Calculator.spec.ts
  * @brief Implements unit tests for the calculator smart contract.
  */
 import { Calculator } from '../Calculator';

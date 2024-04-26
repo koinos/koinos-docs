@@ -107,6 +107,8 @@ nav:
     - developers/transactions.md
     - Guides:
       - developers/guides/calculator.md
+      - developers/guides/koilib.md
+      - developers/guides/token.md
   - Validators:
     - validators/index.md
   - Exchanges:

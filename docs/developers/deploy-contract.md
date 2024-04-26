@@ -95,19 +95,7 @@ Keep in mind, changing the ABI or uploading an ABI on a contract that did not ha
 
 ---
 ## Authorize overrides
-The three remaining fields of the smart contract are authorization overrides. Recall, in Koinos an address is a contract and a contract is an address. Any address can have a contract uploaded to it. By default, the private key corresponding to the address authorizes all transactions using that address. With authorization overrides, a smart contract can override that behavior for some, or all, types of authorizations. All Koinos system contracts utilize this system to defer their authorization to the Governance contract, ensuring that the individual contracts cannot be tampered with outside of a passed governance proposal.
-
-There are three types of authorization overrides:
-
-1. Call contract
-2. Transaction application
-3. Upload contract
-
-The "call contract" authority is used when a contract is requesting the authorization of an address. This is by far the most common authority, being the only authority that a user contract can request. For example, if a token is requiring an address' authority before transferring that address' tokens, it will request the "call contract" authority.
-
-The "transaction application" authority is used when an address is involved in a transaction. This covers both paying for a transaction (when the address is paying the mana for the transaction) and being the payee (when another address is paying for the transaction, but your address' nonce is being incremented). This authority can only be called by the system. This can be used to pay for other user's transactions. For example, if you have a dAPP and your own token, you can use ownership of your token to confer your mana rights to your users.
-
-Lastly, the "upload contract" authority does exactly what it says. It is called when an address is attempting to upload a contract. Like "transaction application", it is also only called by the system. In Koinos, contracts can be re-uploaded as much as you want. Overriding this authority allows you to lock down your contract entirely, or implement your own form of decentralized governance for managing your contract.
+The three remaining fields of the smart contract are authorization overrides. Recall, in Koinos an address is a contract and a contract is an address. Any address can have a contract uploaded to it. By default, the private key corresponding to the address authorizes all transactions using that address. With authorization overrides, a smart contract can override that behavior for some, or all, types of authorizations. All Koinos system contracts utilize this system to defer their authorization to the Governance contract, ensuring that the individual contracts cannot be tampered with outside of a passed governance proposal. You can learn more about authorization in our [Authority guide](./authority.md).
 
 ---
 ## Calling your contract

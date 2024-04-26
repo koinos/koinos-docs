@@ -96,6 +96,7 @@ nav:
     - overview/governance.md
   - Developers:
     - developers/index.md
+    - developers/cli.md
     - developers/as-sdk.md
     - developers/payer-payee.md
     - developers/rc-limits.md

@@ -111,6 +111,8 @@ nav:
       - developers/guides/calculator.md
   - Validators:
     - validators/index.md
+    - Guides:
+      - validators/guides/running-a-node.md
   - Exchanges:
     - exchanges/index.md
     - Technologies:

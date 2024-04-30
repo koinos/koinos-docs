@@ -1,11 +1,10 @@
 # Running a Koinos node
-
 The Koinos cluster is comprised of multiple microservices. To simplify the deployment of the Koinos cluster, it is recommended to use the provided Docker compose script to launch a local node. The most time consuming part would be installing Docker, after that its just a matter of cloning the repository and running a single command.
 
 Before running a Koinos node, you should check that your system meets the Koinos node [minimum requirements](../node-requirements.md).
 
+---
 ## Installing on macOS/Linux
-
 1. Download and install [Docker](https://www.docker.com/products/docker-desktop)
 2. Clone (or download) the Koinos repository from [github](http://github.com/koinos/koinos)
 3. Copy `config-example` to `config` and `env.example` to `.env`
@@ -15,8 +14,8 @@ Before running a Koinos node, you should check that your system meets the Koinos
 docker compose --profile all up -d
 ```
 
+---
 ## Installing on Windows
-
 1. Download and install Docker
 2. Clone (or download) the Koinos repository from [github](http://github.com/koinos/koinos)
 3. Copy `config-example` to `config` and `env.example` to `.env`
@@ -32,8 +31,8 @@ BASEDIR=c:\koinos
 docker compose up -d
 ```
 
+---
 ## Monitor the node
-
 The above commands started a node in daemon mode, meaning the node is running in the background. This is usually preferable because you can close the terminal window used the start the node and it will continue running.
 
 If you want the quickly check the status of your node run the following:
@@ -113,8 +112,8 @@ chain-1        | 2024-04-29 21:16:13.069968 (chain.Koinos) [controller.cpp:434] 
 chain-1        | 2024-04-29 21:16:14.070250 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062397, ID: 0x1220104208ba2ff9d91108e3c29ac0523c2c46dcb0c81488cf6f4e606744ae157048 (0 transactions)
 ```
 
+---
 ## Node syncing
-
 When you have just started you node, it will be syncing blocks from the network. These blocks were all created in the past. It is necessary to play through the entire history of the Koinos blockchain in order to have a correct view of the present state. Sync specific log messages will be output to give you a rough idea of how much progress the node has made. Using the same log command above, you can view the sync progress.
 
 ```
@@ -137,8 +136,8 @@ p2p-1          | 2024-04-29 21:19:33.063258 (p2p.Koinos) [p2p/peer_connection.go
 
 The chain logs will show sync progress every 1000 blocks. The time remaining is not wall clock time, but block time remaining to sync.
 
+---
 ## Next steps
-
 Now that you have a Koinos node running, you may be interested in producing blocks or configuring your node. Any of these guides are great next steps to be able to better administer a Koinos node.
 
 - [Block Production](./block-production.md)

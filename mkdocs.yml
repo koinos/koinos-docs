@@ -112,6 +112,7 @@ nav:
   - Validators:
     - validators/index.md
     - validators/node-requirements.md
+    - validators/docker-compose-profiles.md
     - Guides:
       - validators/guides/running-a-node.md
   - Exchanges:

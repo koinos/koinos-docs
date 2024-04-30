@@ -106,7 +106,7 @@ When `u` is close to 0, the decay term must be larger, therefore `p` must be lar
 
 ---
 ## Value for `d`
-`d` is the decay percent to estimate the exponential decay each block. Our decay term also affects the pool size, similarly to `u`. BuT it also has the practical effect of changing the maximum and minimum resource pool sizes (by consequence the maximum and minimum price for a resource) and how quickly the pool goes from one price to another when usage changes.
+`d` is the decay percent to estimate the exponential decay each block. Our decay term also affects the pool size, similarly to `u`. But it also has the practical effect of changing the maximum and minimum resource pool sizes (by consequence the maximum and minimum price for a resource) and how quickly the pool goes from one price to another when usage changes.
 
 In practical testing, a three day half life seemed to have a good balance of responsiveness to price moves in both directions, without being too unpredictable. Solving for `d` becomes simple.
 

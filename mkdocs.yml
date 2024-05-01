@@ -117,6 +117,7 @@ nav:
     - validators/configuration.md
     - Guides:
       - validators/guides/running-a-node.md
+      - validators/guides/block-production.md
   - Exchanges:
     - exchanges/index.md
     - Technologies:

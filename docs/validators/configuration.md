@@ -1,17 +1,21 @@
 # Configuration
-While we aim for the Koinos node to be usable by as many people as possible, there are times when you need to configure your node for your specific deployment. There are five files that can be used to configure your Koinos node. The first four are mapped in to the microservices themselves and are contained within the `config` directory. The last is the `.env` file that configures the cluster. The node provides two sets of configurations, one for mainnet which is contained in `config-example` and `env.example` in the root of the repo and another for the Harbinger testnet which is in the `harbinger` directory.
+While we aim for the Koinos node to be usable by as many people as possible, there are times when you need to configure your node for your specific deployment. There are five files that can be used to configure your Koinos node. The first four are mapped in to the microservices themselves and are contained within the `config` directory. The last is the `.env` file that configures the cluster. The node provides two sets of configurations, one for mainnet which is contained in [config-example](https://github.com/koinos/koinos/tree/master/config-example) and [env.example](https://github.com/koinos/koinos/blob/master/env.example) in the root of the repo and another for the Harbinger testnet which is in the [harbinger](https://github.com/koinos/koinos/tree/master/harbinger) directory.
 
+---
 ## Genesis data
-`genesis_data.yml` isn't really a config file, but it is crucial to the operation of a Koinos node. The genesis data defines the initial state of the blockchain prior to the first block. This helps configuration some basic parameters of the blockchain and is also used to seed the snapshot balances of the KOIN token for the mainnet. The genesis data is also used to generate the chain ID of the specific blockchain which is used to uniquely identify the blockchain in the p2p network and prevents crosstalk between networks by requiring transactions specify the chain ID of their intended chain. This file should not be changed. Please note that the mainnet and Harbinger testnet configurations have different genesis data and mixing up those files wil
+`genesis_data.yml` isn't really a config file, but it is crucial to the operation of a Koinos node. The genesis data defines the initial state of the blockchain prior to the first block. This helps configuration some basic parameters of the blockchain and is also used to seed the snapshot balances of the KOIN token for the mainnet. The genesis data is also used to generate the chain ID of the specific blockchain which is used to uniquely identify the blockchain in the p2p network and prevents crosstalk between networks by requiring transactions specify the chain ID of their intended chain. This file should not be changed. Please note that the mainnet and Harbinger testnet configurations have different genesis data and mixing up those files will cause the node to malfunction.
 
+---
 ## Koinos descriptors
 `koinos_descriptors.pb` contains the Protobuf descriptors for all of the built in types used by the node. This file is used specifically by the JSON-RPC microservice in order to dynamically convert between JSON-RPC requests and the internal Protobuf requests. It should not need to changed manually, but should be updated every release of the Koinos node to match the most current descriptor file.
 
+---
 ## RabbitMQ configuration
-The Koinos node uses RabbitMQ to communicate between microservices. `rabbitmq.conf` is the configuration for the AMQP microservice. It can be modified, but it is recommended only advanced users modify this file for specific use cases. The provided `rabbitmq.conf` should be sufficient for nearly all Koinos node deployments. or more information on configuring Rabbit MQ, please read the official [documentation](https://www.rabbitmq.com/configure.html#config-items).
+The Koinos node uses RabbitMQ to communicate between microservices. [rabbitmq.conf](https://github.com/koinos/koinos/blob/master/config-example/rabbitmq.conf) is the configuration for the AMQP microservice. It can be modified, but it is recommended only advanced users modify this file for specific use cases. The provided [rabbitmq.conf](https://github.com/koinos/koinos/blob/master/config-example/rabbitmq.conf) should be sufficient for nearly all Koinos node deployments. or more information on configuring Rabbit MQ, please read the official [documentation](https://www.rabbitmq.com/configure.html#config-items).
 
+---
 ## Config YAML
-`config.yml` contains the configuration specific to the Koinos microservices. The structure of the config has two main sections. The first is the `global` section which contains options that apply to multiple microservices. The second main second contains overrides for individual microservices. If an option is set for an individual microservice, it will override the value set in the `global` section. For example, if `log-level` is set to `info` in the `global` section, but you set `log-level` to `debug` in the `chain` section, then the Chain microservice will log at the `debug` level, while all other microservices will log at the `info` level.
+[config.yml](https://github.com/koinos/koinos/blob/master/config-example/config.yml) contains the configuration specific to the Koinos microservices. The structure of the config has two main sections. The first is the `global` section which contains options that apply to multiple microservices. The second main second contains overrides for individual microservices. If an option is set for an individual microservice, it will override the value set in the `global` section. For example, if `log-level` is set to `info` in the `global` section, but you set `log-level` to `debug` in the `chain` section, then the Chain microservice will log at the `debug` level, while all other microservices will log at the `info` level.
 
 Below are the config options for each microservice.
 
@@ -29,7 +33,7 @@ Below are the config options for each microservice.
     | `genesis-data` | string | The genesis data file | None |
     | `statedir` | string | The location of the blockchain state files (absolute path or relative to basedir/chain) | `account_history` |
     | `reset` | boolean | Reset the database | `block_store`, `transaction_store`, `contract_meta_store`, `account_history` |
-    | `fork-algorithm` | enum | The fork resolution algorithm to use. Can be 'pob', 'fifo', or 'block-time'. (Default: 'pob') | `mempool`, `account_history` |
+    | `fork-algorithm` | enum | The fork resolution algorithm to use. Can be `pob`, `fifo`, or `block-time`. (Default: `pob`) | `mempool`, `account_history` |
 
 === "Mempool"
     |Option|Type|Description|Shared by|
@@ -42,7 +46,7 @@ Below are the config options for each microservice.
     | `instance-id` | string | An ID that uniquely identifies the instance | All |
     | `jobs` | uint | The number of worker jobs (Default: system native concurrency) | All |
     | `transaction-expiration` | uint | The number of seconds a transaction should expire in | None |
-    | `fork-algorithm` | enum | The fork resolution algorithm to use. Can be 'pob', 'fifo', or 'block-time'. (Default: 'pob') | `chain`, `account_history` |
+    | `fork-algorithm` | enum | The fork resolution algorithm to use. Can be `pob`, `fifo`, or `block-time`. (Default: `pob`) | `chain`, `account_history` |
 
 === "Block Store"
     |Option|Type|Description|Shared by|
@@ -163,12 +167,12 @@ Below are the config options for each microservice.
     | `jobs` | uint | The number of worker jobs (Default: system native concurrency) | All |
     | `statedir` | string | The location of the blockchain state files (absolute path or relative to basedir/account_history) | `chain` |
     | `reset` | boolean | Reset the database | `chain`, `block_store`, `transaction_history`, `contract_meta_store` |
-    | `fork-algorithm` | enum | The fork resolution algorithm to use. Can be 'pob', 'fifo', or 'block-time'. (Default: 'pob') | `chain`, `mempool` |
+    | `fork-algorithm` | enum | The fork resolution algorithm to use. Can be `pob`, `fifo`, or `block-time`. (Default: `pob`) | `chain`, `mempool` |
 
 ### Multiaddr
-
 Some microservices use the multiaddr format. This is an abstraction and replacement for typical dotted decimal notation for a `protocol://address:port` URL. To learn more about the multiaddr (and multiformats) specification, please refer to the official [documentation](https://multiformats.io/multiaddr/).
 
+---
 ## Environment
 The `.env` file defines configuration for the node as a whole. The top section (`BASEDIR`, network bindings, and `COMPOSE_PROFILES`) will likely not need to change. However, on a new release of the Koinos node, you should always copy the new microservice versions and restart your node. Any of these values can be overridden temporarily by setting them in your environment.
 

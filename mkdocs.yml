@@ -113,6 +113,7 @@ nav:
     - validators/index.md
     - validators/node-requirements.md
     - validators/docker-compose-profiles.md
+    - validators/microservices.md
     - Guides:
       - validators/guides/running-a-node.md
   - Exchanges:

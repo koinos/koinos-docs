@@ -20,6 +20,7 @@ _**Table 1.** A table containing information about the core microservices of a K
 |[Koinos JSON-RPC](https://github.com/koinos/koinos-jsonrpc)                        |Golang|Providing API access from outside the cluster|
 |[Koinos gRPC](https://github.com/koinos/koinos-grpc)                               |C++|Providing API access from outside the cluster|
 |[Koinos Contract Meta Store](https://github.com/koinos/koinos-contract-meta-store) |Golang|Providing ABI data for smart contracts|
+|[Koinos Account History](https://github.com/koinos/koinos-account-history)         |C++|Providing records for each address|
 
 ---
 ## Internal communication

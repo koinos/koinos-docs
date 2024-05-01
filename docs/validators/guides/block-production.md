@@ -7,11 +7,11 @@ Proof-of-Burn has similarities to both Proof-of-Work (PoW) and Proof-of-Stake (P
 
 ---
 ## Prerequisites
-Please follow our guide on [running a node](running-a-node.md). Be sure to start the node with the `--profile all` or `--profile block_producer` option to start the optional block producer microservice.
+Please follow our guide on [running a node](running-a-node.md). Be sure to set your `COMPOSE_PROFILES` to either `block_producer` or `all` in your `.env` file. Alternatively, you can start the node with the `--profile all` or `--profile block_producer` to start the optional block producer microservice.
 
 ---
 ## Retrieving your address and key
-Upon starting a new node, a private block production key will be automatically generated for you. This key will be at `$KOINOS_BASEDIR/block_producer/private.key` (`$KOINOS_BASEDIR` is `~/.koinos` on macOS/Linux and `C:\koinos` for Windows if following our guide). There is a corresponding `public.key` file that is written out when the block producer runs and is always the public key corresponding to the private key that the block producer is configured to use (`private.key` by default).
+Upon starting a new node, a private block production key will be automatically generated for you. This key will be at `$KOINOS_BASEDIR/block_producer/private.key` (`$KOINOS_BASEDIR` is `~/.koinos` on macOS/Linux and `C:\koinos` for Windows if following our guide). There is a corresponding `public.key` file that is written out when the block producer runs and is always the public key corresponding to the private key that the block producer is configured to use (`private.key` by default). Upon starting the block producer the public key is also printed to the logs.
 
 You will want to copy the contents of `public.key` and save this for later use. This is our "hot" key.
 
@@ -22,11 +22,19 @@ cat $KOINOS_BASEDIR/block_producer/public.key
 Aq4Ps_Ch-f8OZDnpQOov2SiMvdYyA5tn0oWa36QWnTeH
 ```
 
-Next, you will want your main account to hold VHP and KOIN for block production. Let us use the `koinos-cli` to register the PoB contract and open the wallet for our main account.
+Next, you will want your main account to hold VHP and KOIN for block production. Let us use the [Koinos CLI](../../developers/cli.md) to register the PoB contract and open the wallet for our main account.
 
 ```{ .txt, .no-copy }
 koinos-cli -r http://localhost:8080/
+```
+
+If you are not using the `.koinosrc` file as mentioned in the [Koinos CLI](../../developers/cli.md) documentation, you may need to register the Proof-of-Burn contract manually.
+```{ .txt, .no-copy }
 🔐 > register pob 159myq5YUhhoVWu3wsHKHiJYKPKGUrGiyv
+```
+
+Finally, open the wallet.
+```{ .txt, .no-copy }
 🔐 > open <wallet_file> <password>
 ```
 
@@ -45,10 +53,10 @@ Using the address from our main account and the public key from our block produc
 🔓 > pob.register_public_key 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn Aq4Ps_Ch-f8OZDnpQOov2SiMvdYyA5tn0oWa36QWnTeH
 ```
 
-Next, we must burn some KOIN in order to receive VHP. Let us burn 10,000 KOIN in exchange for 10,000 VHP. The `pob.burn` call is requesting that 10,000 KOIN be burned from the first address and place 10,000 VHP in to the second address. In our case, we want the address to burn KOIN from to be the same that receives VHP.
+Next, we must burn some KOIN in order to receive VHP. Let us burn 1,000 KOIN in exchange for 1,000 VHP. The `pob.burn` call is requesting that 1,000 KOIN be burned from the first address and place 1,000 VHP in to the second address. In our case, we want the address to burn KOIN from to be the same that receives VHP.
 
 ```{ .txt, .no-copy }
-🔓 > pob.burn 1000000000000 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn
+🔓 > pob.burn 100000000000 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn
 ```
 _**Note:** You may repeat this process to top off your VHP as you run your block producer over time. Do not burn your entire KOIN balance as you will need liquid KOIN and its associated mana in order to produce blocks._
 

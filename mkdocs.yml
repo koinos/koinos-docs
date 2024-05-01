@@ -116,6 +116,7 @@ nav:
     - validators/microservices.md
     - validators/configuration.md
     - validators/node-security.md
+    - validators/node-management.md
     - Guides:
       - validators/guides/running-a-node.md
       - validators/guides/block-production.md

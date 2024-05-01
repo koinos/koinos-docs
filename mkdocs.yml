@@ -115,6 +115,7 @@ nav:
     - validators/docker-compose-profiles.md
     - validators/microservices.md
     - validators/configuration.md
+    - validators/node-security.md
     - Guides:
       - validators/guides/running-a-node.md
       - validators/guides/block-production.md

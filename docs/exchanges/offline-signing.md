@@ -16,11 +16,11 @@ The Chain ID is a unique identifier for the specific chain you are transacting o
 ---
 ## Nonce
 
-The transaction nonce is specific to the account transacting. It must be incremented by one each transaction to ensure proper ordering of that account's transactions as well as preventing double spends on that account by submitting the same transaction multiple times. There are several ways of obtaining an account's next nonce.
+The transaction nonce is specific to the account transacting. It must be incremented by one each transaction to ensure proper ordering of that account's transactions as well as preventing double spends on that account by submitting the same transaction multiple times. There are several ways of obtaining an account's next nonce. These methods return the current nonce of the account, unless otherwise stated. You need to increment the nonce by one to use on the next transaction.
 
 === "Koinos CLI"
 
-    You can use the CLI command `account_nonce` to return the next nonce for an account. If no arguments are passed in, it will use the currently open wallet. If an address is provided, it will return the nonce of that address.
+    You can use the CLI command `account_nonce` to return the current nonce for an account. If no arguments are passed in, it will use the currently open wallet. If an address is provided, it will return the nonce of that address.
 
     The commands:
 

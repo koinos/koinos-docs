@@ -26,3 +26,31 @@ Below you can find examples of how to check your current Mana using a variety of
     ``` { .txt .no-copy }
     10535.49462399 rc
     ```
+
+    You can set how much mana to use with the `rclimit` command. The command can be used to set an absolute limit or a relative limit.
+
+    ``` { .txt .no-copy }
+    🔓 > help rclimit
+    Set or show the current rc limit. Give no limit to see current value. Give limit as either mana or a percent (i.e. 80%).
+    Usage: rclimit [limit:string]
+    ```
+
+    You can set a relative limit by passing a percentage.
+
+    ``` { .txt }
+    rclimit 20%
+    ```
+
+    ``` { .txt .no-copy }
+    Set rc limit to 20%
+    ```
+
+    You can set an absolute value by passing a number.
+
+    ``` { .txt }
+    rclimit 10
+    ```
+
+    ``` { .txt .no-copy }
+    Set rc limit to 10
+    ```

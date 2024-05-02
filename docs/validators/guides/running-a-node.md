@@ -144,4 +144,4 @@ Now that you have a Koinos node running, you may be interested in producing bloc
 - [Configuration](../configuration.md)
 - [Docker Compose Profiles](../docker-compose-profiles.md)
 - [Node Management](../node-management.md)
-- [Node Security](../node-secruity.md)
+- [Node Security](../node-security.md)

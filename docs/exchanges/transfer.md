@@ -6,7 +6,7 @@ Below you can find examples of how to transfer your KOIN using a variety of supp
 === "Koinos CLI"
 
     You can use the KOIN contract entry point `transfer` to transfer KOIN. This operation requires an open wallet to perform.
-    
+
     If you have not registered the KOIN contract in your CLI and therefore do not have the `koin.transfer` command, visit the documentation on Koinos CLI under the [`.koinosrc`](../developers/cli.md#koinos-cli-rc-file) section to set it up.
 
     Using the help command we can see the arguments for the method.
@@ -27,7 +27,11 @@ Below you can find examples of how to transfer your KOIN using a variety of supp
     Mana cost: 0.03383501 (Disk: 35, Network: 309, Compute: 574723)
     ```
 
-    When using the `register_token` command as indicated by the documentation on [Koinos CLI](../developers/cli.md) under the [`.koinosrc`](..developers/cli.md#koinos-cli-rc-file) section, the decimals of the token are taken into consideration. As demonstrated above, we are sending 0.00000001 KOIN as indicated by the 8 decimal places.
+    When using the `register_token` command as indicated by the documentation on [Koinos CLI](../developers/cli.md) under the [`.koinosrc`](..developers/cli.md#koinos-cli-rc-file) section, the decimals of the token are taken into consideration. As demonstrated above, we are sending 0.00000001 KOIN as indicated by the 8 decimal places. If you want to use `register_token` with an offline wallet, you need to provide the precision and symbol manually.
+
+    ```
+    register_token koin 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL KOIN 8
+    ```
 
 === "Koilib"
 

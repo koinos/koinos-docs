@@ -28,3 +28,36 @@ Below you can find examples of how to transfer your KOIN using a variety of supp
     ```
 
     When using the `register_token` command as indicated by the documentation on [Koinos CLI](../developers/cli.md) under the [`.koinosrc`](..developers/cli.md#koinos-cli-rc-file) section, the decimals of the token are taken into consideration. As demonstrated above, we are sending 0.00000001 KOIN as indicated by the 8 decimal places.
+
+=== "Koilib"
+
+    The example below demonstrates transferring KOIN using Koilib. This is an excerpt from the [Koilib documentation](https://joticajulian.github.io/koilib/#usage).
+
+    ```js
+    (async () => {
+        // define signer, provider, and contract
+        const provider = new Provider(["http://api.koinos.io"]);
+        const signer = Signer.fromWif("KwkAq...");
+        signer.provider = provider;
+        const koinContract = new Contract({
+            id: "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+            abi: utils.tokenAbi,
+            provider,
+            signer,
+        });
+        const koin = koinContract.functions;
+
+        // Transfer
+        const { transaction, receipt } = await koin.transfer({
+            from: signer.getAddress(),
+            to: "172AB1FgCsYrRAW5cwQ8KjadgxofvgPFd6",
+            value: "1012345678", // 10.12345678 koin
+        });
+        console.log(`Transaction id ${transaction.id} submitted. Receipt:`);
+        console.log(receipt);
+
+        // wait to be mined
+        const { blockNumber } = await transaction.wait();
+        console.log(`Transaction mined. Block number: ${blockNumber}`);
+    })();
+    ```

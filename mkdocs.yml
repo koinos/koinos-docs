@@ -130,6 +130,7 @@ nav:
       - exchanges/head-block.md
       - exchanges/create-wallet.md
       - exchanges/account-balance.md
+      - exchanges/transfer.md
       - exchanges/mana.md
       - exchanges/offline-signing.md
       - exchanges/multisig.md

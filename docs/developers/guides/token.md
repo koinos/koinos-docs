@@ -1,5 +1,5 @@
 # Launching a Token
-Welcome to our comprehensive guide on launching a token collection using the Koinos Contract Standard (KCS-1) for Tokens and the AssemblyScript SDK for Koinos. In this tutorial, we'll walk you through the process of creating and deploying your own token on the Koinos blockchain. Whether you're a seasoned developer or new to blockchain development, this step-by-step guide will provide you with the knowledge and tools necessary to bring your token project to life. Let's dive in and explore the exciting world of token creation on Koinos!
+Welcome to our guide on launching a token collection using the Koinos Contract Standard (KCS-1) for Tokens and the AssemblyScript SDK for Koinos. In this tutorial, we'll walk you through the process of creating and deploying your own token on the Koinos blockchain. Whether you're a seasoned developer or new to blockchain development, this step-by-step guide will provide you with the knowledge and tools necessary to bring your token project to life. Let's dive in and explore the exciting world of token creation on Koinos!
 
 Before starting, ensure that you have already set up your Koinos AssemblyScript SDK environment by following [this guide](../as-sdk.md).
 
@@ -88,7 +88,7 @@ With these files, let's generate a Koinos wallet with `koinos-cli` and deploy yo
 ### The Koinos CLI
 
 If you haven't done so yet, download the Koinos CLI [here](https://github.com/koinos/koinos-cli/releases).
-Once you have the binary installed add a `.koinosrc` file to the same directory as the binary and include these parameters for the Harbiner testnet:
+Once you have the binary installed add a `.koinosrc` file to the same directory as the binary and include these parameters for the Koinos Harbinger testnet:
 
 ```
 connect https://harbinger-api.koinos.io
@@ -193,6 +193,6 @@ Transaction with ID 0x12201db69401876406c7edd645ef189b3d063c78c16455ba46c93bf25f
 Mana cost: 0.03434252 (Disk: 95, Network: 284, Compute: 514975)
 ```
 
-Congratulations, We succesfuly deployed our contract to the testnet and minted a million tokens!
+Congratulations, We successfully deployed our contract to the testnet and minted a million tokens!
 
-We can check the [block exploerer](https://harbinger.koinosblocks.com/tx/0x12201db69401876406c7edd645ef189b3d063c78c16455ba46c93bf25fff3b925df6) and see that we now have the newly minted tokens in our wallet. 
+We can check the [block explorer](https://harbinger.koinosblocks.com/tx/0x12201db69401876406c7edd645ef189b3d063c78c16455ba46c93bf25fff3b925df6) and see that we now have the newly minted tokens in our wallet. 

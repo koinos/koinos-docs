@@ -28,3 +28,28 @@ Below you can find examples of how to retrieve your KOIN balance using a variety
     ``` { .txt .no-copy }
     10887.50234469 KOIN
     ```
+
+=== "Koilib"
+
+    The example below demonstrates retrieving a KOIN balance using Koilib. This is an excerpt from the [Koilib documentation](https://joticajulian.github.io/koilib/#usage).
+
+    ```ts
+    (async () => {
+        const provider = new Provider(["http://api.koinos.io"]);
+        const signer = Signer.fromWif("Kzl...");
+        signer.provider = provider;
+        const koinContract = new Contract({
+          id: "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+          abi: utils.tokenAbi,
+          provider,
+          signer,
+        });
+        const koin = koinContract.functions;
+
+        // Get balance
+        const { result } = await koin.balanceOf({
+          owner: signer.getAddress(),
+        });
+        console.log(balance.result);
+    })();
+    ```

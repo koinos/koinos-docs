@@ -22,7 +22,7 @@ A crucial feature of blockchain technology is the ability to audit the history o
 
     ``` { .txt }
     curl -X 'GET' \
-    'https://dev.api.koinos.pro/v1/account/1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS/history?limit=2&sequence_number=5&decode_operations=true&decode_events=true' \
+    'https://api.koinos.pro/v1/account/1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS/history?limit=2&sequence_number=5&decode_operations=true&decode_events=true' \
     -H 'accept: application/json' \
     -H 'X-API-KEY: WNfKg6ITYc9mWViySEvLiODZp6iti1A5'
     ```

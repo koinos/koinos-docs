@@ -54,3 +54,36 @@ Below you can find examples of how to check your current Mana using a variety of
     ``` { .txt .no-copy }
     Set rc limit to 10
     ```
+
+=== "REST"
+    You can retrieve an account's current mana using the path `v1/account/{account}/mana`.
+
+    ``` { .txt }
+    curl -X 'GET' \
+    'https://api.koinos.pro/v1/account/1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS/mana' \
+    -H 'accept: application/json' \
+    -H 'X-API-KEY: WNfKg6ITYc9mWViySEvLiODZp6iti1A5'
+    ```
+
+    ``` { .json .no-copy }
+    {
+      "value": "1501.13019176"
+    }
+    ```
+
+    An account's maximum mana is simply their KOIN balance. You can retrieve their KOIN balance using the path `v1/account/{account}/{contract_id}. The contract ID can be the contract address, the system name, a nickname, or a KAP domain. In this example, we will use the system contract name, `koin` for the KOIN contract.
+
+    ```
+    curl -X 'GET' \
+    'https://api.koinos.pro/v1/account/1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS/balance/koin' \
+    -H 'accept: application/json' \
+    -H 'X-API-KEY: WNfKg6ITYc9mWViySEvLiODZp6iti1A5'
+    ```
+
+    ``` { .json .no-copy }
+    {
+      "value": "2911.78051025"
+    }
+    ```
+
+    In this scenario, the account has ~1501/2911 Mana (~51.5%).

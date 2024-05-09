@@ -6,11 +6,11 @@
   },
   "servers": [
     {
-      "url": "https://api.koinos.pro/v1",
+      "url": "https://api.koinos.pro",
       "description": "Koinos Mainnet"
     },
     {
-      "url": "https://api.harbinger.koinos.pro/v1",
+      "url": "https://api.harbinger.koinos.pro",
       "description": "Koinos Harbinger Testnet"
     }
   ],
@@ -175,7 +175,7 @@
     "securitySchemes": {
       "apikey": {
         "type": "apiKey",
-        "name": "apikey",
+        "name": "X-API-KEY",
         "in": "header"
       }
     }
@@ -206,20 +206,8 @@
       "description": "Groups endpoints that deal with fungible token operations, including querying token balances, total supply, general information, etc."
     },
     {
-      "name": "Koinos Account Protocol (KAP)",
-      "description": "Endpoints under the 'Koinos Account Protocol (KAP)' tag focus on the KAP name, including retrieving account addresses from names and vice versa."
-    },
-    {
-      "name": "KoinDX",
-      "description": "Dedicated to endpoints related to KoinDX features, covering token pair information and quotes for token swaps."
-    },
-    {
       "name": "Non Fungible Tokens",
       "description": "Encompasses all endpoints related to Non Fungible Tokens on the Koinos blockchain, including querying an account's NFT balance, total supply, NFT's uri, etc."
-    },
-    {
-      "name": "Nicknames",
-      "description": "Endpoints under this tag focus on the 'Nicknames' service, including querying the nicknames owned by an account and the account associated with a particular nickname."
     },
     {
       "name": "Transactions",
@@ -227,12 +215,10 @@
     }
   ],
   "security": [
-    {
-      "apikey": []
-    }
+    {"apikey": []}
   ],
   "paths": {
-    "/api/account/{account}/balance/{contract_id}": {
+    "/v1/account/{account}/balance/{contract_id}": {
       "get": {
         "tags": [
           "Accounts"
@@ -259,9 +245,6 @@
             },
             "description": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS is the account address of the fungible token.  Alternatively, the nickname of the address, burnkoin, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet.",
             "required": true
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "responses": {
@@ -284,7 +267,7 @@
         }
       }
     },
-    "/api/account/{account}/history": {
+    "/v1/account/{account}/history": {
       "get": {
         "tags": [
           "Accounts"
@@ -356,9 +339,6 @@
             },
             "description": "Whether or not the events should be decoded",
             "required": false
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "responses": {
@@ -455,7 +435,7 @@
         }
       }
     },
-    "/api/account/{account}/mana": {
+    "/v1/account/{account}/mana": {
       "get": {
         "tags": [
           "Accounts"
@@ -472,9 +452,6 @@
             },
             "description": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS is the account address of the fungible token.  Alternatively, the nickname of the address, burnkoin, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet.",
             "required": true
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "responses": {
@@ -499,13 +476,13 @@
         }
       }
     },
-    "/api/account/{account}/next_nonce": {
+    "/v1/account/{account}/next_nonce": {
       "get": {
         "tags": [
           "Accounts"
         ],
         "description": "Returns the account's next nonce",
-        "summary": "Retrieves the next nonce value for a given account.",
+        "summary": "Retrieves the next nonce for a given account.",
         "parameters": [
           {
             "name": "account",
@@ -514,11 +491,16 @@
               "type": "string",
               "example": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
             },
-            "description": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS is the account address of the fungible token.  Alternatively, the nickname of the address, burnkoin, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet.",
+            "description": "The account address to query",
             "required": true
           },
           {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+            "name": "decode_nonce",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Whether or not the nonce should be decoded"
           }
         ],
         "responses": {
@@ -535,7 +517,7 @@
                   }
                 },
                 "example": {
-                  "value": "KAo="
+                  "value": "10"
                 }
               }
             }
@@ -543,7 +525,7 @@
         }
       }
     },
-    "/api/account/{account}/nonce": {
+    "/v1/account/{account}/nonce": {
       "get": {
         "tags": [
           "Accounts"
@@ -553,16 +535,21 @@
         "parameters": [
           {
             "name": "account",
+            "in": "path",
             "schema": {
               "type": "string",
               "example": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
             },
-            "in": "path",
-            "description": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS is the account address of the fungible token.  Alternatively, the nickname of the address, burnkoin, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet.",
+            "description": "The account address to query",
             "required": true
           },
           {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
+            "name": "decode_nonce",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Whether or not the nonce should be decoded"
           }
         ],
         "responses": {
@@ -579,7 +566,7 @@
                   }
                 },
                 "example": {
-                  "value": "KAk="
+                  "value": "9"
                 }
               }
             }
@@ -587,7 +574,7 @@
         }
       }
     },
-    "/api/block/{block_id}": {
+    "/v1/block/{block_id}": {
       "get": {
         "tags": [
           "Blocks"
@@ -636,9 +623,6 @@
               "type": "boolean"
             },
             "description": "Whether or not the events should be decoded"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "responses": {
@@ -744,18 +728,13 @@
         }
       }
     },
-    "/api/chain/fork_heads": {
+    "/v1/chain/fork_heads": {
       "get": {
         "tags": [
           "Chain"
         ],
         "description": "Returns the chain's fork heads",
         "summary": "Retrieves the current fork heads of the Koinos blockchain, indicating any divergences in the chain.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Fork Heads",
@@ -770,18 +749,13 @@
         }
       }
     },
-    "/api/chain/head_info": {
+    "/v1/chain/head_info": {
       "get": {
         "tags": [
           "Chain"
         ],
         "description": "Returns the chain's head info",
         "summary": "Provides information about the current head of the blockchain, including its height and id.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Head Info",
@@ -796,18 +770,13 @@
         }
       }
     },
-    "/api/chain/id": {
+    "/v1/chain/id": {
       "get": {
         "tags": [
           "Chain"
         ],
         "description": "Returns the chain id",
         "summary": "Fetches the unique identifier of the blockchain, commonly known as the chain ID.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Value",
@@ -822,18 +791,13 @@
         }
       }
     },
-    "/api/chain/resource_limits": {
+    "/v1/chain/resource_limits": {
       "get": {
         "tags": [
           "Chain"
         ],
         "description": "Returns the chain's resource limits",
         "summary": "Obtains information about the resource limits and usage for the blockchain, such as computational power and network bandwidth.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Resource Limits",
@@ -848,7 +812,120 @@
         }
       }
     },
-    "/api/contract/{contract_id}/abi": {
+    "/v1/contract/{contract_id}/{method}": {
+      "get": {
+        "tags": [
+          "Contracts"
+        ],
+        "description": "Read the contract contract using the method and arguments provided",
+        "summary": "Executes a specified 'read' method on the given contract and returns the result, without making any state changes.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
+            "required": true,
+            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+          },
+          {
+            "name": "method",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Method of the contract to call",
+            "required": true,
+            "example": "balance_of"
+          },
+          {
+            "name": "arguments",
+            "in": "query",
+            "schema": {
+              "type": "object"
+            },
+            "example": {
+              "owner": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Call response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "value": "1607990396956"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contracts"
+        ],
+        "description": "Read the contract using the method and arguments provided",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
+            "required": true,
+            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+          },
+          {
+            "name": "method",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Method of the contract to call",
+            "required": true,
+            "example": "balance_of"
+          }
+        ],
+        "requestBody": {
+          "description": "Arguments for the method call",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "owner": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Call response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "value": "1607990396956"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/contract/{contract_id}/abi": {
       "get": {
         "tags": [
           "Contracts"
@@ -865,9 +942,6 @@
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
             "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "responses": {
@@ -920,137 +994,13 @@
         }
       }
     },
-    "/api/contract/{contract_id}/read/{method}": {
-      "get": {
-        "tags": [
-          "Contracts"
-        ],
-        "description": "Read the contract contract using the method and arguments provided",
-        "summary": "Executes a specified 'read' method on the given contract and returns the result, without making any state changes.",
-        "parameters": [
-          {
-            "name": "contract_id",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
-            "required": true,
-            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
-          },
-          {
-            "name": "method",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Method of the contract to call",
-            "required": true,
-            "example": "balance_of"
-          },
-          {
-            "name": "arguments",
-            "in": "query",
-            "schema": {
-              "type": "object"
-            },
-            "example": {
-              "owner": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
-            }
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Call response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                },
-                "example": {
-                  "value": "1607990396956"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Contracts"
-        ],
-        "description": "Read the contract using the method and arguments provided",
-        "parameters": [
-          {
-            "name": "contract_id",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
-            "required": true,
-            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
-          },
-          {
-            "name": "method",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Method of the contract to call",
-            "required": true,
-            "example": "balance_of"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "requestBody": {
-          "description": "Arguments for the method call",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              },
-              "example": {
-                "owner": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Call response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                },
-                "example": {
-                  "value": "1607990396956"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/decode/events": {
+    "/v1/decode/events": {
       "post": {
         "tags": [
           "Decode"
         ],
         "description": "This endpoint takes an array of \"encoded\" events and returns an array of \"decoded\" events. Feel free to test the example request body and response below before testing out your own data.",
         "summary": "Decodes a series of blockchain events, translating them from encoded formats into human-readable forms.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
         "requestBody": {
           "description": "Input is expected to be an array of \"encoded\" events.",
           "required": true,
@@ -1177,18 +1127,13 @@
         }
       }
     },
-    "/api/decode/operations": {
+    "/v1/decode/operations": {
       "post": {
         "tags": [
           "Decode"
         ],
         "description": "This endpoint takes an array of 'encoded' operations and returns an array of 'decoded' operations. Feel free to test the example request body and response below before testing out your own data.",
         "summary": "Decodes and interprets blockchain operations, providing details in a format that is easily understandable.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
         "requestBody": {
           "description": "Input is expected to be an array of 'encoded' operations.",
           "required": true,
@@ -1254,7 +1199,275 @@
         }
       }
     },
-    "/api/ft/{contract_id}/balance/{account}": {
+    "/v1/nft/{contract_id}/balance/{account}": {
+      "get": {
+        "tags": [
+          "Non Fungible Tokens"
+        ],
+        "description": "Returns the non fungible token's account balance.",
+        "summary": "Retrieves the balance of Non Fungible Tokens under a specific contract address for a given account address.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the NFT contract.",
+            "required": true,
+            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
+          },
+          {
+            "name": "account",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the account to query.",
+            "required": true,
+            "example": "1DrBJQkSK1Zh7JW7XjQxcRU96NBVnew7iR"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account Balance in NFTs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "5"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/nft/{contract_id}/info": {
+      "get": {
+        "tags": [
+          "Non Fungible Tokens"
+        ],
+        "description": "Returns information about the non fungible token, such as its name, symbol, total supply, and URI.",
+        "summary": "Provides comprehensive information about a specific Non Fungible Token contract, including such as its name, symbol, total supply, and URI.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the NFT contract.",
+            "required": true,
+            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information about the Non Fungible Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "symbol": {
+                      "type": "string"
+                    },
+                    "total_supply": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "name": "OG-REX",
+                  "symbol": "REX",
+                  "total_supply": "350",
+                  "uri": "https://ogrex.io/api/rex/"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/nft/{contract_id}/name": {
+      "get": {
+        "tags": [
+          "Non Fungible Tokens"
+        ],
+        "description": "Returns the name of the non fungible token.",
+        "summary": "Fetches the name of a specific Non Fungible Token as defined in the contract.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the NFT contract.",
+            "required": true,
+            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Name of the Non Fungible Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "OG-REX"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/nft/{contract_id}/symbol": {
+      "get": {
+        "tags": [
+          "Non Fungible Tokens"
+        ],
+        "description": "Returns the symbol of the non fungible token.",
+        "summary": "Retrieves the symbol associated with a specific Non Fungible Token contract.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the NFT contract.",
+            "required": true,
+            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Symbol of the Non Fungible Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "REX"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/nft/{contract_id}/total_supply": {
+      "get": {
+        "tags": [
+          "Non Fungible Tokens"
+        ],
+        "description": "Returns the total supply of the non fungible token.",
+        "summary": "Retrieves the total supply of Non Fungible Tokens issued under a specific contract.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the NFT contract.",
+            "required": true,
+            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Total Supply of the Non Fungible Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "350"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/nft/{contract_id}/uri": {
+      "get": {
+        "tags": [
+          "Non Fungible Tokens"
+        ],
+        "description": "Returns the URI associated with the non fungible token contract.",
+        "summary": "Obtains the Uniform Resource Identifier (URI) for a Non Fungible Token contract, typically pointing to metadata.",
+        "parameters": [
+          {
+            "name": "contract_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Koinos address of the NFT contract.",
+            "required": true,
+            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "URI of the Non Fungible Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "value": "https://ogrex.io/api/rex/"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/token/{contract_id}/balance/{account}": {
       "get": {
         "tags": [
           "Fungible Tokens"
@@ -1281,9 +1494,6 @@
             "description": "Koinos address of the account, name of the account (for system contracts) or KAP name",
             "required": true,
             "example": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "responses": {
@@ -1308,7 +1518,7 @@
         }
       }
     },
-    "/api/ft/{contract_id}/decimals": {
+    "/v1/token/{contract_id}/decimals": {
       "get": {
         "tags": [
           "Fungible Tokens"
@@ -1325,9 +1535,6 @@
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
             "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "responses": {
@@ -1353,7 +1560,7 @@
         }
       }
     },
-    "/api/ft/{contract_id}/info": {
+    "/v1/token/{contract_id}/info": {
       "get": {
         "tags": [
           "Fungible Tokens"
@@ -1370,9 +1577,6 @@
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
             "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "responses": {
@@ -1410,7 +1614,7 @@
         }
       }
     },
-    "/api/ft/{contract_id}/name": {
+    "/v1/token/{contract_id}/name": {
       "get": {
         "tags": [
           "Fungible Tokens"
@@ -1427,9 +1631,6 @@
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
             "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "responses": {
@@ -1454,7 +1655,7 @@
         }
       }
     },
-    "/api/ft/{contract_id}/symbol": {
+    "/v1/token/{contract_id}/symbol": {
       "get": {
         "tags": [
           "Fungible Tokens"
@@ -1471,9 +1672,6 @@
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
             "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "responses": {
@@ -1498,7 +1696,7 @@
         }
       }
     },
-    "/api/ft/{contract_id}/total_supply": {
+    "/v1/token/{contract_id}/total_supply": {
       "get": {
         "tags": [
           "Fungible Tokens"
@@ -1515,9 +1713,6 @@
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
             "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "responses": {
@@ -1542,736 +1737,7 @@
         }
       }
     },
-    "/api/kap/{name}/address": {
-      "get": {
-        "tags": [
-          "Koinos Account Protocol (KAP)"
-        ],
-        "description": "Returns the address associated with a Koinos Account Protocol (KAP) name",
-        "summary": "Fetches the Koinos blockchain address associated with a specific KAP name.",
-        "parameters": [
-          {
-            "name": "name",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "KAP name to retrieve the address for",
-            "required": true,
-            "example": "kuixi.koin"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "KAP Address",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "address": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "address": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/kap/{account}/names": {
-      "get": {
-        "tags": [
-          "Koinos Account Protocol (KAP)"
-        ],
-        "description": "Returns the Koinos Account Protocol (KAP) names associated with an account",
-        "summary": "Retrieves the KAP names associated with a specific account address.",
-        "parameters": [
-          {
-            "name": "account",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Koinos address of the account, name of the account (for system contracts) or KAP name",
-            "required": true,
-            "example": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of KAP Names",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "names": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "domain": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string"
-                          },
-                          "owner": {
-                            "type": "string"
-                          },
-                          "expiration": {
-                            "type": "string"
-                          },
-                          "grace_period_end": {
-                            "type": "string"
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "names": [
-                    {
-                      "domain": "koin",
-                      "name": "pizzapizza",
-                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
-                      "expiration": "1723302395510",
-                      "grace_period_end": "1728486395510"
-                    },
-                    {
-                      "domain": "koin",
-                      "name": "何逵熙",
-                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
-                      "expiration": "1776607888050",
-                      "grace_period_end": "1781791888050"
-                    },
-                    {
-                      "domain": "koin",
-                      "name": "darren",
-                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
-                      "expiration": "1779715794620",
-                      "grace_period_end": "1784899794620"
-                    },
-                    {
-                      "domain": "koin",
-                      "name": "kuixihe",
-                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
-                      "expiration": "1997279134440",
-                      "grace_period_end": "2002463134440"
-                    },
-                    {
-                      "domain": "koin",
-                      "name": "ronald",
-                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
-                      "expiration": "1713639181670",
-                      "grace_period_end": "1718823181670"
-                    },
-                    {
-                      "domain": "koin",
-                      "name": "888",
-                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
-                      "expiration": "1712880076090",
-                      "grace_period_end": "1718064076090"
-                    },
-                    {
-                      "domain": "koin",
-                      "name": "kuixi",
-                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
-                      "expiration": "1776527066000",
-                      "grace_period_end": "1781711066000"
-                    },
-                    {
-                      "domain": "koin",
-                      "name": "frankie",
-                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
-                      "expiration": "1780680322360",
-                      "grace_period_end": "1785864322360"
-                    },
-                    {
-                      "domain": "koin",
-                      "name": "grayson",
-                      "owner": "1KuiXi7Kdby37k9cW6RNDk2ZMJvDKBMa5q",
-                      "expiration": "1779715794620",
-                      "grace_period_end": "1784899794620"
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/koindx/pair/{token_a}/{token_b}/get_quote/{amount_a}": {
-      "get": {
-        "tags": [
-          "KoinDX"
-        ],
-        "description": "Returns the quote for a given amount of token A in terms of token B",
-        "summary": "Returns the quote for a given amount of token A in terms of token B",
-        "parameters": [
-          {
-            "name": "token_a",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The token symbol or Koinos address for the first token in the pair",
-            "required": true,
-            "example": "koin"
-          },
-          {
-            "name": "token_b",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The token symbol or Koinos address for the second token in the pair",
-            "required": true,
-            "example": "vhp"
-          },
-          {
-            "name": "amount_a",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The amount of token A for which to get the quote",
-            "required": true,
-            "example": 1
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Quote for Token A in terms of Token B",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "amount_a": {
-                      "type": "string"
-                    },
-                    "amount_b": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "amount_a": "1",
-                  "amount_b": "1.15892599"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/koindx/pair/{token_a}/{token_b}/info": {
-      "get": {
-        "tags": [
-          "KoinDX"
-        ],
-        "description": "Returns information about a pair of tokens on koindx.com, including address, total supply, reserves, and other details.",
-        "summary": "Returns information about a pair of tokens on koindx.com, including address, total supply, reserves, and other details.",
-        "parameters": [
-          {
-            "name": "token_a",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The token symbol or Koinos address for the first token in the pair",
-            "required": true,
-            "example": "koin"
-          },
-          {
-            "name": "token_b",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The token symbol or Koinos address for the second token in the pair",
-            "required": true,
-            "example": "vhp"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Detailed Information about the Token Pair",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "address": {
-                      "type": "string"
-                    },
-                    "last_k": {
-                      "type": "string"
-                    },
-                    "block_time": {
-                      "type": "string"
-                    },
-                    "total_supply": {
-                      "type": "string"
-                    },
-                    "token_a": {
-                      "type": "object",
-                      "properties": {
-                        "address": {
-                          "type": "string"
-                        },
-                        "decimals": {
-                          "type": "integer"
-                        }
-                      }
-                    },
-                    "reserve_a": {
-                      "type": "string"
-                    },
-                    "token_b": {
-                      "type": "object",
-                      "properties": {
-                        "address": {
-                          "type": "string"
-                        },
-                        "decimals": {
-                          "type": "integer"
-                        }
-                      }
-                    },
-                    "reserve_b": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "address": "1NqLghiFRwkXZR7NBFHHiCJkF5gLHyJap1",
-                  "last_k": "433521619319741500846139424",
-                  "block_time": "1700537446380",
-                  "total_supply": "207950.4194428",
-                  "token_a": {
-                    "address": "vhp",
-                    "decimals": 8
-                  },
-                  "reserve_a": "224194.27627671",
-                  "token_b": {
-                    "address": "koin",
-                    "decimals": 8
-                  },
-                  "reserve_b": "193450.03684994"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/nft/{contract_id}/balance/{account}": {
-      "get": {
-        "tags": [
-          "Non Fungible Tokens"
-        ],
-        "description": "Returns the non fungible token's account balance.",
-        "summary": "Retrieves the balance of Non Fungible Tokens under a specific contract address for a given account address.",
-        "parameters": [
-          {
-            "name": "contract_id",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The Koinos address of the NFT contract.",
-            "required": true,
-            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
-          },
-          {
-            "name": "account",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The Koinos address of the account to query.",
-            "required": true,
-            "example": "1DrBJQkSK1Zh7JW7XjQxcRU96NBVnew7iR"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Account Balance in NFTs",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "value": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "value": "5"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/nft/{contract_id}/info": {
-      "get": {
-        "tags": [
-          "Non Fungible Tokens"
-        ],
-        "description": "Returns information about the non fungible token, such as its name, symbol, total supply, and URI.",
-        "summary": "Provides comprehensive information about a specific Non Fungible Token contract, including such as its name, symbol, total supply, and URI.",
-        "parameters": [
-          {
-            "name": "contract_id",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The Koinos address of the NFT contract.",
-            "required": true,
-            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Information about the Non Fungible Token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "symbol": {
-                      "type": "string"
-                    },
-                    "total_supply": {
-                      "type": "string"
-                    },
-                    "uri": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "name": "OG-REX",
-                  "symbol": "REX",
-                  "total_supply": "350",
-                  "uri": "https://ogrex.io/api/rex/"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/nft/{contract_id}/name": {
-      "get": {
-        "tags": [
-          "Non Fungible Tokens"
-        ],
-        "description": "Returns the name of the non fungible token.",
-        "summary": "Fetches the name of a specific Non Fungible Token as defined in the contract.",
-        "parameters": [
-          {
-            "name": "contract_id",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The Koinos address of the NFT contract.",
-            "required": true,
-            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Name of the Non Fungible Token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "value": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "value": "OG-REX"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/nft/{contract_id}/symbol": {
-      "get": {
-        "tags": [
-          "Non Fungible Tokens"
-        ],
-        "description": "Returns the symbol of the non fungible token.",
-        "summary": "Retrieves the symbol associated with a specific Non Fungible Token contract.",
-        "parameters": [
-          {
-            "name": "contract_id",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The Koinos address of the NFT contract.",
-            "required": true,
-            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Symbol of the Non Fungible Token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "value": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "value": "REX"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/nft/{contract_id}/total_supply": {
-      "get": {
-        "tags": [
-          "Non Fungible Tokens"
-        ],
-        "description": "Returns the total supply of the non fungible token.",
-        "summary": "Retrieves the total supply of Non Fungible Tokens issued under a specific contract.",
-        "parameters": [
-          {
-            "name": "contract_id",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The Koinos address of the NFT contract.",
-            "required": true,
-            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Total Supply of the Non Fungible Token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "value": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "value": "350"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/nft/{contract_id}/uri": {
-      "get": {
-        "tags": [
-          "Non Fungible Tokens"
-        ],
-        "description": "Returns the URI associated with the non fungible token contract.",
-        "summary": "Obtains the Uniform Resource Identifier (URI) for a Non Fungible Token contract, typically pointing to metadata.",
-        "parameters": [
-          {
-            "name": "contract_id",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The Koinos address of the NFT contract.",
-            "required": true,
-            "example": "1N2AhqGGticZ8hYmwNPWoroEBvTp3YGsLW"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "URI of the Non Fungible Token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "value": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "value": "https://ogrex.io/api/rex/"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/nicknames/{account}/address": {
-      "get": {
-        "tags": [
-          "Nicknames"
-        ],
-        "description": "Retrieves the owner address associated with a given nickname.",
-        "summary": "Fetches the Koinos blockchain address associated with a given nickname.",
-        "parameters": [
-          {
-            "name": "account",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The nickname used to retrieve the owner's address.",
-            "required": true,
-            "example": "@jga"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Owner's Address of the Nickname",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "address": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "address": "1MdqwaSBy6rbasPJ9vmg2pZFJSVZ29GFpZ"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/nicknames/{account}/names": {
-      "get": {
-        "tags": [
-          "Nicknames"
-        ],
-        "description": "Takes an account address and returns the nicknames owned by that account.",
-        "summary": "Retrieves a list of nicknames associated with a specific Koinos blockchain account address.",
-        "parameters": [
-          {
-            "name": "account",
-            "in": "path",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The account address or nickname for which to retrieve owned nicknames.",
-            "required": true,
-            "example": "@jga"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of Nicknames Owned by the Account",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "names": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "names": [
-                    "acidyo",
-                    "aggroed",
-                    "anomadsoul",
-                    "asgarth",
-                    "binance",
-                    "bitfinex",
-                    "bitflyer"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/transaction/{transaction_id}": {
+    "/v1/transaction/{transaction_id}": {
       "get": {
         "tags": [
           "Transactions"
@@ -2312,9 +1778,6 @@
               "type": "boolean"
             },
             "description": "Specifies whether the events within the transaction should be decoded"
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "responses": {
@@ -2490,18 +1953,13 @@
         }
       }
     },
-    "/api/transaction/prepare": {
+    "/v1/transaction/prepare": {
       "post": {
         "tags": [
           "Transactions"
         ],
         "description": "This endpoint takes a transaction and an optional provider and/or payer, then returns a prepared transaction object.",
         "summary": "Prepares a transaction for submission.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
-          }
-        ],
         "requestBody": {
           "description": "Arguments for preparing a transaction",
           "required": true,
@@ -2643,7 +2101,7 @@
         }
       }
     },
-    "/api/transaction/submit": {
+    "/v1/transaction/submit": {
       "post": {
         "tags": [
           "Transactions"
@@ -2659,9 +2117,6 @@
             },
             "description": "Sets whether this transaction is broadcasted globally or not. Defaults to true.",
             "required": false
-          },
-          {
-            "$ref": "#/components/parameters/X-JSON-RPC-URL"
           }
         ],
         "requestBody": {
@@ -2690,3 +2145,4 @@
     }
   }
 }
+

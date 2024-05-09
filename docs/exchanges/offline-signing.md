@@ -1,5 +1,5 @@
 
-# Offline Signing
+# Offline signing
 
 Regardless of your method of signing a transaction offline, you will need to manually set the Chain ID, nonce, and RC limit for the transaction.
 

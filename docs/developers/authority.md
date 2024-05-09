@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/shield-halved
+---
+
 # Authority
 A key innovation of Koinos is the ability to define account authority with a smart contract. On most other blockchains authorization of an address is limited to a specific cryptographic algorithm or predefined configuration such as N of M multisig. Koinos turns all that on its head by allowing addresses to define their own authorization algorithms using smart contracts. While Ethereum does allow for some similar behavior with its smart contracts, Koinos' approach is more abstract and results in a much better end user experience through smart wallets (Smart contracts directly intended to manage wallets). Remember, a contract is an address, so while the examples below are being used for a smart contract, it can be applied to an address intended for an end user as well.
 

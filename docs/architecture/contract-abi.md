@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/file
+---
+
 # Contract ABI
 To interact with smart contracts, Koinos tooling requires an Application Binary Interface (ABI). This ABI is a json file that describes what functions a contract has available and how to interact with it. Here is an example ABI for the KOIN Contract.
 

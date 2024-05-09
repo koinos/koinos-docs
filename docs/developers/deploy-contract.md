@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/file-contract
+---
+
 # Deploying a contract
 
 This guide assumes you have already built a smart contract. If you have not done so, you can learn how in one of these guides ([Calculator](guides/calculator.md), [Token](guides/token.md)).

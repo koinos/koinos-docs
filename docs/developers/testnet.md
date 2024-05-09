@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/network-wired
+---
+
 # Testnet
 A blockchain testnet serves as a sandbox environment for developers and users to experiment, test, and deploy smart contracts, decentralized applications (DApps), and other blockchain-related functionalities without using real cryptocurrency or affecting the main blockchain network. Testnets mimic the behavior of the main blockchain but operate with fake or test tokens, allowing users to simulate real-world scenarios and interactions in a risk-free environment. They provide a platform for developers to debug code, identify potential vulnerabilities, and gauge the performance and scalability of their applications before deploying them on the mainnet. Testnets also facilitate collaboration among developers and enable the community to contribute to the improvement and evolution of blockchain protocols and applications through feedback and testing.
 

@@ -1,3 +1,7 @@
+---
+icon: fontawesome/brands/docker
+---
+
 # Docker Compose profiles
 Docker Compose profiles allow embedded different configurations within a single compose file. The Koinos node comes with several compose profiles configured that quickly enable common configurations. For more information on Docker Compose profiles, please read the official [documentation](https://docs.docker.com/compose/profiles/).
 

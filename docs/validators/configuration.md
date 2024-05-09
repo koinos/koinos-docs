@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/gears
+---
+
 # Configuration
 While we aim for the Koinos node to be usable by as many people as possible, there are times when you need to configure your node for your specific deployment. There are five files that can be used to configure your Koinos node. The first four are mapped in to the microservices themselves and are contained within the `config` directory. The last is the `.env` file that configures the cluster. The node provides two sets of configurations, one for mainnet which is contained in [config-example](https://github.com/koinos/koinos/tree/master/config-example) and [env.example](https://github.com/koinos/koinos/blob/master/env.example) in the root of the repo and another for the Harbinger testnet which is in the [harbinger](https://github.com/koinos/koinos/tree/master/harbinger) directory.
 

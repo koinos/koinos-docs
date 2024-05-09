@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/terminal
+---
+
 # Koinos CLI
 The Koinos Command Line Interface (CLI) is a comprehensive command line tool for interacting with the Koinos Blockchain.
 

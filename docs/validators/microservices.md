@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/circle-nodes
+---
+
 # Microservices
 The Koinos node uses a microservice architecture. This means that the node consists of independently running programs that interact with one another, each performing a specific task, to implement all features of the node. Advantages of this architecture are cleaner implementations and better abstractions in the microservices themselves as well as greater flexibility for how a node is run. Docker compose runs each microservice on the same physical host, but in sandboxed environments. You can run all of the microservices on the host directly, but this can be tedious managing every binary individually. Microservices can even be run on different machines and communicate over the network.
 

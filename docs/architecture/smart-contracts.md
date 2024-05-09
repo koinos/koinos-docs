@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/code
+---
+
 # Smart contracts
 The Koinos Blockchain Framework is a bare bones minimal blockchain implementation that is fully customizable through the use of smart contracts. Smart contracts can implement both feature rich
 decentralized applications and core system functionality. The information in this documented is intended to be SDK agnostic and explain the core functionality of the Koinos Virtual Machine and its

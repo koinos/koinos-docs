@@ -1,3 +1,6 @@
+---
+icon: fontawesome/solid/fire
+---
 # Proof-of-Burn
 Proof-of-Burn (PoB) is the consensus algorithm used by the Koinos blockchain. It shares properties with both Proof-of-Work (PoW) and Proof-of-Stake (PoS). At a high level, Proof-of-Burn emulates the economics Proof-of-Work while being efficient like Proof-of-Stake.
 

@@ -1,8 +1,10 @@
 ---
+icon: fontawesome/solid/server
+title: REST API
 hide:
 - toc
 ---
 
-# REST API
+#
 
 <swagger-ui src="./swagger.json">

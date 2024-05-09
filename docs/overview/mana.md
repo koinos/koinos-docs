@@ -1,3 +1,6 @@
+---
+icon: fontawesome/solid/hat-wizard
+---
 # Mana
 Mana is a regenerative resource granted by holding KOIN that allows users to pay for transactions with time.
 

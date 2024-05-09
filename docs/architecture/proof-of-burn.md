@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/fire
+---
+
 # Proof-of-Burn
 Koinos' Proof-of-Burn (PoB) algorithm is designed to be a fair and efficient consensus mechanism. In this system, participants "burn" tokens, thereby demonstrating their commitment and reducing the circulating supply of the token. To determine block validators, participants submit cryptographic proofs. Validators are selected randomly based on the size of the burn relative to the total amount burned within a specific time window, ensuring that larger burns have a higher chance of being selected. This mechanism incentivizes participants to contribute to the network's security and stability by sacrificing tokens, with the potential reward of becoming block validators and earning block rewards in return. The Proof-of-Burn concept aligns with Koinos' aim to create a fair and sustainable blockchain ecosystem.
 

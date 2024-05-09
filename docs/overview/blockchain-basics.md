@@ -1,4 +1,7 @@
-# Blockchain Basics
+---
+icon: fontawesome/solid/cube
+---
+# Blockchain basics
 By now you've likely heard quite a bit about the blockchain. Throughout the years blockchain has undergone rapid evolution and it might seem difficult to keep up. From the initial release of Bitcoin to more contemporary blockchains like Koinos, it is a challenge to keep up with the technical advancements in the space.
 
 This document aims to guide you through blockchain concepts and the specific features offered by Koinos so you can begin participating in the future of the internet.

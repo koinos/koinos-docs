@@ -141,4 +141,5 @@ $ protoc --descriptor_set_out=koin.pb koinos/contracts/token/token.proto koinos/
 $ cat koin.pb | base64
 ```
 
-_**Note:** You need to include both the contract proto file (`koinos/contracts/token/token.proto` and any non-protobuf files it includes (`koinos/options.proto`). This will create the smallest possible ABI that can be used with various Koinos tooling._
+!!! note
+    You need to include both the contract proto file (`koinos/contracts/token/token.proto` and any non-protobuf files it includes (`koinos/options.proto`). This will create the smallest possible ABI that can be used with various Koinos tooling.

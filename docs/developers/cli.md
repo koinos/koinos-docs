@@ -76,7 +76,8 @@ To transfer tKOIN from the currently open wallet, use the command `transfer <amo
 ---
 ## Smart contract management
 
-_**Note:** Smart contract management will change in the future to be much easier to work with._
+!!! note
+    Smart contract management will change in the future to be much easier to work with.
 
 To upload a smart contract, use the command `upload <filename>`. The file given should be a compiled wasm smart contract. The contract id will be the public address of the currently open wallet.
 

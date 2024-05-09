@@ -23,7 +23,7 @@ The general strategy of determining finality is fours steps.
 
     ``` { .txt }
     curl -X 'GET' \
-    'https://dev.api.koinos.pro/v1/transaction/0x1220b60d6774022f969d913bedc7b8721d8fd17e7a3ef436833c52408d1cae64c70d?return_receipt=false&decode_operations=false&decode_events=false' \
+    'https://api.koinos.pro/v1/transaction/0x1220b60d6774022f969d913bedc7b8721d8fd17e7a3ef436833c52408d1cae64c70d?return_receipt=false&decode_operations=false&decode_events=false' \
     -H 'accept: application/json' \
     -H 'X-API-KEY: WNfKg6ITYc9mWViySEvLiODZp6iti1A5'
     ```
@@ -70,7 +70,7 @@ Using the block ID contained in `contained_blocks`, we will check the block heig
 
     ``` { .txt }
     curl -X 'GET' \
-    'https://dev.api.koinos.pro/v1/block/0x12203b67158009cbdc57709899589361f482ab41d768a35da3ab5f10956345a4e99c?return_block=false&return_receipt=false' \
+    'https://api.koinos.pro/v1/block/0x12203b67158009cbdc57709899589361f482ab41d768a35da3ab5f10956345a4e99c?return_block=false&return_receipt=false' \
     -H 'accept: application/json' \
     -H 'X-API-KEY: WNfKg6ITYc9mWViySEvLiODZp6iti1A5'
     ```
@@ -93,7 +93,7 @@ Lastly, we need to check the irreversibility height at the current head block.
 
     ``` { .txt }
     curl -X 'GET' \
-    'https://dev.api.koinos.pro/v1/chain/head_info' \
+    'https://api.koinos.pro/v1/chain/head_info' \
     -H 'accept: application/json' \
     -H 'X-API-KEY: WNfKg6ITYc9mWViySEvLiODZp6iti1A5'
     ```
@@ -124,7 +124,7 @@ The last step we need to do is check that the block is irreversibility included 
 
     ``` { .txt }
     curl -X 'GET' \
-    'https://dev.api.koinos.pro/v1/block/15389602?return_block=false&return_receipt=false' \
+    'https://api.koinos.pro/v1/block/15389602?return_block=false&return_receipt=false' \
     -H 'accept: application/json' \
     -H 'X-API-KEY: WNfKg6ITYc9mWViySEvLiODZp6iti1A5'
     ```

@@ -1,6 +1,4 @@
-
 # Offline signing
-
 Regardless of your method of signing a transaction offline, you will need to manually set the Chain ID, nonce, and RC limit for the transaction.
 
 ---
@@ -155,7 +153,7 @@ The RC, or "Resource Credit", limit is like the gas limit on Ethereum. It specif
     }
     ```
 
-    !!! Reminder
+    !!! reminder
         The empty result corresponds to a value of 0.
 
 ---
@@ -233,7 +231,7 @@ The RC, or "Resource Credit", limit is like the gas limit on Ethereum. It specif
 
 === "JSON-RPC"
 
-    !!! Notice
+    !!! notice
         JSON-RPC does not support transaction signing.
 
 ---

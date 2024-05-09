@@ -1,5 +1,4 @@
 # Finality
-
 Finality is the idea of transactions being final and unable to be reversed. On Koinos, this is enforced through a system called irreversibility. Because Koinos is not a Proof of Work (PoW) blockchain, blocks are relatively cheap to produce, and it is possible for a "longest chain" to exist of a block far in the past. To prevent this behavior, there is a reversible window where the Koinos node will accept past blocks and track all forks. However, once a block is 60 blocks deep from the current head, it becomes irreversible and blocks with a height equal to or less than the irreversible height will no longer be included. A transaction can be considered final once it is included in an irreversible block.
 
 Finality is the safest threshold for inclusion. In nearly all cases, being just a few blocks deep is as good as final. Further than that, the Koinos mempool makes every attempt to include transactions on every fork, so in many cases simply getting accepted to the mempool means the transaction will be included, but that is the least safe threshold for finality.
@@ -11,7 +10,7 @@ The general strategy of determining finality is fours steps.
 - Step 3: Check the irreversibility threshold of the head block.
 - Step 4: Check the block containing the transaction is on the irreversible chain.
 
-!!! Notice
+!!! notice
     The Koinos CLI cannot currently determine finality.
 
 ---

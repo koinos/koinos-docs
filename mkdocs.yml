@@ -73,7 +73,7 @@ theme:
     - search.suggest
     - toc.follow
     # - toc.integrate
-  favicon: assets/koinos-icon-dark.png
+  favicon: assets/koinos-icon-dark.svg
   logo: assets/koinos-mark-light.svg
 
 extra:

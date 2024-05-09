@@ -31,18 +31,24 @@ theme:
       example: fontawesome/solid/flask
       quote: fontawesome/solid/quote-left
   palette:
+    - media: "(prefers-color-scheme)"
+      primary: black
+      scheme: slate
+      toggle:
+        icon: material/link
+        name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       primary: black
       scheme: slate
       toggle:
-        icon: material/brightness-4
+        icon: material/toggle-switch
         name: Switch to light mode
     - media: "(prefers-color-scheme: light)"
       primary: black
       scheme: default
       toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
+        icon: material/toggle-switch-off
+        name: Switch to system preference
   features:
     - announce.dismiss
     - content.action.edit
@@ -139,7 +145,7 @@ nav:
     - validators/configuration.md
     - validators/node-security.md
     - validators/node-management.md
-    - Guides:
+    - Validator guides:
       - validators/guides/running-a-node.md
       - validators/guides/block-production.md
   - Exchanges:

@@ -6,7 +6,6 @@ hide:
 # Developers
 This comprehensive resource hub is designed to empower developers to leverage the full potential of the Koinos blockchain. Whether you're a seasoned blockchain developer or just getting started, you'll find everything you need to build scalable decentralized applications (dApps) and smart contracts. Dive into tutorials, API references, and SDKs that simplify smart contract development using AssemblyScript. Learn how to interact with the Koinos blockchain through REST APIs and the command-line interface (CLI). Explore resource management techniques, transaction crafting, and authority management to optimize the performance and security of your applications. Join our vibrant community and start innovating with Koinos today!
 
----
 <div class="grid cards" markdown>
 
 -   :fontawesome-solid-terminal:{ .lg .middle } __Koinos CLI__

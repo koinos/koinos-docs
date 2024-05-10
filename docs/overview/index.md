@@ -6,7 +6,6 @@ hide:
 # Overview
 Welcome to the Koinos overview! In this section, we will provide you with a comprehensive introduction to the fundamental concepts and features of the Koinos blockchain.
 
----
 <div class="grid cards" markdown>
 
 -   :fontawesome-solid-cube:{ .lg .middle } __Blockchain basics__

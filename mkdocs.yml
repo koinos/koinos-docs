@@ -114,6 +114,7 @@ plugins:
   - search
 
 nav:
+  - Home: index.md
   - Overview:
     - overview/index.md
     - overview/blockchain-basics.md
@@ -175,5 +176,5 @@ nav:
     - architecture/contract-abi.md
     - architecture/resources.md
     - architecture/system-calls.md
-#  - Resources:
-#    - resources/index.md
+  - Resources:
+    - resources/index.md

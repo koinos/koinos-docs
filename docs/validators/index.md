@@ -6,7 +6,6 @@ hide:
 # Validators
 This section is your gateway to becoming a vital part of the Koinos blockchain network by operating and maintaining validator nodes. Discover detailed guidelines, best practices, and technical insights on setting up and running validator nodes effectively. Learn about consensus mechanisms, block production, and network security to contribute to the decentralized and secure operation of the Koinos blockchain. Dive into validator node management, monitoring, and troubleshooting to ensure reliable and performant operation. Join our community of validators and help secure the future of the Koinos ecosystem!
 
----
 <div class="grid cards" markdown>
 
 -   :fontawesome-solid-file-lines:{ .lg .middle } __Node requirements__

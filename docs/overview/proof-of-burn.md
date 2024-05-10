@@ -49,5 +49,3 @@ Unlike traditional blockchain vernacular, burning KOIN does not get sent to an a
 
 ### Block production incentives
 Where do block rewards come from? The answer to this is very simple. Block producers are incentivized to participate in the network because they are paid through a modest 2% APY, or Annual Percentage Yield. This is the inflationary force on the KOIN supply.
-
-[Understanding the tokenomics »](tokenomics.md)

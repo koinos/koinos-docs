@@ -6,7 +6,6 @@ hide:
 # Architecture
 The architecture section of the Koinos documentation provides a comprehensive overview of the underlying design and components that power the Koinos blockchain. Explore the innovative features, consensus mechanisms, and scalability solutions that differentiate Koinos from other blockchain platforms. Learn about the Koinos Virtual Machine (KVM), resource management strategies, and the unique approach to smart contract execution.
 
----
 <div class="grid cards" markdown>
 
 -   :fontawesome-solid-circle-nodes:{ .lg .middle } __Microservices__

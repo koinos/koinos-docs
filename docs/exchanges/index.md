@@ -12,7 +12,6 @@ Most of this information may also be useful to dApp developers, but because the 
 ## Technologies
 This guide will use four technologies for interacting with Koinos. They are not equal. Some perform certain jobs better than others, or not at all. What technologies you choose to use are going to be dependent upon your existing application stack and how best to integrate Koinos in to it. If this guide is lacking a feature or some critical component to your integration, please contact us. It may be that we didn't think to document that particular requirement, or we could add it as a feature (depending upon complexity).
 
----
 <div class="grid cards" markdown>
 
 -   :fontawesome-solid-terminal:{ .lg .middle } __Koinos CLI__

@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/file
+---
+
 # Contract ABI
 To interact with smart contracts, Koinos tooling requires an Application Binary Interface (ABI). This ABI is a json file that describes what functions a contract has available and how to interact with it. Here is an example ABI for the KOIN Contract.
 
@@ -137,4 +141,5 @@ $ protoc --descriptor_set_out=koin.pb koinos/contracts/token/token.proto koinos/
 $ cat koin.pb | base64
 ```
 
-_**Note:** You need to include both the contract proto file (`koinos/contracts/token/token.proto` and any non-protobuf files it includes (`koinos/options.proto`). This will create the smallest possible ABI that can be used with various Koinos tooling._
+!!! note
+    You need to include both the contract proto file (`koinos/contracts/token/token.proto` and any non-protobuf files it includes (`koinos/options.proto`). This will create the smallest possible ABI that can be used with various Koinos tooling.

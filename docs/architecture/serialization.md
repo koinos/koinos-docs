@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/cubes
+---
+
 # Serialization
 Koinos utilizes [Protocol Buffers](https://protobuf.dev/) for serializing data types between microservices and between the Koinos Blockchain Framework and the KVM. Protocol Buffers was chosen for a variety of reasons. The primary being the number of officially supported languages and flexibility of the specification to represent all cases required by Koinos.
 

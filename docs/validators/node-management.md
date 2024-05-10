@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/list-check
+---
+
 # Node management
 While our goal is to make the Koinos node as easy to use as possible, inevitably, there will be times where you need to do some maintenance on the node. Here we have listed a few common tasks and how to complete them.
 

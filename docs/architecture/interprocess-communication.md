@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/network-wired
+---
+
 # Interprocess communication
 Communication between microservices is accomplished utilizing the AMQP 0.9.1 protocol. The Koinos cluster uses the hub and spoke model. Messages between microservices can either be RPC or broadcast (see **Table 1** below for a more detailed explanation). Messages originating from a particular microservice will be directed through an exchange on RabbitMQ; through `koinos.rpc` and `koinos.event` for RPC and broadcasts, respectively.
 

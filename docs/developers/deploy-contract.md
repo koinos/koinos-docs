@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/file-contract
+---
+
 # Deploying a contract
 
 This guide assumes you have already built a smart contract. If you have not done so, you can learn how in one of these guides ([Calculator](guides/calculator.md), [Token](guides/token.md)).
@@ -32,7 +36,8 @@ Created and opened new wallet: my.wallet
 Address: 1Nro48sFcsFHidW4MvLpAiVqBiz1aCVqq4
 ```
 
-_**Note:** When you have an open wallet the prompt will change to an open lock 🔓._
+!!! note
+    When you have an open wallet the prompt will change to an open lock 🔓.
 
 In this example, your contract would be uploaded to `1Nro48sFcsFHidW4MvLpAiVqBiz1aCVqq4`, and other users will be able to call your contract at this address. For this reason, it is recommended to create a new address for your smart contract, rather than using an address you are already using. Remember, creating addresses is free.
 

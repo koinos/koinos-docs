@@ -1,3 +1,6 @@
+---
+icon: fontawesome/solid/fire
+---
 # Proof-of-Burn
 Proof-of-Burn (PoB) is the consensus algorithm used by the Koinos blockchain. It shares properties with both Proof-of-Work (PoW) and Proof-of-Stake (PoS). At a high level, Proof-of-Burn emulates the economics Proof-of-Work while being efficient like Proof-of-Stake.
 
@@ -46,5 +49,3 @@ Unlike traditional blockchain vernacular, burning KOIN does not get sent to an a
 
 ### Block production incentives
 Where do block rewards come from? The answer to this is very simple. Block producers are incentivized to participate in the network because they are paid through a modest 2% APY, or Annual Percentage Yield. This is the inflationary force on the KOIN supply.
-
-[Understanding the tokenomics »](tokenomics.md)

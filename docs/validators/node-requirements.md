@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/file-lines
+---
+
 # Node requirements
 Below are the node requirements using the provided Docker Compose scripts.
 

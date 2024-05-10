@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/left-right
+---
+
 # System calls
 System calls are how requests to the Koinos Blockchain Framework are made. Each system call provides important functionality to be utilized from smart contracts or other parts of the framework.
 

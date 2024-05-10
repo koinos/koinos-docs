@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/file
+---
+
 # Transactions
 Blockchain transactions involve the transfer of digital assets or information across a decentralized network of computers, known as nodes. Each transaction is securely recorded in a chronological and immutable manner within a block, which is then linked to previous blocks, forming a chain. These transactions are verified by network participants through cryptographic algorithms, ensuring authenticity and preventing tampering. Once verified, transactions are added to the blockchain and become irreversible, providing transparency and trust without the need for intermediaries. This decentralized and transparent nature of blockchain transactions offers numerous benefits, including enhanced security, reduced costs, and increased efficiency across various industries.
 

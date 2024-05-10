@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/microchip
+---
+
 # RC limits
 The acronym RC stands for resource credit. When speaking about Koinos, this can be directly replaced with the word Mana. The reason for the acronym is because Koinos is implemented using the Koinos blockchain framework which does not enforce the resource subsystem known as Mana. For all intents and purposes you can think Mana whenever you see RC. The resource credit limit, or RC limit, is a field that lives on the transaction. It allows the user the limit the total amount of Mana that will used when processing a given transaction.
 

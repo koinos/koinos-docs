@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/code
+---
+
 # AssemblyScript SDK
 The Koinos AssemblyScript SDK is a powerful toolkit designed for developers to construct smart contracts on the Koinos blockchain. Leveraging AssemblyScript, a subset of TypeScript, this SDK offers a familiar and developer-friendly environment for coding smart contracts. It provides essential functionalities such as data manipulation, transaction handling, and contract interactions, enabling developers to create complex decentralized applications (dApps) with ease. With its comprehensive documentation and well-defined APIs, the Koinos AssemblyScript SDK streamlines the process of building, testing, and deploying smart contracts, empowering developers to unleash the full potential of the Koinos blockchain ecosystem.
 

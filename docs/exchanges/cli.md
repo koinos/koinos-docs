@@ -1,5 +1,8 @@
-# Koinos CLI
+---
+icon: fontawesome/solid/terminal
+---
 
+# Koinos CLI
 However, it does not have remote functionality built in. We can easily add remote functionality using socat. Socat is available on most Linux distros using their default package manager.
 
 To use socat, we will need to create a wrapper script around the CLI that will parse payloads and correctly send them to the CLI. Please note that commands are going to be sent to the CLI as command line arguments rather than through the CLI's shell. This means that they could be logged by the host system in bash history or some other system log. If you are using the CLI for wallet management, please be sure to secure the system hosting the wallet to avoid leaking potentially valuable data.

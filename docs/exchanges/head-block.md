@@ -1,12 +1,11 @@
 # Head block
-
 The head block is the most recent addition to any blockchain. Because of this, checking the status of the head block is a great indicator of the overall health of a blockchain. If, for example, the head block's block time is several minutes behind, that could be an indication of a problem with the blockchain, especially considering Koinos aims to have an average block time of 3 seconds. In such a scenario, it may be wise to preemptively pause deposits and withdrawals while the issue is further investigated.
 
 There are two primary tools we use to get this information, which are used in conjunction. The first is getting the chain's head info. The head info is a short summary of the head of the chain. It contains the head block id, height, and block time (in epoch ms), as well as other information used by the blockchain itself.
 
 We can also use the block id from the head info to look up the actual head block.
 
-!!! Notice
+!!! notice
     The Koinos CLI cannot currently query the head block.
 
 ---

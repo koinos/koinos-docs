@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/cubes
+---
+
 # Protocol buffers
 Protocol Buffers, also known as Protobuf, is a widely used method for serializing structured data, developed by Google. It offers a platform-neutral, efficient way to encode data that can be used for communication protocols, data storage, and more. With its language-neutral interface and compact binary format, Protocol Buffers enable efficient data exchange between different systems and programming languages, providing advantages such as reduced bandwidth usage and faster data processing. Its schema definition language allows for defining the structure of data, facilitating seamless communication and interoperability across a wide variety of environments.
 

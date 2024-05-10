@@ -58,7 +58,9 @@ Next, we must burn some KOIN in order to receive VHP. Let us burn 1,000 KOIN in 
 ```{ .txt, .no-copy }
 🔓 > pob.burn 100000000000 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn
 ```
-_**Note:** You may repeat this process to top off your VHP as you run your block producer over time. Do not burn your entire KOIN balance as you will need liquid KOIN and its associated mana in order to produce blocks._
+
+!!! note
+    You may repeat this process to top off your VHP as you run your block producer over time. Do not burn your entire KOIN balance as you will need liquid KOIN and its associated mana in order to produce blocks.
 
 ---
 ## Configuring the block producer

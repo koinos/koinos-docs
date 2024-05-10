@@ -6,8 +6,6 @@ hide:
 # Koinos is for developers
 The Koinos blockchain is purposefully designed with developers in mind, offering a versatile and developer-friendly environment for building decentralized applications (dApps) and smart contracts. Through innovative features such as the Koinos Virtual Machine (KVM) and a flexible architecture, Koinos empowers developers to create scalable, high-performance applications without the limitations often associated with traditional blockchains.
 
----
-
 <div class="grid cards" markdown>
 
 -   :fontawesome-solid-mountain-sun:{ .lg .middle } __Overview__

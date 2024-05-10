@@ -43,3 +43,34 @@ Wallets play a crucial role in the Koinos blockchain ecosystem, providing a secu
 
     [:octicons-arrow-right-24: I want security](https://tangem.com/)
 </div>
+
+---
+## Platforms
+The platforms on the Koinos blockchain offer developers a robust and scalable environment to build and deploy innovative decentralized applications. Integrating your dApp with various existing platforms may boost your visibile and add cohesion to the Koinos ecosystem.
+
+<div class="grid cards" markdown>
+
+-   :fontawesome-solid-coins:{ .lg .middle } __Kollection__
+
+    ---
+
+    Kollection is a full featured Non-Fungible-Token (NFT) marketplace that allows creators to launch and sell their products.
+
+    [:octicons-arrow-right-24: I'm a power user](https://kollection.app/)
+
+-   :fontawesome-solid-rocket:{ .lg .middle } __KoinCity__
+
+    ---
+
+    KoinCity is a token launchpad with numerous features including token launches, staking, marketplace, and social interaction.
+
+    [:octicons-arrow-right-24: Launch a token](https://koincity.com/)
+
+-   :material-swap-horizontal-bold:{ .lg .middle } __KoinDX__
+
+    ---
+
+    KoinDX is the world's first decentralization exchange built on the Koinos blockchain.
+
+    [:octicons-arrow-right-24: I want convenience](https://koindx.com/)
+</div>

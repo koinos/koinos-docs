@@ -44,7 +44,20 @@ Wallets play a crucial role in the Koinos blockchain ecosystem, providing a secu
     [:octicons-arrow-right-24: I want security](https://tangem.com/)
 </div>
 
----
+## Contract standards
+Standards provide guidelines and information for developers to utilize so that their contributions to Koinos can fully take advantage of the entire ecosystem.
+
+<div class="grid cards" markdown>
+
+-   :fontawesome-solid-book:{ .lg .middle } __Koinos Contract Standards__
+
+    ---
+
+    The Koinos Contract Standards (KCS) provide a framework for smart contracts to faciliate the interoperability of all decentralized applications in the Koinos ecosystem.
+
+    [:octicons-arrow-right-24: Understand Koinos Contract Standards](https://github.com/koinos/koinos-contract-standards)
+</div>
+
 ## Platforms
 The platforms on the Koinos blockchain offer developers a robust and scalable environment to build and deploy innovative decentralized applications. Integrating your dApp with various existing platforms may boost your visibile and add cohesion to the Koinos ecosystem.
 
@@ -73,4 +86,51 @@ The platforms on the Koinos blockchain offer developers a robust and scalable en
     KoinDX is the world's first decentralization exchange built on the Koinos blockchain.
 
     [:octicons-arrow-right-24: I want convenience](https://koindx.com/)
+</div>
+
+## Libraries
+Libraries allow users to interact with the Koinos blockchain programmatically in a variety of ways but most notably through web technologies.
+
+<div class="grid cards" markdown>
+
+-   :fontawesome-brands-js:{ .lg .middle } __Koilib__
+
+    ---
+
+    Kollection is a full featured Non-Fungible-Token (NFT) marketplace that allows creators to launch and sell their products.
+
+    [:octicons-arrow-right-24: The premier Koinos JavaScript library](https://www.npmjs.com/package/koilib)
+
+-   :fontawesome-solid-rocket:{ .lg .middle } __Arkinos__
+
+    ---
+
+    This is a new tool that dramatically simplifies contract development on Koinos. You can create a new contract and have a website to interact with it in less than 5 minutes!
+
+    [:octicons-arrow-right-24: Launch a frontend with smart contract](https://www.npmjs.com/package/arkinos)
+
+</div>
+
+## Software development kits
+Software development kits (SDKs) provide compilers, debugging, testing frameworks, and libraries for the development of Koinos smart contracts and can come in a variety of languages.
+
+<div class="grid cards" markdown>
+
+-   :fontawesome-brands-js:{ .lg .middle } __AssemblyScript__
+
+    ---
+
+    The Koinos AssemblyScript SDK is among the most popular among Koinos developers. It provides an easy to use API in a language that many developers are already familiar with.
+    <br/><br/>
+
+    [:octicons-arrow-right-24: Build with AssemblyScript](https://github.com/koinos/koinos-sdk-as)
+
+-   :fontawesome-solid-c:{ .lg .middle } __C++__
+
+    ---
+
+    The Koinos C++ SDK is a powerful toolkit that allows for the development of smart contracts in C++. While it is currently less popular than alternatives, many system level smart contracts are implemented using it.
+
+    [:octicons-arrow-right-24: I'm an expert, I know what I'm doing](https://github.com/koinos/koinos-sdk-cpp)
+
 </div>

@@ -8,7 +8,6 @@ This guide is intended for use by exchanges when integrating Koinos. It is subje
 
 Most of this information may also be useful to dApp developers, but because the target audience are exchanges, there may be large gaps.
 
----
 ## Technologies
 This guide will use four technologies for interacting with Koinos. They are not equal. Some perform certain jobs better than others, or not at all. What technologies you choose to use are going to be dependent upon your existing application stack and how best to integrate Koinos in to it. If this guide is lacking a feature or some critical component to your integration, please contact us. It may be that we didn't think to document that particular requirement, or we could add it as a feature (depending upon complexity).
 
@@ -50,7 +49,6 @@ This guide will use four technologies for interacting with Koinos. They are not 
 
 </div>
 
----
 ## Common tasks
 
 Additionally, this guide will provide examples on how to execute tasks on Koinos commonly used by exchanges. Each task will contain a short guide with examples for each technology that can complete the task. If your required task is not covered here or you cannot figure out how to do what you need using these guides, please reach out in Telegram or Discord and we will be happy to assist you.

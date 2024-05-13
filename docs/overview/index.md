@@ -58,5 +58,4 @@ Welcome to the Koinos overview! In this section, we will provide you with a comp
     [:octicons-arrow-right-24: Learn more about on-chain governance](governance.md)
 </div>
 
----
 In the following sections, we will explore each of these concepts in more detail, providing you with a deeper understanding of how the Koinos blockchain operates and how you can leverage its capabilities to build innovative decentralized applications. Let's dive in!

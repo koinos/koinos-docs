@@ -6,7 +6,21 @@ hide:
 # Resources
 In the resources section of the Koinos documentation, you'll find a wealth of supplementary materials to further enhance your understanding and development experience with the Koinos blockchain. Explore links to community forums, developer blogs, and video tutorials that provide insights into best practices, troubleshooting tips, and real-world use cases. Access additional documentation, SDKs, and tools to accelerate your development journey and engage with the vibrant Koinos community to collaborate, share knowledge, and stay updated on the latest developments within the ecosystem.
 
-## Wallets
+## Koinos is Open Source
+All standard microservice code and SDKs are available in its entirety and completely open source.
+
+<div class="grid cards" markdown>
+
+-   :fontawesome-brands-github:{ .lg .middle } __Koinos organization__
+
+    ---
+
+    The Koinos blockchain is open source and completely decentralized and we encourage all developers to contribute code to improve the Koinos ecosystem.
+
+    [:octicons-arrow-right-24: Read the code](https://github.com/koinos)
+</div>
+
+## Cryptocurrency wallets
 Wallets play a crucial role in the Koinos blockchain ecosystem, providing a secure and user-friendly interface for managing Koinos tokens (KOIN) and interacting with decentralized applications (dApps). Koinos wallets enable users to send and receive KOIN, delegate resources, and interact with smart contracts, offering a seamless and intuitive experience for engaging with the blockchain.
 
 <div class="grid cards" markdown>
@@ -58,7 +72,7 @@ Standards provide guidelines and information for developers to utilize so that t
     [:octicons-arrow-right-24: Understand Koinos Contract Standards](https://github.com/koinos/koinos-contract-standards)
 </div>
 
-## Platforms
+## Ecosystem platforms
 The platforms on the Koinos blockchain offer developers a robust and scalable environment to build and deploy innovative decentralized applications. Integrating your dApp with various existing platforms may boost your visibile and add cohesion to the Koinos ecosystem.
 
 <div class="grid cards" markdown>
@@ -88,7 +102,7 @@ The platforms on the Koinos blockchain offer developers a robust and scalable en
     [:octicons-arrow-right-24: I want convenience](https://koindx.com/)
 </div>
 
-## Libraries
+## Software libraries
 Libraries allow users to interact with the Koinos blockchain programmatically in a variety of ways but most notably through web technologies.
 
 <div class="grid cards" markdown>
@@ -111,8 +125,8 @@ Libraries allow users to interact with the Koinos blockchain programmatically in
 
 </div>
 
-## Software development kits
-Software development kits (SDKs) provide compilers, debugging, testing frameworks, and libraries for the development of Koinos smart contracts and can come in a variety of languages.
+## Software Development Kits
+Software Development Kits (SDKs) provide compilers, debugging, testing frameworks, and libraries for the development of Koinos smart contracts and can come in a variety of languages.
 
 <div class="grid cards" markdown>
 

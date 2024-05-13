@@ -55,6 +55,15 @@ Below you can find examples of how to check your current Mana using a variety of
     Set rc limit to 10
     ```
 
+=== "Koilib"
+    You can retrieve an account's current mana with the [getAccountRc function](https://joticajulian.github.io/koilib/classes/Provider.html#getAccountRc):
+
+    ```ts
+    const provider = new Provider("https://api.koinos.io");
+    const accountRc = await provider.getAccountRc("1CKtxyeatx6BsGjB4GXNoT4vEdRRka7WdJ");
+    console.log(accountRc);
+    ```
+
 === "REST"
     You can retrieve an account's current mana using the path `v1/account/{account}/mana`.
 

@@ -150,3 +150,22 @@ A crucial feature of blockchain technology is the ability to audit the history o
       }
     ]
     ```
+
+=== "Koilib"
+
+    Use the [call function](https://joticajulian.github.io/koilib/classes/Provider.html#call) to the the account history of a particular account:
+
+    ```ts
+    const provider = new Provider(["https://api.koinos.io"]);
+    const result = await provider.call(
+      "account_history.get_account_history",
+      {
+        address: "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS",
+        limit: 2,
+        seq_num: 5,
+        ascending: true,
+        irreversible: true,
+      }
+    );
+    console.log(result);
+    ```

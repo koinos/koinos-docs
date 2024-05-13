@@ -37,3 +37,20 @@ Below you can find examples of how to createa a Koinos wallet using a variety of
     ``` { .txt .no-copy }
     Opened wallet: file.wallet
     ```
+
+=== "Koilib"
+
+    To create a new wallet with Koilib generate a random private key of 32 bytes and import
+    it by using the [Signer class](https://joticajulian.github.io/koilib/classes/Signer.html):
+
+    ```ts
+    import crypto from "crypto";
+    import { Signer } from "koilib";
+
+    const privateKey = crypto.randomBytes(32).toString("hex");
+    const signer = new Signer({ privateKey });
+    console.log({
+      address: signer.address,
+      privateKeyWif: signer.getPrivateKey("wif"),
+    });
+    ```

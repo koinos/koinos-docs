@@ -58,6 +58,17 @@ The general strategy of determining finality is fours steps.
     }
     ```
 
+=== "Koilib"
+
+    Get the transaction by its ID by using the [getTransactionsById function](https://joticajulian.github.io/koilib/classes/Provider.html#getTransactionsById) of the provider class:
+
+    ```ts
+    const provider = new Provider("https://api.koinos.io");
+    const transaction = await provider.getTransactionsById(["0x1220b60d6774022f969d913bedc7b8721d8fd17e7a3ef436833c52408d1cae64c70d"]);
+    console.log(transaction.containing_blocks);
+    ```
+
+
 ---
 ## Check block
 
@@ -79,6 +90,18 @@ Using the block ID contained in `contained_blocks`, we will check the block heig
       "block_id": "0x12203b67158009cbdc57709899589361f482ab41d768a35da3ab5f10956345a4e99c",
       "block_height": "15389602"
     }
+    ```
+
+=== "Koilib"
+    To retrieve a block by its ID use [getBlocksById](https://joticajulian.github.io/koilib/classes/Provider.html#getBlocksById):
+
+    ```ts
+    const provider = new Provider("https://api.koinos.io");
+    const block = await provider.getBlocksById(["0x12203b67158009cbdc57709899589361f482ab41d768a35da3ab5f10956345a4e99c"], {
+      returnBlock: false,
+      returnReceipt: false,
+    });
+    console.log(block);
     ```
 
 ---
@@ -110,6 +133,15 @@ Lastly, we need to check the irreversibility height at the current head block.
     }
     ```
 
+=== "Koilib"
+    To retrieve the head info use [getHeadInfo](https://joticajulian.github.io/koilib/classes/Provider.html#getHeadInfo):
+
+    ```ts
+    const provider = new Provider("https://api.koinos.io");
+    const headInfo = await provider.getHeadInfo();
+    console.log(headInfo);
+    ```
+
 We need to continue checking the head info until `last_irreversible_block` is greater than or equal the block height(s) in question.
 
 ---
@@ -136,3 +168,15 @@ The last step we need to do is check that the block is irreversibility included 
     ```
 
     As you can see, the returned block id matches the containing block back from step 1, so we know the transaction is final.
+
+=== "Koilib"
+    For Koilib use the [getBlock function](https://joticajulian.github.io/koilib/classes/Provider.html#getBlock):
+
+    ```ts
+    const provider = new Provider("https://api.koinos.io");
+    const block = await provider.getBlock("0x12203b67158009cbdc57709899589361f482ab41d768a35da3ab5f10956345a4e99c", {
+      returnBlock: false,
+      returnReceipt: false,
+    });
+    console.log(block);
+    ```

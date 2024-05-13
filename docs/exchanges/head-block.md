@@ -33,6 +33,14 @@ We can also use the block id from the head info to look up the actual head block
     "head_block_time": "1715268142650"
     }
     ```
+=== "Koilib"
+    To retrieve the head info use [getHeadInfo](https://joticajulian.github.io/koilib/classes/Provider.html#getHeadInfo):
+
+    ```ts
+    const provider = new Provider("https://api.koinos.io");
+    const headInfo = await provider.getHeadInfo();
+    console.log(headInfo);
+    ```
 
 ---
 ## Get head block
@@ -154,4 +162,20 @@ We can also use the block id from the head info to look up the actual head block
         ]
       }
     }
+    ```
+=== "Koilib"
+    To retrieve a block by height use [getBlock function](https://joticajulian.github.io/koilib/classes/Provider.html#getBlock):
+
+    ```ts
+    const provider = new Provider("https://api.koinos.io");
+    const block = await provider.getBlock(123234);
+    console.log(block);
+    ```
+
+    To retrieve a block by its ID use:
+
+    ```ts
+    const provider = new Provider("https://api.koinos.io");
+    const block = await provider.getBlocksById(["0x122070aa7100b1f1befa0991568e2a9e190b9fa68a94a2142309f076b1c0c04a6401"]);
+    console.log(block);
     ```

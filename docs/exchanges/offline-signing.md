@@ -1,6 +1,4 @@
-
-# Offline Signing
-
+# Offline signing
 Regardless of your method of signing a transaction offline, you will need to manually set the Chain ID, nonce, and RC limit for the transaction.
 
 ---
@@ -51,7 +49,21 @@ The transaction nonce is specific to the account transacting. It must be increme
 
 === "Koilib"
 
-    TODO
+    With Koilib, to retrieve the account's nonce use:
+
+    ```ts
+    const provider = new Provider("https://api.koinos.io");
+    const nonce = await provider.getNonce("1CKtxyeatx6BsGjB4GXNoT4vEdRRka7WdJ");
+    console.log(nonce);
+    ```
+
+    To retrieve the next nonce use:
+
+    ```ts
+    const provider = new Provider("https://api.koinos.io");
+    const nextNonce = await provider.getNextNonce("1CKtxyeatx6BsGjB4GXNoT4vEdRRka7WdJ");
+    console.log(nextNonce);
+    ```
 
 === "JSON-RPC"
 
@@ -115,7 +127,13 @@ The RC, or "Resource Credit", limit is like the gas limit on Ethereum. It specif
 
 === "Koilib"
 
-    TODO
+    You can retrieve an account's RC limit with the following code:
+
+    ```ts
+    const provider = new Provider("https://api.koinos.io");
+    const accountRc = await provider.getAccountRc("1CKtxyeatx6BsGjB4GXNoT4vEdRRka7WdJ");
+    console.log(accountRc);
+    ```
 
 === "JSON-RPC"
 
@@ -155,7 +173,7 @@ The RC, or "Resource Credit", limit is like the gas limit on Ethereum. It specif
     }
     ```
 
-    !!! Reminder
+    !!! reminder
         The empty result corresponds to a value of 0.
 
 ---
@@ -229,11 +247,46 @@ The RC, or "Resource Credit", limit is like the gas limit on Ethereum. It specif
 
 === "Koilib"
 
-    TODO
+    Koilib supports offline signinng. First create an instance of a transaction by using the
+    [Transaction class](https://joticajulian.github.io/koilib/classes/Transaction.html#pushOperation) and set the signer:
+
+    ```ts
+    import { Transaction, Provider, Contract, Signer, utils } from "koilib";
+
+    const provider = new Provider("https://api.koinos.io");
+    const signer = Signer.fromWif("Kzl...");
+    signer.provider = provider;
+    const tx = new Transaction({
+      provider: new Provider("https://api.koinos.io"),
+      signer,
+    });
+    ```
+
+    Define the operations you want to add to the transaction. In this example we will make a Koin transfer:
+
+    ```ts
+    const koin = new Contract({
+      id: "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+      abi: utils.tokenAbi,
+    }).functions;
+
+    await tx.pushOperation(koin.transfer, {
+      from: "1NRYHBYr9qxYQAeVqfdSvyjJemRQ4qD3Mt",
+      to: "13UdKjYuzfBYbB6bGLQkUN9DJRFPCmG1mU",
+      value: "1000", // 0.00001000 KOIN
+    });
+    ```
+
+    Call the function to prepare the headers and sign it:
+
+    ```ts
+    await tx.prepare();
+    await tx.sign();
+    ```
 
 === "JSON-RPC"
 
-    !!! Notice
+    !!! notice
         JSON-RPC does not support transaction signing.
 
 ---
@@ -268,7 +321,19 @@ Now that we have a signed transaction, we need to submit it to the blockchain.
 
 === "Koilib"
 
-    TODO
+    Submit the transaction by running:
+
+    ```ts
+    const receipt = await tx.send();
+    console.log(receipt);
+    ```
+
+    Once this is done, use the [wait function](https://joticajulian.github.io/koilib/classes/Transaction.html#wait) to wait for the transaction to be mined in a block:
+
+    ```ts
+    const { blockNumber } = await tx.wait();
+    console.log(`Transaction mined. Block number: ${blockNumber}`);
+    ```
 
 === "JSON-RPC"
 

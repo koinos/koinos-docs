@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/receipt
+---
+
 # Payer semantics
 On Koinos, there is a concept of both a "Payer" and a "Payee". The most common transaction will only utilize the payer field. This works similar to most other blockchains in which the user sending the transaction is also the one paying the cost. However, Koinos is also capable of changing these semantics. This document will delve further into the Payer semantics.
 

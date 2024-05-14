@@ -1,4 +1,9 @@
+---
+icon: fontawesome/solid/hat-wizard
+---
 # Mana
+Mana is a regenerative resource granted by holding KOIN that allows users to pay for transactions with time.
+
 Mana is behind the magic of Koinos. Every KOIN inherently contains Mana, which is used when using the Koinos blockchain. And just like in video games, your Mana recharges over time letting you continue to use Koinos forever!
 
 This document will guide you through the basics of Mana on the Koinos blockchain. By the end of the guide you will understand how Mana makes Koinos different from other blockchains, how to use, and how to manage your Mana so you can use Koinos free forever.

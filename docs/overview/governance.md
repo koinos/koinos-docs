@@ -1,3 +1,6 @@
+---
+icon: material/scale-balance
+---
 # Governance
 The Koinos blockchain employs an innovative on-chain governance system designed to ensure decentralized decision-making and network evolution. Through its on-chain governance model, Koinos enables block producers to actively participate in protocol upgrades, parameter adjustments, and the introduction of new features directly on the blockchain.
 

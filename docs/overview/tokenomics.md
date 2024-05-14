@@ -1,3 +1,6 @@
+---
+icon: fontawesome/solid/coins
+---
 # Tokenomics
 Token economics, also called tokenomics, covers all details of a token economy. There are several different attributes to look at. [Decrypt U](https://decrypt.co/resources/tokenomics) identifies five key areas to consider when discussing tokenomics. Those are token mining, utility, distribution, vesting/lockups, and burning. Tokenomics are one of the ways that blockchains and dApps set themselves apart even when using similar or identical technology.
 

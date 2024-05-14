@@ -1,4 +1,4 @@
-site_name: Koinos Documentation
+site_name: Koinos documentation
 site_url: https://docs.koinos.io
 
 site_description: Documentation for Koinos
@@ -17,17 +17,38 @@ theme:
   language: en
   icon:
     edit: material/pencil
+    admonition:
+      note: fontawesome/solid/note-sticky
+      abstract: fontawesome/solid/book
+      info: fontawesome/solid/circle-info
+      tip: fontawesome/solid/bullhorn
+      success: fontawesome/solid/check
+      question: fontawesome/solid/circle-question
+      warning: fontawesome/solid/triangle-exclamation
+      failure: fontawesome/solid/bomb
+      danger: fontawesome/solid/skull
+      bug: fontawesome/solid/robot
+      example: fontawesome/solid/flask
+      quote: fontawesome/solid/quote-left
   palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
+    - media: "(prefers-color-scheme)"
+      primary: black
       scheme: slate
       toggle:
-        icon: material/brightness-4
+        icon: material/link
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: black
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch
         name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      primary: black
+      scheme: default
+      toggle:
+        icon: material/toggle-switch-off
+        name: Switch to system preference
   features:
     - announce.dismiss
     - content.action.edit
@@ -52,10 +73,11 @@ theme:
     - search.suggest
     - toc.follow
     # - toc.integrate
-  favicon: assets/koinos-icon-dark.png
+  favicon: assets/koinos-icon-dark.svg
   logo: assets/koinos-mark-light.svg
 
 extra:
+  generator: false
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/koinos
@@ -64,14 +86,19 @@ extra:
     - icon: fontawesome/brands/discord
       link: https://discord.koinos.io
     - icon: fontawesome/brands/telegram
-      link: https://t.me/koinos_community
+      link: https://telegram.koinos.io/
     - icon: fontawesome/brands/twitter
-      link: https://twitter.com/TheKoinosGroup
+      link: https://twitter.com/koinosnetwork
     - icon: fontawesome/brands/youtube
       link: https://www.youtube.com/@koinosgroup
 
 markdown_extensions:
+  - attr_list
+  - md_in_html
   - admonition
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -84,8 +111,10 @@ markdown_extensions:
 
 plugins:
   - swagger-ui-tag
+  - search
 
 nav:
+  - Home: index.md
   - Overview:
     - overview/index.md
     - overview/blockchain-basics.md
@@ -107,7 +136,7 @@ nav:
     - developers/protobuf.md
     - developers/transactions.md
     - developers/authority.md
-    - Guides:
+    - Contract guides:
       - developers/guides/calculator.md
       - developers/guides/token.md
   - Validators:
@@ -118,7 +147,7 @@ nav:
     - validators/configuration.md
     - validators/node-security.md
     - validators/node-management.md
-    - Guides:
+    - Validator guides:
       - validators/guides/running-a-node.md
       - validators/guides/block-production.md
   - Exchanges:
@@ -127,10 +156,12 @@ nav:
       - exchanges/cli.md
       - exchanges/koilib.md
       - exchanges/jsonrpc.md
-    - Common Tasks:
+      - exchanges/rest.md
+    - Common tasks:
       - exchanges/head-block.md
       - exchanges/create-wallet.md
       - exchanges/account-balance.md
+      - exchanges/transfer.md
       - exchanges/mana.md
       - exchanges/offline-signing.md
       - exchanges/multisig.md

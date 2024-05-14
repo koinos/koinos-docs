@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/lock
+---
+
 # Node security
 While the Koinos node is fairly self contained, there are a few points you should be aware of in order to secure your Koinos node.
 

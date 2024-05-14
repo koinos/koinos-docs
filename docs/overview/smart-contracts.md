@@ -1,4 +1,7 @@
-# Smart Contracts
+---
+icon: fontawesome/solid/code
+---
+# Smart contracts
 A smart contract is a contract encoded in code and deployed on a blockchain. It automatically executes actions when predetermined conditions are met. These contracts run decentralized across the blockchain network, providing transparency, immutability, and automation without the need for intermediaries. Smart contracts are written in various programming languages and can be applied to various use cases, including financial transactions, supply chain management, and decentralized applications. They incur [Mana](mana.md) for execution, which is a regenerative resource tied to primary blockchain cryptocurrency KOIN.
 
 ## Koinos Virtual Machine (KVM)

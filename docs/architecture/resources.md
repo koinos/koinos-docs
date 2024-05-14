@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/microchip
+---
+
 # Resources
 Koinos manages resources using a combination of automated resource markets. Every transaction consumes three resources in different amounts. Those resources are:
 

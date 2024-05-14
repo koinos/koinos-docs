@@ -1,3 +1,7 @@
+---
+icon: fontawesome/solid/memory
+---
+
 # Resource management
 Resource management in smart contracts refers to the allocation and utilization of computational resources, storage, and network bandwidth within a blockchain network. Smart contracts, which are self-executing contracts with the terms of the agreement directly written into code, require resources to perform their functions and interact with the blockchain. Efficient resource management involves optimizing Mana usage, minimizing storage costs by storing only essential data on-chain, and considering network bandwidth limitations for interactions with other contracts or external systems. Effective resource management ensures the scalability, cost-effectiveness, and performance of smart contracts within decentralized applications (DApps), enabling them to operate reliably and efficiently on blockchain networks.
 

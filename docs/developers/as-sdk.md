@@ -18,6 +18,8 @@ The Koinos AssemblyScript SDK uses Yarn v1, so let's first install it.
 npm install -g yarn
 ```
 
+On MacOS, you may need to add `sudo` before the command above.
+
 Ensure that `yarn` is in your executable path and the correct version.
 ```sh
 yarn -v

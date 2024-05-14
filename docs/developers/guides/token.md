@@ -1,5 +1,5 @@
 # Token
-Welcome to our guide on launching a token collection using the Koinos Contract Standard (KCS-1) for Tokens and the AssemblyScript SDK for Koinos. In this tutorial, we'll walk you through the process of creating and deploying your own token on the Koinos blockchain. Whether you're a seasoned developer or new to blockchain development, this step-by-step guide will provide you with the knowledge and tools necessary to bring your token project to life. Let's dive in and explore the exciting world of token creation on Koinos!
+Welcome to our guide on launching a token collection using the Koinos Contract Standard (KCS-1) for tokens and the AssemblyScript SDK for Koinos. In this tutorial, we'll walk you through the process of creating and deploying your own token on the Koinos blockchain. Whether you're a seasoned developer or new to blockchain development, this step-by-step guide will provide you with the knowledge and tools necessary to bring your token project to life. Let's dive in and explore the exciting world of token creation on Koinos!
 
 Before starting, ensure that you have already set up your Koinos AssemblyScript SDK environment by following [this guide](../as-sdk.md).
 
@@ -52,7 +52,7 @@ success Saved lockfile.
 ```
 
 ---
-## Defining methods an data
+## Defining methods and data
 Building a contract will usually consist of behaviors and data. The behavior is defined by the smart contract. But the data is defined by Protobuf. We generate data structures with Protobuf so that the smart contract can easily integrate with other Koinos tools. We have defined the arguments and results we will use in our calculator. We use the `*_arguments` convention for contract function arguments and `*_result` for contract function results.
 
 Let's begin by defining our entry point arguments and results.
@@ -79,7 +79,7 @@ message hello_result {
 }
 ```
 
-We can remove the boilerplate code and replace it with our token arguments and results
+We can remove the boilerplate code and replace it with our token arguments and results.
 ```proto linenums="1" title="assembly/proto/token.proto"
 
 syntax = "proto3";
@@ -221,7 +221,7 @@ warning ../../../../../package.json: No license field
 $ ../token-tutorial/token/node_modules/.bin/protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. assembly/proto/token.proto
 Done in 0.78s.
 ```
-Note that after executing this command the file `assembly/proto/token.ts` was automatically generated and contains code that will assist us in serializing and deserializing data in and out of the KVM.
+Note that after executing this command, the file `assembly/proto/token.ts` was automatically generated and contains code that will assist us in serializing and deserializing data in and out of the KVM.
 
 ---
 ## The implementation
@@ -459,7 +459,7 @@ export class Token {
 
 We have to add `assembly/state` directory where we define our storage. 
 
-``` sh title="aseembly/state"
+``` sh title="assembly/state"
 BalancesStorage.ts
 SpaceIds.ts
 SupplyStorage.ts
@@ -516,30 +516,13 @@ export class SupplyStorage extends Storage.Obj<token.balance_object> {
 
 ```
 
+
 ---
-## Customizing the token
-Let's customize the specifics of our token project by modifying `./assembly/Token.ts`. Define the following:
+## Building and testing
 
-- `_name`: The name of your token
+Let's modify our `Token.spec.ts` file to test our contract. 
 
-- `_symbol`: The symbol for your token
-
-- `_decimals`: The decimal places for your token
-
-
-```ts linenums="1" title="token/assembly/Token.ts"
-- _name: string = "My Token Name";
-- _symbol: string = "MTN";
-- _decimals: u32 = 8;
-```
-
-As an example we changed the `[token name]` variable to `My Token Name` and the `symbol` variable to `MTN`.
-
-
-After making your changes, update the token name and symbol in the unit test file located at `./assembly/__tests__/Token.spec.ts`.
-We will need to change the test for the `name` and `symbol` functions to reflect your token name and symbol.
-
-```ts linenums="1" title="./assembly/__tests__/Token.spec.ts"
+```ts linenums="1" title="assembly/__tests__/Token.spec.ts"
 import {
   Base58,
   MockVM,
@@ -1006,7 +989,7 @@ describe("token", () => {
     expect(balanceRes.value).toBe(123);
   });
 
-  it("should not transfer if unsufficient balance", () => {
+  it("should not transfer if insufficient balance", () => {
     const tkn = new Token();
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
@@ -1059,9 +1042,7 @@ describe("token", () => {
 
 ```
 
----
-## Building and testing
-Build and debug your project using the following command:
+Build and debug the project using the following command:
 
 ```sh
 yarn build:debug
@@ -1076,11 +1057,13 @@ yarn test
 A successful test should return 100% pass.
 
 ```{ .txt .no-copy }
-
+yarn run v1.22.19
+warning ../../../../../package.json: No license field
+$ koinos-sdk-as-cli run-tests
 Running tests...
 yarn asp --verbose --config as-pect.config.js
 warning ../../../../../package.json: No license field
-$ ../token-tutorial/token/node_modules/.bin/asp --verbose --config as-pect.config.js
+$ /Users/ron/devstuff/projects/tmp/token-tutorial/token/node_modules/.bin/asp --verbose --config as-pect.config.js
        ___   _____                       __
       /   | / ___/      ____  ___  _____/ /_
      / /| | \__ \______/ __ \/ _ \/ ___/ __/
@@ -1092,14 +1075,14 @@ $ ../token-tutorial/token/node_modules/.bin/asp --verbose --config as-pect.confi
 
 [Log] Loading asc compiler
 Assemblyscript Folder:assemblyscript
-[Log] Compiler loaded in 182.953ms.
-[Log] Using configuration ../token-tutorial/token/as-pect.config.js
+[Log] Compiler loaded in 177.503ms.
+[Log] Using configuration /Users/ron/devstuff/projects/tmp/token-tutorial/token/as-pect.config.js
 [Log] Using VerboseReporter
 [Log] Including files: assembly/__tests__/**/*.spec.ts
 [Log] Running tests that match: (:?)
 [Log] Running groups that match: (:?)
 [Log] Effective command line args:
-  [TestFile.ts] node_modules/@as-pect/assembly/assembly/index.ts --runtime incremental --debug --binaryFile output.wasm --explicitStart --use ASC_RTRACE=1 --exportTable --importMemory --transform ../token-tutorial/token/node_modules/@as-covers/transform/lib/index.js,../token-tutorial/token/node_modules/@as-pect/core/lib/transform/index.js --lib node_modules/@as-covers/assembly/index.ts
+  [TestFile.ts] node_modules/@as-pect/assembly/assembly/index.ts --runtime incremental --debug --binaryFile output.wasm --explicitStart --use ASC_RTRACE=1 --exportTable --importMemory --transform /Users/ron/devstuff/projects/tmp/token-tutorial/token/node_modules/@as-covers/transform/lib/index.js,/Users/ron/devstuff/projects/tmp/token-tutorial/token/node_modules/@as-pect/core/lib/transform/index.js --lib node_modules/@as-covers/assembly/index.ts
 
 [Describe]: token
 
@@ -1129,23 +1112,21 @@ Assemblyscript Folder:assemblyscript
 ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6GAo=
  [Success]: ✔ should transfer tokens RTrace: +391
 [Event] koinos.contracts.token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
-[Error] Error: contract_arguments is not set
 [Contract Exit] 'from' has not authorized transfer
- [Success]: ✔ should not transfer tokens without the proper authorizations RTrace: +271
+ [Success]: ✔ should not transfer tokens without the proper authorizations RTrace: +295
 [Event] koinos.contracts.token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
 [Contract Exit] Cannot transfer to self
  [Success]: ✔ should not transfer tokens to self RTrace: +234
 [Event] koinos.contracts.token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
-[Error] Error: contract_arguments is not set
 [Contract Exit] 'from' has insufficient balance
- [Success]: ✔ should not transfer if unsufficient balance RTrace: +283
+ [Success]: ✔ should not transfer if insufficient balance RTrace: +307
 
     [File]: assembly/__tests__/Token.spec.ts
   [Groups]: 2 pass, 2 total
   [Result]: ✔ PASS
 [Snapshot]: 0 total, 0 added, 0 removed, 0 different
  [Summary]: 13 pass,  0 fail, 13 total
-    [Time]: 178.067ms
+    [Time]: 139.55ms
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1153,7 +1134,7 @@ Assemblyscript Folder:assemblyscript
    [Files]: 1 total
   [Groups]: 2 count, 2 pass
    [Tests]: 13 pass, 0 fail, 13 total
-    [Time]: 5465.975ms
+    [Time]: 5130.905ms
 ┌───────────────────┬───────┬───────┬──────┬──────┬───────────┐
 │ File              │ Total │ Block │ Func │ Expr │ Uncovered │
 ├───────────────────┼───────┼───────┼──────┼──────┼───────────┤
@@ -1162,15 +1143,61 @@ Assemblyscript Folder:assemblyscript
 │ total             │ 100%  │ 100%  │ 100% │ 100% │           │
 └───────────────────┴───────┴───────┴──────┴──────┴───────────┘
 
-
 ```
+
+---
+## Customizing the token
+Let's customize the specifics of our token project by modifying `assembly/Token.ts`. Define the following:
+
+- `_name`: The name of your token
+
+- `_symbol`: The symbol for your token
+
+- `_decimals`: The decimal places for your token
+
+
+```ts linenums="1" title="assembly/Token.ts"
+- _name: string = "My Token Name";
+- _symbol: string = "MTN";
+- _decimals: u32 = 8;
+```
+
+As an example, we changed the `[token name]` variable to `My Token Name` and the `symbol` variable to `MTN`.
+
+
+After making your changes, update the token name and symbol in the unit test file located at `assembly/__tests__/Token.spec.ts`.
+We will need to change the test for the `name` and `symbol` functions to reflect your token name and symbol.
+
+```ts linenums="25" title="assembly/__tests__/Token.spec.ts"
+  it("should get the name", () => {
+    const tkn = new Token();
+
+    const args = new token.name_arguments();
+    const res = tkn.name(args);
+
+    expect(res.value).toBe("[token name]");
+  });
+```
+On line 31, replace `[token name]` with the same token name that was entered in the `assembly/Token.ts`
+
+```ts linenums="34" title="assembly/__tests__/Token.spec.ts"
+  it("should get the symbol", () => {
+    const tkn = new Token();
+
+    const args = new token.symbol_arguments();
+    const res = tkn.symbol(args);
+
+    expect(res.value).toBe("[token symbol]");
+  });
+```
+On line 40, replace `[token symbol]` with the same symbol that was entered in the `assembly/Token.ts`
 
 ---
 ## Compiling the contract
 Once you've made all the necessary modifications and your tests are passing, you're ready to build the release version of your contract. Let's run the build script for release.
 
 ```sh
-koinos-sdk-as-cli build-all release 0 token.proto
+yarn build:release
 ```
 
 ```{ .txt .no-copy }
@@ -1197,7 +1224,13 @@ Compiling index.ts...
 node ./node_modules/assemblyscript/bin/asc assembly/index.ts --target release --use abort= --use BUILD_FOR_TESTING=0 --disable sign-extension --config asconfig.json
 ```
 
-After the build completes, locate your `.wasm` and `.abi` files:
+Let's run our test one more time to make sure we don't get errors.
+
+```sh
+yarn test
+```
+
+If all the tests are green, we are ready to locate the `.wasm` and `.abi` files:
 
 - `.wasm` file: `./build/release/contract.wasm`
 - `.abi` file: `./abi/token.abi`
@@ -1217,7 +1250,7 @@ We will get this response:
 Contract 'test' at address 163m4hKj1QHLCyHgnyNPw8TZU5ov25QGQX registered
 ```
 
-We will now have new commands avaiable to us to interact with our contract.
+We will now have new commands available to us to interact with our contract.
 
 To make sure it all worked we can try the command `test.symbol`
 

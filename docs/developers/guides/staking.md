@@ -3,6 +3,9 @@ Welcome to the Staking guide, your essential manual for leveraging the power of 
 
 Before embarking on this journey, ensure that you have already setup your Koinos AssemblyScript SDK environment by following [this guide](../as-sdk.md).
 
+!!! note
+    This guide does not create a new token, it only allows to you stake a pre-existing token. For a guide on launching a token you can folow the guide for that [here](token.md).
+
 ---
 ## Setting up the project
 Let's begin by creating a boilerplate smart contract project using the Koinos AssemblyScript SDK.
@@ -215,6 +218,9 @@ vi assembly/Staking.ts
 ```
 
 Finally, let's open our implementation file and write some simple arithmetic to complete our Staking's functionality.
+
+!!! note
+    The `TOKEN_CONTRACT_ID` is a variable that defines the token that can be staked in this contract. To launch your own token you can follow the guide [here](token.md).
 
 ```ts linenums="1" title="assembly/Staking.ts"
 /**

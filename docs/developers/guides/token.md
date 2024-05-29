@@ -191,29 +191,6 @@ koinos-sdk-as-cli generate-contract-proto
 ```
 
 ```{ .txt .no-copy }
-yarn install v1.22.19
-warning ../../../../../package.json: No license field
-info No lockfile found.
-[1/4] 🔍  Resolving packages...
-warning @koinos/sdk-as > @koinos/mock-vm > multibase@4.0.6: This module has been superseded by the multiformats module
-warning @koinos/sdk-as > @koinos/mock-vm > somap > npm > @npmcli/ci-detect@2.0.0: this package has been deprecated, use `ci-info` instead
-warning @koinos/sdk-as > @koinos/mock-vm > somap > npm > libnpmexec > @npmcli/ci-detect@2.0.0: this package has been deprecated, use `ci-info` instead
-warning @koinos/sdk-as > @koinos/mock-vm > somap > npm > readdir-scoped-modules@1.1.0: This functionality has been moved to @npmcli/fs
-warning @koinos/sdk-as > @koinos/mock-vm > somap > npm > @npmcli/arborist > readdir-scoped-modules@1.1.0: This functionality has been moved to @npmcli/fs
-warning @koinos/sdk-as > @koinos/mock-vm > somap > npm > @npmcli/arborist > @npmcli/move-file@2.0.1: This functionality has been moved to @npmcli/fs
-warning @koinos/sdk-as > @koinos/mock-vm > somap > npm > cacache > @npmcli/move-file@2.0.1: This functionality has been moved to @npmcli/fs
-warning @koinos/sdk-as > @koinos/mock-vm > somap > npm > readdir-scoped-modules > debuglog@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-warning local-koinos > koilib > multibase@4.0.6: This module has been superseded by the multiformats module
-[2/4] 🚚  Fetching packages...
-[3/4] 🔗  Linking dependencies...
-warning "@koinos/sdk-as > @as-covers/core > @as-covers/transform > visitor-as@0.6.0" has incorrect peer dependency "assemblyscript@^0.18.31".
-warning " > ts-node@10.9.2" has unmet peer dependency "@types/node@*".
-warning Workspaces can only be enabled in private projects.
-[4/4] 🔨  Building fresh packages...
-success Saved lockfile.
-✨  Done in 12.96s.
-❯ C
-❯ koinos-sdk-as-cli generate-contract-proto
 Generating Contract AS proto files...
 yarn protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. assembly/proto/*.proto
 yarn run v1.22.19
@@ -460,9 +437,7 @@ export class Token {
 We have to add `assembly/state` directory where we define our storage. 
 
 ``` sh title="assembly/state"
-BalancesStorage.ts
-SpaceIds.ts
-SupplyStorage.ts
+mkdir assembly/state && touch assembly/state/BalancesStorage.ts assembly/state/SpaceIds.ts assembly/state/SupplyStorage.ts
 ```
 
 Create the above files and add this code to each:
@@ -516,13 +491,12 @@ export class SupplyStorage extends Storage.Obj<token.balance_object> {
 
 ```
 
-
 ---
-## Building and testing
+## Time for tests
+Let's open up `assembly/__tests__/Calculator.spec.ts` and write some tests.
 
-Let's modify our `Token.spec.ts` file to test our contract. 
 
-```ts linenums="1" title="assembly/__tests__/Token.spec.ts"
+```ts linenums="1" title="./assembly/__tests__/Token.spec.ts"
 import {
   Base58,
   MockVM,
@@ -902,6 +876,8 @@ describe("token", () => {
   });
 
   it("should not transfer tokens without the proper authorizations", () => {
+    MockVM.setContractArguments(new Uint8Array(0));
+    MockVM.setEntryPoint(1);
     const tkn = new Token();
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
@@ -990,6 +966,8 @@ describe("token", () => {
   });
 
   it("should not transfer if insufficient balance", () => {
+    MockVM.setContractArguments(new Uint8Array(0));
+    MockVM.setEntryPoint(1);
     const tkn = new Token();
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
@@ -1042,28 +1020,29 @@ describe("token", () => {
 
 ```
 
-Build and debug the project using the following command:
+Run the build debug command 
 
 ```sh
-yarn build:debug
+koinos-sdk-as-cli build debug 0
 ```
 
-Run unit tests to ensure your token is functioning as expected:
+``` { .text .no-copy }
+Compiling index.ts...
+node ./node_modules/assemblyscript/bin/asc assembly/index.ts --target debug --use abort= --use BUILD_FOR_TESTING=0 --disable sign-extension --config asconfig.json
+```
+
+And now let's run the tests 
 
 ```sh
-yarn test
+koinos-sdk-as-cli run-tests
 ```
 
-A successful test should return 100% pass.
-
-```{ .txt .no-copy }
-yarn run v1.22.19
-warning ../../../../../package.json: No license field
-$ koinos-sdk-as-cli run-tests
+``` { .text .no-copy }
 Running tests...
 yarn asp --verbose --config as-pect.config.js
+yarn run v1.22.19
 warning ../../../../../package.json: No license field
-$ /Users/ron/devstuff/projects/tmp/token-tutorial/token/node_modules/.bin/asp --verbose --config as-pect.config.js
+$ /path/to/token/node_modules/.bin/asp --verbose --config as-pect.config.js
        ___   _____                       __
       /   | / ___/      ____  ___  _____/ /_
      / /| | \__ \______/ __ \/ _ \/ ___/ __/
@@ -1075,14 +1054,14 @@ $ /Users/ron/devstuff/projects/tmp/token-tutorial/token/node_modules/.bin/asp --
 
 [Log] Loading asc compiler
 Assemblyscript Folder:assemblyscript
-[Log] Compiler loaded in 177.503ms.
-[Log] Using configuration /Users/ron/devstuff/projects/tmp/token-tutorial/token/as-pect.config.js
+[Log] Compiler loaded in 165.113ms.
+[Log] Using configuration /path/to/token/as-pect.config.js
 [Log] Using VerboseReporter
 [Log] Including files: assembly/__tests__/**/*.spec.ts
 [Log] Running tests that match: (:?)
 [Log] Running groups that match: (:?)
 [Log] Effective command line args:
-  [TestFile.ts] node_modules/@as-pect/assembly/assembly/index.ts --runtime incremental --debug --binaryFile output.wasm --explicitStart --use ASC_RTRACE=1 --exportTable --importMemory --transform /Users/ron/devstuff/projects/tmp/token-tutorial/token/node_modules/@as-covers/transform/lib/index.js,/Users/ron/devstuff/projects/tmp/token-tutorial/token/node_modules/@as-pect/core/lib/transform/index.js --lib node_modules/@as-covers/assembly/index.ts
+  [TestFile.ts] node_modules/@as-pect/assembly/assembly/index.ts --runtime incremental --debug --binaryFile output.wasm --explicitStart --use ASC_RTRACE=1 --exportTable --importMemory --transform /path/to/token/node_modules/@as-covers/transform/lib/index.js,/path/to/token/node_modules/@as-pect/core/lib/transform/index.js --lib node_modules/@as-covers/assembly/index.ts
 
 [Describe]: token
 
@@ -1126,7 +1105,7 @@ Assemblyscript Folder:assemblyscript
   [Result]: ✔ PASS
 [Snapshot]: 0 total, 0 added, 0 removed, 0 different
  [Summary]: 13 pass,  0 fail, 13 total
-    [Time]: 139.55ms
+    [Time]: 131.568ms
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1134,7 +1113,7 @@ Assemblyscript Folder:assemblyscript
    [Files]: 1 total
   [Groups]: 2 count, 2 pass
    [Tests]: 13 pass, 0 fail, 13 total
-    [Time]: 5130.905ms
+    [Time]: 4894.475ms
 ┌───────────────────┬───────┬───────┬──────┬──────┬───────────┐
 │ File              │ Total │ Block │ Func │ Expr │ Uncovered │
 ├───────────────────┼───────┼───────┼──────┼──────┼───────────┤
@@ -1143,11 +1122,12 @@ Assemblyscript Folder:assemblyscript
 │ total             │ 100%  │ 100%  │ 100% │ 100% │           │
 └───────────────────┴───────┴───────┴──────┴──────┴───────────┘
 
+Done in 5.19s.
 ```
 
 ---
 ## Customizing the token
-Let's customize the specifics of our token project by modifying `assembly/Token.ts`. Define the following:
+Let's customize the specifics of our token project by modifying `./assembly/Token.ts`. Define the following:
 
 - `_name`: The name of your token
 
@@ -1156,7 +1136,7 @@ Let's customize the specifics of our token project by modifying `assembly/Token.
 - `_decimals`: The decimal places for your token
 
 
-```ts linenums="1" title="assembly/Token.ts"
+```ts linenums="15" title="token/assembly/Token.ts"
 - _name: string = "My Token Name";
 - _symbol: string = "MTN";
 - _decimals: u32 = 8;
@@ -1164,73 +1144,113 @@ Let's customize the specifics of our token project by modifying `assembly/Token.
 
 As an example, we changed the `[token name]` variable to `My Token Name` and the `symbol` variable to `MTN`.
 
+Let's run the tests again and see what happens.
 
-After making your changes, update the token name and symbol in the unit test file located at `assembly/__tests__/Token.spec.ts`.
-We will need to change the test for the `name` and `symbol` functions to reflect your token name and symbol.
+``` { .text .no-copy }
+[Describe]: token
 
-```ts linenums="25" title="assembly/__tests__/Token.spec.ts"
-  it("should get the name", () => {
+    [Fail]: ✖ should get the name
+  [Actual]: "My Token Name"
+[Expected]: "[token name]"
+   [Stack]: RuntimeError: unreachable
+            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/00070616:wasm-function[64]:0x30c8)
+            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String|null>#toBe (wasm://wasm/00070616:wasm-function[129]:0xb1bb)
+            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|1 (wasm://wasm/00070616:wasm-function[130]:0xb392)
+            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/00070616:wasm-function[236]:0x14f37)
+    [Fail]: ✖ should get the symbol
+  [Actual]: "MTN"
+[Expected]: "[token symbol]"
+   [Stack]: RuntimeError: unreachable
+            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/00070616:wasm-function[64]:0x30c8)
+            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String|null>#toBe (wasm://wasm/00070616:wasm-function[129]:0xb1bb)
+            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|2 (wasm://wasm/00070616:wasm-function[131]:0xb557)
+            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/00070616:wasm-function[236]:0x14f37)
+```
+
+We now get these errors because we haven't updated the tests to reflect the changes we made to the token. Let's update the tests to reflect the changes we made to the token.
+
+```ts linenums="25" title="token/assembly/__tests__/Token.spec.ts"
+ it("should get the name", () => {
     const tkn = new Token();
 
     const args = new token.name_arguments();
     const res = tkn.name(args);
 
-    expect(res.value).toBe("[token name]");
+    expect(res.value).toBe("My Token Name");
   });
-```
-On line 31, replace `[token name]` with the same token name that was entered in the `assembly/Token.ts`
 
-```ts linenums="34" title="assembly/__tests__/Token.spec.ts"
   it("should get the symbol", () => {
     const tkn = new Token();
 
     const args = new token.symbol_arguments();
     const res = tkn.symbol(args);
 
-    expect(res.value).toBe("[token symbol]");
+    expect(res.value).toBe("MTN");
   });
+
+``` 
+
+If we run the tests again we should now have an all green 100% pass.
+
+
+``` { .text .no-copy }
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  [Result]: ✔ PASS
+   [Files]: 1 total
+  [Groups]: 2 count, 2 pass
+   [Tests]: 13 pass, 0 fail, 13 total
+    [Time]: 4944.864ms
+┌───────────────────┬───────┬───────┬──────┬──────┬───────────┐
+│ File              │ Total │ Block │ Func │ Expr │ Uncovered │
+├───────────────────┼───────┼───────┼──────┼──────┼───────────┤
+│ assembly/Token.ts │ 100%  │ 100%  │ 100% │ 100% │           │
+├───────────────────┼───────┼───────┼──────┼──────┼───────────┤
+│ total             │ 100%  │ 100%  │ 100% │ 100% │           │
+└───────────────────┴───────┴───────┴──────┴──────┴───────────┘
 ```
-On line 40, replace `[token symbol]` with the same symbol that was entered in the `assembly/Token.ts`
+
 
 ---
 ## Compiling the contract
-Once you've made all the necessary modifications and your tests are passing, you're ready to build the release version of your contract. Let's run the build script for release.
+We made all the necessary modifications and our tests are passing, we are now ready to build the release version of the token contract. 
+
+Let's run the build script for release.
 
 ```sh
-yarn build:release
+koinos-sdk-as-cli build-all release 0 token.proto
 ```
 
 ```{ .txt .no-copy }
+Compiling index.ts...
+node ./node_modules/assemblyscript/bin/asc assembly/index.ts --target release --use abort= --use BUILD_FOR_TESTING=0 --disable sign-extension --config asconfig.json
+❯ koinos-sdk-as-cli build-all release 0 token.proto
 Generating ABI file...
  yarn protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=abi/ assembly/proto/token.proto
 yarn run v1.22.19
 warning ../../../../../package.json: No license field
-$ /Users/ron/devstuff/projects/tmp/token-tutorial/token/node_modules/.bin/protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=abi/ assembly/proto/token.proto
-installing estraverse@^5.1.0
-Done in 2.26s.
+$ /path/to/token/node_modules/.bin/protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=abi/ assembly/proto/token.proto
+installing minimist@^1.2.0
+installing uglify-js@^3.7.7
+installing escodegen@^1.13.0
+Done in 2.25s.
 Generating proto files...
 yarn protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. assembly/proto/*.proto
 yarn run v1.22.19
 warning ../../../../../package.json: No license field
-$ /Users/ron/devstuff/projects/tmp/token-tutorial/token/node_modules/.bin/protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. assembly/proto/token.proto
-Done in 0.46s.
+$ /path/to/token/node_modules/.bin/protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. assembly/proto/token.proto
+Done in 0.44s.
 Generating boilerplate.ts and index.ts files...
 yarn protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=assembly/ assembly/proto/token.proto
 yarn run v1.22.19
 warning ../../../../../package.json: No license field
-$ /Users/ron/devstuff/projects/tmp/token-tutorial/token/node_modules/.bin/protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=assembly/ assembly/proto/token.proto
-Done in 0.38s.
+$ /path/to/token/node_modules/.bin/protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=assembly/ assembly/proto/token.proto
+Done in 0.35s.
 Compiling index.ts...
 node ./node_modules/assemblyscript/bin/asc assembly/index.ts --target release --use abort= --use BUILD_FOR_TESTING=0 --disable sign-extension --config asconfig.json
 ```
 
-Let's run our test one more time to make sure we don't get errors.
-
-```sh
-yarn test
-```
-
-If all the tests are green, we are ready to locate the `.wasm` and `.abi` files:
+After the build completes, locate your `.wasm` and `.abi` files:
 
 - `.wasm` file: `./build/release/contract.wasm`
 - `.abi` file: `./abi/token.abi`

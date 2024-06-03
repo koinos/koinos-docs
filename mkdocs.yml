@@ -139,6 +139,7 @@ nav:
     - Contract guides:
       - developers/guides/calculator.md
       - developers/guides/immutable.md
+      - developers/guides/staking.md
   - Validators:
     - validators/index.md
     - validators/node-requirements.md

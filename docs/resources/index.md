@@ -111,7 +111,8 @@ Libraries allow users to interact with the Koinos blockchain programmatically in
 
     ---
 
-    Kollection is a full featured Non-Fungible-Token (NFT) marketplace that allows creators to launch and sell their products.
+    Koilib is a full featured JavaScript library that faciliates interactions with the Koinos blockchain.
+    <br/><br/>
 
     [:octicons-arrow-right-24: The premier Koinos JavaScript library](https://www.npmjs.com/package/koilib)
 

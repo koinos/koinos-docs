@@ -86,7 +86,7 @@ syntax = "proto3";
 
 package token;
 
-import "koinos/options.proto"; 
+import "koinos/options.proto";
 
 message empty_message {}
 
@@ -228,7 +228,7 @@ mv assembly/Token.boilerplate.ts assembly/Token.ts
 vi assembly/Token.ts
 ```
 
-Let's open our implementation file and write logic to add our token's functionality. 
+Let's open our implementation file and write logic to add our token's functionality.
 
 ```ts linenums="1" title="assembly/Token.ts"
 
@@ -434,7 +434,7 @@ export class Token {
 
 ```
 
-We have to add `assembly/state` directory where we define our storage. 
+We have to add `assembly/state` directory where we define our storage.
 
 ``` sh title="assembly/state"
 mkdir assembly/state && touch assembly/state/BalancesStorage.ts assembly/state/SpaceIds.ts assembly/state/SupplyStorage.ts
@@ -451,9 +451,9 @@ import { BALANCE_SPACE_ID } from './SpaceIds';
 export class BalancesStorage extends Storage.Map<Uint8Array, token.balance_object> {
   constructor(contractId: Uint8Array) {
     super(
-      contractId, 
-      BALANCE_SPACE_ID, 
-      token.balance_object.decode, 
+      contractId,
+      BALANCE_SPACE_ID,
+      token.balance_object.decode,
       token.balance_object.encode,
       // default balance is 0
       () => new token.balance_object()
@@ -479,9 +479,9 @@ import { SUPPLY_SPACE_ID } from './SpaceIds';
 export class SupplyStorage extends Storage.Obj<token.balance_object> {
   constructor(contractId: Uint8Array) {
     super(
-      contractId, 
-      SUPPLY_SPACE_ID, 
-      token.balance_object.decode, 
+      contractId,
+      SUPPLY_SPACE_ID,
+      token.balance_object.decode,
       token.balance_object.encode,
       // total supply is 0 by default
       () => new token.balance_object()
@@ -1020,7 +1020,7 @@ describe("token", () => {
 
 ```
 
-Run the build debug command 
+Run the build debug command
 
 ```sh
 koinos-sdk-as-cli build debug 0
@@ -1031,7 +1031,7 @@ Compiling index.ts...
 node ./node_modules/assemblyscript/bin/asc assembly/index.ts --target debug --use abort= --use BUILD_FOR_TESTING=0 --disable sign-extension --config asconfig.json
 ```
 
-And now let's run the tests 
+And now let's run the tests
 
 ```sh
 koinos-sdk-as-cli run-tests
@@ -1135,7 +1135,7 @@ Let's customize the specifics of our token project by modifying `./assembly/Toke
 
 - `_decimals`: The decimal places for your token
 
-Let's change the default values to the name and symbol of our token. 
+Let's change the default values to the name and symbol of our token.
 
 ```ts linenums="9" title="token/assembly/Token.ts" hl_lines="7-8"
 import { token } from "./proto/token";
@@ -1187,7 +1187,7 @@ koinos-sdk-as-cli run-tests
             at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/00070616:wasm-function[236]:0x14f37)
 ```
 
-We now get these errors because we haven't updated the tests to reflect the changes we made to the token. Let's update the tests to reflect the changes we made to the token. 
+We now get these errors because we haven't updated the tests to reflect the changes we made to the token. Let's update the tests to reflect the changes we made to the token.
 
 In the following code snippets the highlighted lines were added.
 
@@ -1210,7 +1210,7 @@ In the following code snippets the highlighted lines were added.
     expect(res.value).toBe("MTN");
   });
 
-``` 
+```
 
 If we run the tests again we should now have an all green 100% pass.
 
@@ -1239,7 +1239,7 @@ koinos-sdk-as-cli run-tests
 
 ---
 ## Compiling the contract
-We made all the necessary modifications and our tests are passing, we are now ready to build the release version of the token contract. 
+We made all the necessary modifications and our tests are passing, we are now ready to build the release version of the token contract.
 
 Let's run the build script for release.
 
@@ -1285,7 +1285,7 @@ With these files, we can upload our contract to the blockchain by following the 
 
 ## Minting the token
 
-Now that our contract is deployed to the testnet let's register our contract so we can mint tokens by issuing the `register` command `register <name:contract-name> <address:address> [abi-filename:file]`. Note that we are registering the address that we uploaded to (see above). 
+Now that our contract is deployed to the testnet let's register our contract so we can mint tokens by issuing the `register` command `register <name:contract-name> <address:address> [abi-filename:file]`. Note that we are registering the address that we uploaded to (see above).
 
 
 ```
@@ -1306,7 +1306,7 @@ test.symbol
 value:  "MTN"
 ```
 
-We can now issue the `mint` command to mint our tokens. Let's create a new wallet we can mint the tokens to. 
+We can now issue the `mint` command to mint our tokens. Let's create a new wallet we can mint the tokens to.
 
 ```
 create mint_to.wallet password
@@ -1314,14 +1314,14 @@ Created and opened new wallet: mint_to.wallet
 Address: 14xHsbnNnHVqDXaHq99A3ZEAEzQAwd9mtt
 ```
 
-We need to switch back to our `test.wallet` so we can mint the tokens. 
+We need to switch back to our `test.wallet` so we can mint the tokens.
 
 ```
 test.mint 14xHsbnNnHVqDXaHq99A3ZEAEzQAwd9mtt 100000000000000
 ```
 
-!!! note 
-    Since we are using the `register` command to mint the tokens, the decimals of the token are not taken into consideration. When we created out token contract we did not change the default 8 decimal places (see highlighted). 
+!!! note
+    Since we are using the `register` command to mint the tokens, the decimals of the token are not taken into consideration. When we created out token contract we did not change the default 8 decimal places (see highlighted).
 
     ```ts linenums="13" title="token/assembly/Token.ts" hl_lines="5"
     export class Token {
@@ -1337,7 +1337,7 @@ test.mint 14xHsbnNnHVqDXaHq99A3ZEAEzQAwd9mtt 100000000000000
 
     ```
 
-    We therefore need to enter the number of tokens to mint in the smallest unit of the token. In this case, we need to enter `100000000000000` to mint 1 million tokens. Later, we will use the `register_token` command which will take the decimals into account.
+    We therefore need to enter the number of tokens to mint in the smallest unit of the token. In this case, we need to enter `100000000` to mint 1 token. Later, we will use the `register_token` command which will take the decimals into account.
 
 We should get this response:
 ```
@@ -1352,19 +1352,19 @@ Mana cost: 0.03434252 (Disk: 95, Network: 284, Compute: 514975)
 
 ## Transferring tokens
 
-Let's transfer some of the tokens we just minted to a new wallet. 
+Let's transfer some of the tokens we just minted to a new wallet. We can use the same contract we just registered, however the CLI provides a command, `register_token` that provides a cleaner interface for interacting with tokens directly.
 
 Open the `mint_to.wallet` and this time register the token contract using the `register_token` command.
 
 ```
-register_token mtn 163m4hKj1QHLCyHgnyNPw8TZU5ov25QGQX token.abi
+register_token mtn 163m4hKj1QHLCyHgnyNPw8TZU5ov25QGQX
 ```
 
 ``` { .text .no-copy }
 Contract 'mtn' at address 163m4hKj1QHLCyHgnyNPw8TZU5ov25QGQX registered
 ```
 
-We can now issue the `mtn.transfer` command and transfer some tokens. 
+We can now issue the `mtn.transfer` command and transfer some tokens.
 
 ```
 mtn.transfer 1Npov1QbcRUuw17xoWDGKEAfk2X5hJ8ueW 0.00000001
@@ -1377,13 +1377,13 @@ Mana cost: 0.03231164 (Disk: 95, Network: 308, Compute: 456741)
 ```
 
 !!! note
-    When using the `register_token` command as indicated by the documentation on [Koinos CLI](../developers/cli.md) under the [`.koinosrc`](../developers/cli.md#koinos-cli-rc-file) section, the decimals of the token are taken into consideration. As demonstrated above, we are sending 0.00000001 KOIN as indicated by the 8 decimal places. If you want to use `register_token` with an offline wallet, you need to provide the precision and symbol manually.
+    When using the `register_token` command as indicated by the documentation on [Koinos CLI](../cli.md) under the [`.Register token`](../cli.md#register-token) section, the decimals of the token are taken into consideration. As demonstrated above, we are sending 0.00000001 MTN as indicated by the 8 decimal places. If you want to use `register_token` with an offline wallet, you need to provide the precision and symbol manually.
 
     ```
-    register_token koin 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL KOIN 8
+    register_token mtn 163m4hKj1QHLCyHgnyNPw8TZU5ov25QGQX MTN 8
     ```
 
-Congratulations, We successfully deployed our contract to the testnet, minted a million tokens and made a transfer! We can check the [block explorer](https://harbinger.koinosblocks.com/) and see that we now have the newly minted tokens in our wallet and that tokens were transferred from our minted wallet. 
+Congratulations, We successfully deployed our contract to the testnet, minted a million tokens and made a transfer! We can check the [block explorer](https://harbinger.koinosblocks.com/) and see that we now have the newly minted tokens in our wallet and that tokens were transferred from our minted wallet.
 
 
 

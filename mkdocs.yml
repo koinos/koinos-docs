@@ -141,6 +141,7 @@ nav:
       - developers/guides/calculator.md
       - developers/guides/immutable.md
       - developers/guides/staking.md
+      - developers/guides/authority.md
   - Validators:
     - validators/index.md
     - validators/node-requirements.md

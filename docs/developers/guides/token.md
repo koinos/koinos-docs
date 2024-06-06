@@ -496,7 +496,7 @@ export class SupplyStorage extends Storage.Obj<token.balance_object> {
 Let's open up `assembly/__tests__/Calculator.spec.ts` and write some tests.
 
 
-```ts linenums="1" title="./assembly/__tests__/Token.spec.ts"
+```ts linenums="1" title="assembly/__tests__/Token.spec.ts"
 import {
   Base58,
   MockVM,
@@ -1137,7 +1137,7 @@ Let's customize the specifics of our token project by modifying `./assembly/Toke
 
 Let's change the default values to the name and symbol of our token.
 
-```ts linenums="9" title="token/assembly/Token.ts" hl_lines="7-8"
+```ts linenums="9" title="assembly/Token.ts" hl_lines="7-8"
 import { token } from "./proto/token";
 import { SupplyStorage } from "./state/SupplyStorage";
 import { BalancesStorage } from "./state/BalancesStorage";
@@ -1191,7 +1191,7 @@ We now get these errors because we haven't updated the tests to reflect the chan
 
 In the following code snippets the highlighted lines were added.
 
-```ts linenums="25" title="token/assembly/__tests__/Token.spec.ts" hl_lines="7 16"
+```ts linenums="25" title="assembly/__tests__/Token.spec.ts" hl_lines="7 16"
  it("should get the name", () => {
     const tkn = new Token();
 

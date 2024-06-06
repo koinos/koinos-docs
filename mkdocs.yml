@@ -137,6 +137,7 @@ nav:
     - developers/transactions.md
     - developers/authority.md
     - Contract guides:
+      - developers/guides/token.md
       - developers/guides/calculator.md
       - developers/guides/immutable.md
       - developers/guides/staking.md

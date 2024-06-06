@@ -1377,7 +1377,7 @@ Mana cost: 0.03231164 (Disk: 95, Network: 308, Compute: 456741)
 ```
 
 !!! note
-    When using the `register_token` command as indicated by the documentation on [Koinos CLI](../cli.md) under the [`.Register token`](../cli.md#register-token) section, the decimals of the token are taken into consideration. As demonstrated above, we are sending 0.00000001 MTN as indicated by the 8 decimal places. If you want to use `register_token` with an offline wallet, you need to provide the precision and symbol manually.
+    When using the `register_token` command as indicated by the documentation in the [Koinos CLI: Register token](../cli.md#register-token) section, the decimals of the token are taken into consideration. As demonstrated above, we are sending 0.00000001 MTN as indicated by the 8 decimal places. If you want to use `register_token` with an offline wallet, you need to provide the precision and symbol manually.
 
     ```
     register_token mtn 163m4hKj1QHLCyHgnyNPw8TZU5ov25QGQX MTN 8

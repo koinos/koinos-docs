@@ -6,7 +6,7 @@ site_description: Documentation for Koinos
 repo_name: koinos
 repo_url: https://github.com/koinos/koinos
 
-edit_uri: https://github.com/koinos/koinos-docs/master/docs/
+edit_uri: https://github.com/koinos/koinos-docs/blob/master/docs/
 
 copyright: Copyright 2023-2024 Koinos Group
 

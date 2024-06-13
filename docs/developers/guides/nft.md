@@ -1,0 +1,2 @@
+# NFT
+Welcome to the guide on launching an NFT collection using the Koinos Contract Standard ([KCS-2](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-2.md)). The most popular NFT marketplace is called [Kollection](https://kollection.app/). We recommend you visit the [documentation site on Kollection](https://docs.kollection.app/) and follow their guides.

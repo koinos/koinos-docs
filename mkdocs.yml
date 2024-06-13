@@ -142,6 +142,7 @@ nav:
       - developers/guides/immutable.md
       - developers/guides/staking.md
       - developers/guides/authority.md
+      - developers/guides/nft.md
   - Validators:
     - validators/index.md
     - validators/node-requirements.md

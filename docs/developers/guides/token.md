@@ -1,7 +1,12 @@
 # Token
-Welcome to our guide on launching a token using the Koinos Contract Standard (KCS-1) for tokens and the AssemblyScript SDK for Koinos. In this tutorial, we'll walk you through the process of creating and deploying your own token on the Koinos blockchain. Whether you're a seasoned developer or new to blockchain development, this step-by-step guide will provide you with the knowledge and tools necessary to bring your token project to life. Let's dive in and explore the exciting world of token creation on Koinos!
+Welcome to our guide on launching a token using the Koinos Contract Standard ([KCS-1](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-1.md)) for tokens and the AssemblyScript SDK for Koinos. In this tutorial, we'll walk you through the process of creating and deploying your own token on the Koinos blockchain. Whether you're a seasoned developer or new to blockchain development, this step-by-step guide will provide you with the knowledge and tools necessary to bring your token project to life. Let's dive in and explore the exciting world of token creation on Koinos!
 
 Before starting, ensure that you have already set up your Koinos AssemblyScript SDK environment by following [this guide](../as-sdk.md).
+
+!!! note
+    The [KCS-1](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-1.md) token may not be compatible with certain dApps such as [KoinDX](https://koindx.com). You should understand the requirements of your token before adhering to any particular standard. Visit the [Koinos Contract Standards repository](https://github.com/koinos/koinos-contract-standards) for more information.
+
+    The [KCS-1](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-1.md) standard is insecure. The security is improved by [KCS-3](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-3.md) and [KCS-4](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-4.md). A more detailed description of the vulnerability can be found [here](https://peakd.com/koinos/@jga/improve-security-koinos).
 
 ---
 ## Setting up the project

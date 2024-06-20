@@ -1,5 +1,5 @@
 # Token
-Welcome to our guide on launching a token collection using the Koinos Contract Standard ([KCS-1](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-1.md)) for tokens and the AssemblyScript SDK for Koinos. In this tutorial, we'll walk you through the process of creating and deploying your own token on the Koinos blockchain. Whether you're a seasoned developer or new to blockchain development, this step-by-step guide will provide you with the knowledge and tools necessary to bring your token project to life. Let's dive in and explore the exciting world of token creation on Koinos!
+Welcome to our guide on launching a token using the Koinos Contract Standard ([KCS-1](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-1.md)) for tokens and the AssemblyScript SDK for Koinos. In this tutorial, we'll walk you through the process of creating and deploying your own token on the Koinos blockchain. Whether you're a seasoned developer or new to blockchain development, this step-by-step guide will provide you with the knowledge and tools necessary to bring your token project to life. Let's dive in and explore the exciting world of token creation on Koinos!
 
 Before starting, ensure that you have already set up your Koinos AssemblyScript SDK environment by following [this guide](../as-sdk.md).
 

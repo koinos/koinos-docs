@@ -159,7 +159,6 @@ nav:
     - Technologies:
       - exchanges/cli.md
       - exchanges/koilib.md
-      - exchanges/jsonrpc.md
       - exchanges/rest.md
     - Common tasks:
       - exchanges/head-block.md

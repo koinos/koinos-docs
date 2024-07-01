@@ -1,4 +1,4 @@
-site_name: Koinos documentation
+site_name: Koinos Documentation
 site_url: https://docs.koinos.io
 
 site_description: Documentation for Koinos
@@ -74,7 +74,7 @@ theme:
     - search.suggest
     - toc.follow
     # - toc.integrate
-  favicon: assets/koinos-icon-dark.svg
+  favicon: assets/favicon.ico
   logo: assets/koinos-mark-light.svg
 
 extra:

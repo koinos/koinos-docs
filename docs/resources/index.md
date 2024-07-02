@@ -112,7 +112,7 @@ Libraries allow users to interact with the Koinos blockchain programmatically in
     ---
 
     Koilib is a full featured JavaScript library that faciliates interactions with the Koinos blockchain.
-    <br/><br/>
+    <br/><br/><br/>
 
     [:octicons-arrow-right-24: The premier Koinos JavaScript library](https://www.npmjs.com/package/koilib)
 
@@ -145,6 +145,7 @@ Software Development Kits (SDKs) provide compilers, debugging, testing framework
     ---
 
     The Koinos C++ SDK is a powerful toolkit that allows for the development of smart contracts in C++. While it is currently less popular than alternatives, many system level smart contracts are implemented using it.
+    <br/><br/>
 
     [:octicons-arrow-right-24: I'm an expert, I know what I'm doing](https://github.com/koinos/koinos-sdk-cpp)
 

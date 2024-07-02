@@ -39,6 +39,7 @@ This section is your gateway to becoming a vital part of the Koinos blockchain n
     ---
 
     Introducing configuration for the Koinos blockchain, which involves setting up parameters and options to customize the behavior and settings of Koinos nodes and services. Validators can explore configuration options to optimize performance, security, and resource allocation based on their specific use cases and deployment environments within the Koinos ecosystem.
+    <br/><br/>
 
     [:octicons-arrow-right-24: Let's configure it](configuration.md)
 
@@ -57,6 +58,7 @@ This section is your gateway to becoming a vital part of the Koinos blockchain n
 
     
     Node management in the Koinos ecosystem involves overseeing and maintaining the operational aspects of Koinos nodes to ensure optimal performance and reliability. This includes tasks such as node setup, configuration, monitoring, and troubleshooting to support the seamless operation of the blockchain network and associated services.
+    <br/><br/>
 
     [:octicons-arrow-right-24: Administer like a pro](node-management.md)
 

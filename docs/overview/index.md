@@ -38,6 +38,7 @@ Welcome to the Koinos overview! In this section, we will provide you with a comp
     ---
 
     Mana is a key concept in the Koinos ecosystem, representing the access to resources within the network. Through the accumulation of KOIN, which contain mana, users can perform transactions on the network without transaction fees.
+    <br/><br/>
 
     [:octicons-arrow-right-24: Learn about resource management](mana.md)
 

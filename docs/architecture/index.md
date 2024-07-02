@@ -23,6 +23,7 @@ The architecture section of the Koinos documentation provides a comprehensive ov
     ---
 
     Interprocess communication (IPC) is fundamental to the architecture of the Koinos blockchain, enabling different components and microservices to communicate and collaborate efficiently. Koinos utilizes IPC mechanisms such as message queues and remote procedure calls (RPC) to facilitate secure and reliable communication between nodes, ensuring seamless coordination and data exchange within the blockchain network.
+    <br/><br/>
 
     [:octicons-arrow-right-24: Internal communication](interprocess-communication.md)
 

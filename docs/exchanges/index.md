@@ -31,14 +31,6 @@ This guide will use four technologies for interacting with Koinos. They are not 
 
     [:octicons-arrow-right-24: Let's use JavaScript](koilib.md)
 
--   :fontawesome-solid-server:{ .lg .middle } __JSON-RPC__
-
-    ---
-
-    The primary way to access the Koinos API is via JSON-RPC. The API grants you full access to all read-only data about Koinos as well as providing mechanism for submitting transfers. The primary drawback of the API is that you must still sign transactions locally using another technology such as the CLI or Koilib.
-
-    [:octicons-arrow-right-24: Explore the JSON-RPC API](jsonrpc.md)
-
 -   :fontawesome-solid-server:{ .lg .middle } __REST__
 
     ---

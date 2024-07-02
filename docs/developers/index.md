@@ -46,6 +46,7 @@ This comprehensive resource hub is designed to empower developers to leverage th
     ---
 
     Introducing the REST API for the Koinos blockchain, a user-friendly interface that allows developers to interact with the blockchain using HTTP endpoints. With the REST API, developers can query blockchain data, submit transactions, and interact with smart contracts without needing to manage complex protocol-level interactions, providing a straightforward and accessible way to integrate applications with the Koinos blockchain.
+    <br/><br/>
 
     [:octicons-arrow-right-24: Start querying](rest.md)
 
@@ -71,7 +72,7 @@ This comprehensive resource hub is designed to empower developers to leverage th
     ---
 
     Introducing the "Deploy a contract" section of the Koinos documentation, where developers can learn how to deploy their smart contracts onto the Koinos blockchain. This section provides step-by-step instructions and examples for compiling smart contract code, generating deployment transactions, and interacting with the blockchain to deploy and initialize contracts efficiently.
-    <br/><br/>
+    <br/><br/><br/>
 
     [:octicons-arrow-right-24: Time to deploy](deploy-contract.md)
 

@@ -1,7 +1,7 @@
 site_name: Koinos Documentation
 site_url: https://docs.koinos.io
 
-site_description: Documentation for Koinos
+site_description: Build a decentralized future with The World's First Feeless Smart Contract Platform. From running validators to smart contract development, Koinos Documentation has you covered.
 
 repo_name: koinos
 repo_url: https://github.com/koinos/koinos
@@ -16,6 +16,8 @@ theme:
   name: material
   custom_dir: material/overrides
   language: en
+  font:
+    text: Plus Jakarta Sans
   icon:
     edit: material/pencil
     admonition:

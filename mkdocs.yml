@@ -6,7 +6,7 @@ site_description: Build a decentralized future with The World's First Feeless Sm
 repo_name: koinos
 repo_url: https://github.com/koinos/koinos
 
-edit_uri: https://github.com/koinos/koinos-docs/master/docs/
+edit_uri: https://github.com/koinos/koinos-docs/blob/master/docs/
 
 copyright: Copyright 2023-2024 Koinos Group
 
@@ -142,8 +142,12 @@ nav:
     - developers/transactions.md
     - developers/authority.md
     - Contract guides:
+      - developers/guides/token.md
       - developers/guides/calculator.md
       - developers/guides/immutable.md
+      - developers/guides/staking.md
+      - developers/guides/authority.md
+      - developers/guides/nft.md
   - Validators:
     - validators/index.md
     - validators/node-requirements.md
@@ -160,7 +164,6 @@ nav:
     - Technologies:
       - exchanges/cli.md
       - exchanges/koilib.md
-      - exchanges/jsonrpc.md
       - exchanges/rest.md
     - Common tasks:
       - exchanges/head-block.md

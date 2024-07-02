@@ -11,6 +11,8 @@ edit_uri: https://github.com/koinos/koinos-docs/master/docs/
 copyright: Copyright 2023-2024 Koinos Group
 
 docs_dir: docs
+extra_css:
+  - stylesheets/extra.css
 
 theme:
   name: material

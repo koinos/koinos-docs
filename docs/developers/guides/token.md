@@ -4,9 +4,7 @@ Welcome to our guide on launching a token using the Koinos Contract Standard ([K
 Before starting, ensure that you have already set up your Koinos AssemblyScript SDK environment by following [this guide](../as-sdk.md).
 
 !!! note
-    The [KCS-1](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-1.md) token may not be compatible with certain dApps such as [KoinDX](https://koindx.com). You should understand the requirements of your token before adhering to any particular standard. Visit the [Koinos Contract Standards repository](https://github.com/koinos/koinos-contract-standards) for more information.
-
-    The [KCS-1](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-1.md) standard is insecure. The security is improved by [KCS-3](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-3.md) and [KCS-4](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-4.md). A more detailed description of the vulnerability can be found [here](https://peakd.com/koinos/@jga/improve-security-koinos).
+    You should understand the requirements of your token before adhering to any particular standard. Visit the [Koinos Contract Standards repository](https://github.com/koinos/koinos-contract-standards) for more information.
 
 ---
 ## Setting up the project

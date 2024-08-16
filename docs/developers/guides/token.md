@@ -1,5 +1,5 @@
 # Token
-Welcome to our guide on launching a token using the Koinos Contract Standard ([KCS-1](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-1.md)) for tokens and the AssemblyScript SDK for Koinos. In this tutorial, we'll walk you through the process of creating and deploying your own token on the Koinos blockchain. Whether you're a seasoned developer or new to blockchain development, this step-by-step guide will provide you with the knowledge and tools necessary to bring your token project to life. Let's dive in and explore the exciting world of token creation on Koinos!
+Welcome to our guide on launching a token using the Koinos Contract Standard ([KCS-4](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-4.md)) for tokens and the AssemblyScript SDK for Koinos. In this tutorial, we'll walk you through the process of creating and deploying your own token on the Koinos blockchain. Whether you're a seasoned developer or new to blockchain development, this step-by-step guide will provide you with the knowledge and tools necessary to bring your token project to life. Let's dive in and explore the exciting world of token creation on Koinos!
 
 Before starting, ensure that you have already set up your Koinos AssemblyScript SDK environment by following [this guide](../as-sdk.md).
 
@@ -93,8 +93,6 @@ package token;
 
 import "koinos/options.proto";
 
-message empty_message {}
-
 // @description Returns the token's name
 // @read-only true
 message name_arguments {}
@@ -127,68 +125,122 @@ message total_supply_result {
    uint64 value = 1 [jstype = JS_STRING];
 }
 
-// @description Returns the token's max supply
-// @read-only true
-message max_supply_arguments {}
-
-message max_supply_result {
-   uint64 value = 1 [jstype = JS_STRING];
-}
-
 // @description Checks the balance at an address
 // @read-only true
 message balance_of_arguments {
-   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   bytes owner = 1 [(btype) = ADDRESS];
 }
 
 message balance_of_result {
    uint64 value = 1 [jstype = JS_STRING];
 }
 
+// @description Returns the name, symbol, and decimals of the token
+// @read-only true
+message get_info_arguments {}
+
+message get_info_result {
+   string name = 1;
+   string symbol = 2;
+   uint32 decimals = 3;
+}
+
+// @description Returns the allowance defined for a specific owner and account
+// @read-only true
+message allowance_arguments {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   bytes spender = 2 [(koinos.btype) = ADDRESS];
+}
+
+message allowance_result {
+   uint64 value = 1 [jstype = JS_STRING];
+}
+
+message spender_value {
+   bytes spender = 1 [(koinos.btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
+}
+
+// @description Returns a list of allowances for a given owner
+// @read-only true
+message get_allowances_arguments {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   bytes start = 2 [(koinos.btype) = ADDRESS];
+   int32 limit = 3;
+   bool descending = 4;
+}
+
+message get_allowances_result {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   repeated spender_value allowances = 2;
+}
+
 // @description Transfers the token
 // @read-only false
 // @result empty_message
 message transfer_arguments {
-   bytes from = 1 [(koinos.btype) = ADDRESS];
-   bytes to = 2 [(koinos.btype) = ADDRESS];
+   bytes from = 1 [(btype) = ADDRESS];
+   bytes to = 2 [(btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
+   string memo = 4;
 }
+
+message transfer_result {}
 
 // @description Mints the token
 // @read-only false
 // @result empty_message
 message mint_arguments {
-   bytes to = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 1 [(btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
+
+message mint_result {}
 
 // @description Burns the token
 // @read-only false
 // @result empty_message
 message burn_arguments {
-   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes from = 1 [(btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
 
-message balance_object {
-   uint64 value = 1 [jstype = JS_STRING];
+message burn_result {}
+
+// @description Adds an allownance for a given owner and account pairing
+// @read-only false
+// @result empty_message
+message approve_arguments {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   bytes spender = 2 [(koinos.btype) = ADDRESS];
+   uint64 value = 3 [jstype = JS_STRING];
+}
+
+message approve_result {}
+
+message burn_event {
+   bytes from = 1 [(btype) = ADDRESS];
+   uint64 value = 2 [jstype = JS_STRING];
 }
 
 message mint_event {
-   bytes to = 1 [(koinos.btype) = ADDRESS];
-   uint64 value = 2 [jstype = JS_STRING];
-}
-
-message burn_event {
-   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 1 [(btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
 
 message transfer_event {
-   bytes from = 1 [(koinos.btype) = ADDRESS];
-   bytes to = 2 [(koinos.btype) = ADDRESS];
+   bytes from = 1 [(btype) = ADDRESS];
+   bytes to = 2 [(btype) = ADDRESS];
+   uint64 value = 3 [jstype = JS_STRING];
+   string memo = 4;
+}
+
+message approve_event {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   bytes spender = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
 }
+
 ```
 Now that we have our Protobuf definition, let's generate the derived AssemblyScript code.
 ```sh
@@ -236,261 +288,237 @@ vi assembly/Token.ts
 Let's open our implementation file and write logic to add our token's functionality.
 
 ```ts linenums="1" title="assembly/Token.ts"
-
-import {
-  Arrays,
-  Protobuf,
-  System,
-  SafeMath,
-  authority,
-  error,
-} from "@koinos/sdk-as";
+import { Arrays, authority, chain, error, kcs4, Protobuf, Storage, System } from "@koinos/sdk-as";
 import { token } from "./proto/token";
-import { SupplyStorage } from "./state/SupplyStorage";
-import { BalancesStorage } from "./state/BalancesStorage";
+
+const SUPPLY_SPACE_ID = 0;
+const BALANCES_SPACE_ID = 1;
+const ALLOWANCES_SPACE_ID = 2;
 
 export class Token {
-  // SETTINGS BEGIN
   _name: string = "[token name]";
   _symbol: string = "[token symbol]";
   _decimals: u32 = 8;
 
-  // set _maxSupply to zero if there is no max supply
-  // if set to zero, the supply would still be limited by how many tokens can fit in a u64 (u64.MAX_VALUE)
-  _maxSupply: u64 = 0;
+  supply: Storage.Obj< token.balance_object > = new Storage.Obj(
+    System.getContractId(),
+    SUPPLY_SPACE_ID,
+    token.balance_object.decode,
+    token.balance_object.encode,
+    () => new token.balance_object(),
+    true
+  );
 
-  // SETTINGS END
+  balances: Storage.Map< Uint8Array, token.balance_object > = new Storage.Map(
+    System.getContractId(),
+    BALANCES_SPACE_ID,
+    token.balance_object.decode,
+    token.balance_object.encode,
+    () => new token.balance_object(),
+    true
+  );
 
-  _contractId: Uint8Array = System.getContractId();
-  _supplyStorage: SupplyStorage = new SupplyStorage(this._contractId);
-  _balancesStorage: BalancesStorage = new BalancesStorage(this._contractId);
+  allowances: Storage.Map< Uint8Array, token.balance_object > = new Storage.Map(
+    System.getContractId(),
+    ALLOWANCES_SPACE_ID,
+    token.balance_object.decode,
+    token.balance_object.encode,
+    () => new token.balance_object(),
+    true
+  );
 
-  name(args: token.name_arguments): token.name_result {
-    return new token.name_result(this._name);
+  name(): kcs4.name_result {
+    return new kcs4.name_result(this._name);
   }
 
-  symbol(args: token.symbol_arguments): token.symbol_result {
-    return new token.symbol_result(this._symbol);
+  symbol(): kcs4.symbol_result {
+    return new kcs4.symbol_result(this._symbol);
   }
 
-  decimals(args: token.decimals_arguments): token.decimals_result {
-    return new token.decimals_result(this._decimals);
+  decimals(): kcs4.decimals_result {
+    return new kcs4.decimals_result(this._decimals);
   }
 
-  total_supply(args: token.total_supply_arguments): token.total_supply_result {
-    const supply = this._supplyStorage.get()!;
-
-    const res = new token.total_supply_result();
-    res.value = supply.value;
-
-    return res;
+  get_info(): kcs4.get_info_result {
+    return new kcs4.get_info_result(this._name, this._symbol, this._decimals);
   }
 
-  max_supply(args: token.max_supply_arguments): token.max_supply_result {
-    return new token.max_supply_result(this._maxSupply);
+  total_supply(): kcs4.total_supply_result {
+    return new kcs4.total_supply_result(this.supply.get()!.value);
   }
 
-  balance_of(args: token.balance_of_arguments): token.balance_of_result {
-    const owner = args.owner;
-
-    const balanceObj = this._balancesStorage.get(owner!)!;
-
-    const res = new token.balance_of_result();
-    res.value = balanceObj.value;
-
-    return res;
+  balance_of(args: kcs4.balance_of_arguments): kcs4.balance_of_result {
+    return new kcs4.balance_of_result(this.balances.get(args.owner)!.value);
   }
 
-  transfer(args: token.transfer_arguments): token.empty_message {
-    System.require(args.from, "Missing 'from' field");
-    System.require(args.to, "Missing 'to' field");
-    const from = args.from!;
-    const to = args.to!;
-    const value = args.value;
+  allowance(args: kcs4.allowance_arguments): kcs4.allowance_result {
+    System.require(args.owner != null, "account 'owner' cannot be null");
+    System.require(args.spender != null, "account 'spender' cannot be null");
 
-    System.require(!Arrays.equal(from, to), "Cannot transfer to self");
+    const key = new Uint8Array(50);
+    key.set(args.owner, 0);
+    key.set(args.spender, 25);
+
+    return new kcs4.allowance_result(this.allowances.get(key)!.value);
+  }
+
+  get_allowances(args: kcs4.get_allowances_arguments): kcs4.get_allowances_result {
+    System.require(args.owner != null, "account 'owner' cannot be null");
+
+    let key = new Uint8Array(50);
+    key.set(args.owner, 0);
+    key.set(args.start ? args.start : new Uint8Array(0), 25);
+
+    let result = new kcs4.get_allowances_result(args.owner, []);
+
+    for (let i = 0; i < args.limit; i++) {
+      const nextAllowance = args.descending
+        ? this.allowances.getPrev(key)
+        : this.allowances.getNext(key);
+
+      if (!nextAllowance) {
+        break;
+      }
+
+      if (!Arrays.equal(args.owner, nextAllowance.key!.slice(0, 25))) {
+        break;
+      }
+
+      result.allowances.push(
+        new kcs4.spender_value(nextAllowance.key!.slice(25), nextAllowance.value.value)
+      );
+
+      key = nextAllowance.key!;
+    }
+
+    return result;
+  }
+
+  transfer(args: kcs4.transfer_arguments): kcs4.transfer_result {
+    System.require(args.to != null, "account 'to' cannot be null");
+    System.require(args.from != null, "account 'from' cannot be null");
+    System.require(!Arrays.equal(args.from, args.to), 'cannot transfer to yourself');
 
     System.require(
-      Arrays.equal(System.getCaller().caller, from) ||
-        System.checkAuthority(
-          authority.authorization_type.contract_call,
-          from,
-          System.getArguments().args
-        ),
-      "'from' has not authorized transfer",
+      this._check_authority(args.from, args.value),
+      "account 'from' has not authorized transfer",
       error.error_code.authorization_failure
     );
 
-    const fromBalance = this._balancesStorage.get(from)!;
+    let fromBalance = this.balances.get(args.from)!;
+    System.require(fromBalance.value >= args.value, "account 'from' has insufficient balance", error.error_code.failure);
 
-    System.require(
-      fromBalance.value >= value,
-      "'from' has insufficient balance"
-    );
+    let toBalance = this.balances.get(args.to)!;
 
-    const toBalance = this._balancesStorage.get(to)!;
+    fromBalance.value -= args.value;
+    toBalance.value += args.value;
 
-    // the balances cannot hold more than the supply, so we don't check for overflow/underflow
-    fromBalance.value -= value;
-    toBalance.value += value;
-
-    this._balancesStorage.put(from, fromBalance);
-    this._balancesStorage.put(to, toBalance);
-
-    const transferEvent = new token.transfer_event(from, to, value);
-    const impacted = [to, from];
+    this.balances.put(args.from, fromBalance);
+    this.balances.put(args.to, toBalance);
 
     System.event(
-      "koinos.contracts.token.transfer_event",
-      Protobuf.encode(transferEvent, token.transfer_event.encode),
-      impacted
+      'token.transfer_event',
+      Protobuf.encode(new kcs4.transfer_event(args.from, args.to, args.value, args.memo), kcs4.transfer_event.encode),
+      [args.to, args.from]
     );
 
-    return new token.empty_message();
+    return new kcs4.transfer_result();
   }
 
-  mint(args: token.mint_arguments): token.empty_message {
-    System.require(args.to, "Missing 'to' field");
-    const to = args.to!;
-    const value = args.value;
+  mint(args: kcs4.mint_arguments): kcs4.mint_result {
+    System.require(args.to != null, "account 'to' cannot be null");
+    System.require(args.value != 0, "account 'value' cannot be zero");
 
     System.requireAuthority(
       authority.authorization_type.contract_call,
-      this._contractId
+      System.getContractId()
     );
 
-    const supply = this._supplyStorage.get()!;
+    let supply = this.supply.get()!;
+    System.require(supply.value <= u64.MAX_VALUE - args.value, 'mint would overflow supply', error.error_code.failure);
 
-    const newSupply = SafeMath.tryAdd(supply.value, value);
+    let balance = this.balances.get(args.to)!;
 
-    System.require(!newSupply.error, "Mint would overflow supply");
+    supply.value += args.value;
+    balance.value += args.value;
 
-    System.require(
-      this._maxSupply == 0 || newSupply.value <= this._maxSupply,
-      "Mint would overflow max supply"
-    );
-
-    const toBalance = this._balancesStorage.get(to)!;
-    toBalance.value += value;
-
-    supply.value = newSupply.value;
-
-    this._supplyStorage.put(supply);
-    this._balancesStorage.put(to, toBalance);
-
-    const mintEvent = new token.mint_event(to, value);
-    const impacted = [to];
+    this.supply.put(supply);
+    this.balances.put(args.to, balance);
 
     System.event(
-      "koinos.contracts.token.mint_event",
-      Protobuf.encode(mintEvent, token.mint_event.encode),
-      impacted
+      'token.mint_event',
+      Protobuf.encode(new kcs4.mint_event(args.to, args.value), kcs4.mint_event.encode),
+      [args.to]
     );
 
-    return new token.empty_message();
+    return new kcs4.mint_result();
   }
 
-  burn(args: token.burn_arguments): token.empty_message {
-    System.require(args.from, "Missing 'from' field");
-    const from = args.from!;
-    const value = args.value;
+  burn(args: kcs4.burn_arguments): kcs4.burn_result {
+    System.require(args.from != null, "account 'from' cannot be null");
 
+    let callerData = System.getCaller();
     System.require(
-      Arrays.equal(System.getCaller().caller, from) ||
-        System.checkAuthority(
-          authority.authorization_type.contract_call,
-          from,
-          System.getArguments().args
-        ),
-      "'from' has not authorized transfer",
+      callerData.caller_privilege == chain.privilege.kernel_mode || this._check_authority(args.from, args.value),
+      "account 'from' has not authorized burn",
       error.error_code.authorization_failure
     );
 
-    const fromBalance = this._balancesStorage.get(from)!;
+    let fromBalance = this.balances.get(args.from)!;
+    System.require(fromBalance.value >= args.value, "account 'from' has insufficient balance", error.error_code.failure);
 
-    System.require(
-      fromBalance.value >= value,
-      "'from' has insufficient balance"
-    );
+    let supply = this.supply.get()!;
+    System.require(supply.value >= args.value, 'burn would underflow supply', error.error_code.failure);
 
-    const supply = this._supplyStorage.get()!;
+    supply.value -= args.value;
+    fromBalance.value -= args.value;
 
-    const newSupply = SafeMath.sub(supply.value, value);
-
-    supply.value = newSupply;
-    fromBalance.value -= value;
-
-    this._supplyStorage.put(supply);
-    this._balancesStorage.put(from, fromBalance);
-
-    const burnEvent = new token.burn_event(from, value);
-    const impacted = [from];
+    this.supply.put(supply);
+    this.balances.put(args.from, fromBalance);
 
     System.event(
-      "koinos.contracts.token.burn_event",
-      Protobuf.encode(burnEvent, token.burn_event.encode),
-      impacted
+      'token.burn_event',
+      Protobuf.encode(new kcs4.burn_event(args.from, args.value), kcs4.burn_event.encode),
+      [args.from]
     );
 
-    return new token.empty_message();
+    return new kcs4.burn_result();
   }
-}
 
+  approve(args: kcs4.approve_arguments): kcs4.approve_result {
+    System.require(args.owner != null, "account 'owner' cannot be null");
+    System.require(args.spender != null, "account 'spender' cannot be null");
+    System.requireAuthority(authority.authorization_type.contract_call, args.owner);
 
-```
+    const key = new Uint8Array(50);
+    key.set(args.owner, 0);
+    key.set(args.spender, 25);
+    this.allowances.put(key, new token.balance_object(args.value));
 
-We have to add `assembly/state` directory where we define our storage.
-
-``` sh title="assembly/state"
-mkdir assembly/state && touch assembly/state/BalancesStorage.ts assembly/state/SpaceIds.ts assembly/state/SupplyStorage.ts
-```
-
-Create the above files and add this code to each:
-
-```ts linenums="1" title="assembly/state/BalancesStorage.ts"
-
-import { Storage } from '@koinos/sdk-as';
-import { token } from '../proto/token';
-import { BALANCE_SPACE_ID } from './SpaceIds';
-
-export class BalancesStorage extends Storage.Map<Uint8Array, token.balance_object> {
-  constructor(contractId: Uint8Array) {
-    super(
-      contractId,
-      BALANCE_SPACE_ID,
-      token.balance_object.decode,
-      token.balance_object.encode,
-      // default balance is 0
-      () => new token.balance_object()
+    System.event(
+      "token.approve_event",
+      Protobuf.encode(new kcs4.approve_event(args.owner, args.spender, args.value), kcs4.approve_event.encode),
+      [args.owner, args.spender]
     );
+
+    return new kcs4.approve_result();
   }
-}
 
-```
+  _check_authority(account: Uint8Array, amount: u64): bool {
+    const caller = System.getCaller().caller;
+    if (caller && caller.length > 0) {
+      let key = new Uint8Array(50);
+      key.set(account, 0);
+      key.set(caller, 25);
+      const allowance = this.allowances.get(key)!;
+      if (allowance.value >= amount) {
+        allowance.value -= amount;
+        this.allowances.put(key, allowance);
+        return true;
+      }
+    }
 
-```ts linenums="1" title="assembly/state/SpaceIds.ts"
-
-export const SUPPLY_SPACE_ID = 0;
-export const BALANCE_SPACE_ID = 1;
-
-```
-
-```ts linenums="1" title="assembly/state/SupplyStorage.ts"
-
-import { Storage } from '@koinos/sdk-as';
-import { token } from '../proto/token';
-import { SUPPLY_SPACE_ID } from './SpaceIds';
-
-export class SupplyStorage extends Storage.Obj<token.balance_object> {
-  constructor(contractId: Uint8Array) {
-    super(
-      contractId,
-      SUPPLY_SPACE_ID,
-      token.balance_object.decode,
-      token.balance_object.encode,
-      // total supply is 0 by default
-      () => new token.balance_object()
-    );
+    return System.checkAccountAuthority(account);
   }
 }
 
@@ -498,128 +526,114 @@ export class SupplyStorage extends Storage.Obj<token.balance_object> {
 
 ---
 ## Time for tests
-Let's open up `assembly/__tests__/Calculator.spec.ts` and write some tests.
+Let's open up `assembly/__tests__/Token.spec.ts` and write some tests.
 
 
 ```ts linenums="1" title="assembly/__tests__/Token.spec.ts"
-import {
-  Base58,
-  MockVM,
-  Arrays,
-  Protobuf,
-  authority,
-  chain,
-} from "@koinos/sdk-as";
+import { Base58, MockVM, authority, Arrays, chain, Protobuf, System, kcs4, protocol } from "@koinos/sdk-as";
 import { Token } from "../Token";
-import { token } from "../proto/token";
 
 const CONTRACT_ID = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe");
+
 const MOCK_ACCT1 = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG");
 const MOCK_ACCT2 = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK");
+const MOCK_ACCT3 = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqP");
+
+const headBlock = new protocol.block(new Uint8Array(0), new protocol.block_header(new Uint8Array(0), 10));
 
 describe("token", () => {
   beforeEach(() => {
     MockVM.reset();
     MockVM.setContractId(CONTRACT_ID);
-    MockVM.setCaller(
-      new chain.caller_data(new Uint8Array(0), chain.privilege.user_mode)
-    );
+    MockVM.setContractArguments(CONTRACT_ID); // Dummy value
+    MockVM.setEntryPoint(0);
+    MockVM.setCaller(new chain.caller_data(new Uint8Array(0), chain.privilege.user_mode));
+    MockVM.setBlock(headBlock);
+    MockVM.setContractMetadata(new chain.contract_metadata_object(new Uint8Array(0), false, false, false, false));
+    MockVM.setHeadInfo(new chain.head_info(null, 0, 1));
+
+    System.resetCache();
   });
 
   it("should get the name", () => {
-    const tkn = new Token();
-
-    const args = new token.name_arguments();
-    const res = tkn.name(args);
-
+    const tokenContract = new Token();
+    const res = tokenContract.name();
     expect(res.value).toBe("[token name]");
   });
 
   it("should get the symbol", () => {
-    const tkn = new Token();
-
-    const args = new token.symbol_arguments();
-    const res = tkn.symbol(args);
-
+    const tokenContract = new Token();
+    const res = tokenContract.symbol();
     expect(res.value).toBe("[token symbol]");
   });
 
   it("should get the decimals", () => {
-    const tkn = new Token();
-
-    const args = new token.decimals_arguments();
-    const res = tkn.decimals(args);
-
+    const tokenContract = new Token();
+    const res = tokenContract.decimals();
     expect(res.value).toBe(8);
   });
 
-  it("should get the max supply", () => {
-    const tkn = new Token();
-
-    const args = new token.max_supply_arguments();
-    const res = tkn.max_supply(args);
-
-    expect(res.value).toBe(0);
+  it("should get token info", () => {
+    const tokenContract = new Token();
+    const res = tokenContract.get_info();
+    expect(res.name).toBe("[token name]");
+    expect(res.symbol).toBe("[token symbol]");
+    expect(res.decimals).toBe(8);
   });
 
   it("should/not burn tokens", () => {
-    const tkn = new Token();
-
-    MockVM.setContractArguments(new Uint8Array(0));
-    MockVM.setEntryPoint(1);
+    const tokenContract = new Token();
+    let callerData = new chain.caller_data();
+    callerData.caller = CONTRACT_ID;
+    callerData.caller_privilege = chain.privilege.kernel_mode;
+    MockVM.setCaller(callerData);
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    let auth = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      CONTRACT_ID,
-      true
-    );
+    let auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
     MockVM.setAuthorities([auth]);
 
     // check total supply
-    const totalSupplyArgs = new token.total_supply_arguments();
-    let totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    let totalSupplyRes = tokenContract.total_supply();
     expect(totalSupplyRes.value).toBe(0);
 
     // mint tokens
-    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
-    tkn.mint(mintArgs);
+    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    tokenContract.mint(mintArgs);
 
-    auth = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      MOCK_ACCT1,
-      true
-    );
+    totalSupplyRes = tokenContract.total_supply();
+    expect(totalSupplyRes.value).toBe(123);
+
+    let balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceRes = tokenContract.balance_of(balanceArgs);
+    expect(balanceRes.value).toBe(123);
+
+    auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
     MockVM.setAuthorities([auth]);
 
     // burn tokens
-    let burnArgs = new token.burn_arguments(MOCK_ACCT1, 10);
-    tkn.burn(burnArgs);
+    tokenContract.burn(new kcs4.burn_arguments(MOCK_ACCT1, 10));
 
     // check events
     const events = MockVM.getEvents();
     expect(events.length).toBe(2);
-    expect(events[0].name).toBe("koinos.contracts.token.mint_event");
+    expect(events[0].name).toBe('token.mint_event');
     expect(events[0].impacted.length).toBe(1);
     expect(Arrays.equal(events[0].impacted[0], MOCK_ACCT1)).toBe(true);
-    expect(events[1].name).toBe("koinos.contracts.token.burn_event");
+    expect(events[1].name).toBe('token.burn_event');
     expect(events[1].impacted.length).toBe(1);
     expect(Arrays.equal(events[1].impacted[0], MOCK_ACCT1)).toBe(true);
 
-    const burnEvent = Protobuf.decode<token.burn_event>(
-      events[1].data!,
-      token.burn_event.decode
-    );
+    const burnEvent = Protobuf.decode<kcs4.burn_event>(events[1].data, kcs4.burn_event.decode);
     expect(Arrays.equal(burnEvent.from, MOCK_ACCT1)).toBe(true);
     expect(burnEvent.value).toBe(10);
 
     // check balance
-    let balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
-    let balanceRes = tkn.balance_of(balanceArgs);
+    balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(113);
 
     // check total supply
-    totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    totalSupplyRes = tokenContract.total_supply();
     expect(totalSupplyRes.value).toBe(113);
 
     // save the MockVM state because the burn is going to revert the transaction
@@ -627,101 +641,91 @@ describe("token", () => {
 
     // does not burn tokens
     expect(() => {
-      const tkn = new Token();
-      const burnArgs = new token.burn_arguments(MOCK_ACCT1, 200);
-      tkn.burn(burnArgs);
+      const tokenContract = new Token();
+      const burnArgs = new kcs4.burn_arguments(MOCK_ACCT1, 200);
+      tokenContract.burn(burnArgs);
     }).toThrow();
 
     // check error message
-    expect(MockVM.getErrorMessage()).toStrictEqual(
-      "'from' has insufficient balance"
-    );
+    expect(MockVM.getErrorMessage()).toBe("account 'from' has insufficient balance");
 
     MockVM.setAuthorities([]);
+
+    callerData.caller_privilege = chain.privilege.user_mode;
+    MockVM.setCaller(callerData);
 
     // save the MockVM state because the burn is going to revert the transaction
     MockVM.commitTransaction();
 
     expect(() => {
       // try to burn tokens
-      const tkn = new Token();
-      const burnArgs = new token.burn_arguments(MOCK_ACCT1, 123);
-      tkn.burn(burnArgs);
+      const koinContract = new Token();
+      const burnArgs = new kcs4.burn_arguments(MOCK_ACCT1, 123);
+      koinContract.burn(burnArgs);
     }).toThrow();
 
+    // check error message
+    expect(MockVM.getErrorMessage()).toBe("account 'from' has not authorized burn");
+
     // check balance
-    balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
-    balanceRes = tkn.balance_of(balanceArgs);
+    balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(113);
 
     // check total supply
-    totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    totalSupplyRes = tokenContract.total_supply();
     expect(totalSupplyRes.value).toBe(113);
   });
 
   it("should mint tokens", () => {
-    const tkn = new Token();
+    const tokenContract = new Token();
 
-    // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const auth = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      CONTRACT_ID,
-      true
-    );
-    MockVM.setAuthorities([auth]);
+    // Contract ID as caller in user mode
+    MockVM.setCaller(new chain.caller_data(CONTRACT_ID, chain.privilege.user_mode));
 
     // check total supply
-    const totalSupplyArgs = new token.total_supply_arguments();
-    let totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    let totalSupplyRes = tokenContract.total_supply();
     expect(totalSupplyRes.value).toBe(0);
 
     // mint tokens
-    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
-    tkn.mint(mintArgs);
+    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    tokenContract.mint(mintArgs);
 
     // check events
     const events = MockVM.getEvents();
     expect(events.length).toBe(1);
-    expect(events[0].name).toBe("koinos.contracts.token.mint_event");
+    expect(events[0].name).toBe('token.mint_event');
     expect(events[0].impacted.length).toBe(1);
     expect(Arrays.equal(events[0].impacted[0], MOCK_ACCT1)).toBe(true);
 
-    const mintEvent = Protobuf.decode<token.mint_event>(
-      events[0].data!,
-      token.mint_event.decode
-    );
+    const mintEvent = Protobuf.decode<kcs4.mint_event>(events[0].data, kcs4.mint_event.decode);
     expect(Arrays.equal(mintEvent.to, MOCK_ACCT1)).toBe(true);
     expect(mintEvent.value).toBe(123);
 
     // check balance
-    const balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
-    const balanceRes = tkn.balance_of(balanceArgs);
+    const balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    const balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(123);
 
     // check total supply
-    totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    totalSupplyRes = tokenContract.total_supply();
     expect(totalSupplyRes.value).toBe(123);
   });
 
   it("should not mint tokens if not contract account", () => {
-    const tkn = new Token();
+    const tokenContract = new Token();
 
     // set contract_call authority for MOCK_ACCT1 to true so that we cannot mint tokens
-    const auth = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      MOCK_ACCT1,
-      true
-    );
+    const auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
     MockVM.setAuthorities([auth]);
 
     // check total supply
-    const totalSupplyArgs = new token.total_supply_arguments();
-    let totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    let totalSupplyRes = tokenContract.total_supply();
     expect(totalSupplyRes.value).toBe(0);
 
     // check balance
-    const balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
-    let balanceRes = tkn.balance_of(balanceArgs);
+    const balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(0);
 
     // save the MockVM state because the mint is going to revert the transaction
@@ -729,297 +733,362 @@ describe("token", () => {
 
     expect(() => {
       // try to mint tokens
-      const tkn = new Token();
-      const mintArgs = new token.mint_arguments(MOCK_ACCT2, 123);
-      tkn.mint(mintArgs);
+      const tokenContract = new Token();
+      const mintArgs = new kcs4.mint_arguments(MOCK_ACCT2, 123);
+      tokenContract.mint(mintArgs);
     }).toThrow();
 
     // check balance
-    balanceRes = tkn.balance_of(balanceArgs);
+    balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(0);
 
     // check total supply
-    totalSupplyRes = tkn.total_supply(totalSupplyArgs);
     expect(totalSupplyRes.value).toBe(0);
   });
 
   it("should not mint tokens if new total supply overflows", () => {
-    const tkn = new Token();
+    const tokenContract = new Token();
+
+    // set kernel mode
+    MockVM.setCaller(new chain.caller_data(new Uint8Array(0), chain.privilege.kernel_mode));
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const auth = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      CONTRACT_ID,
-      true
-    );
+    const auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
     MockVM.setAuthorities([auth]);
 
-    let mintArgs = new token.mint_arguments(MOCK_ACCT2, 123);
-    tkn.mint(mintArgs);
+    let mintArgs = new kcs4.mint_arguments(MOCK_ACCT2, 123);
+    tokenContract.mint(mintArgs);
 
     // check total supply
-    let totalSupplyArgs = new token.total_supply_arguments();
-    let totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    let totalSupplyRes = tokenContract.total_supply();
     expect(totalSupplyRes.value).toBe(123);
 
     // save the MockVM state because the mint is going to revert the transaction
     MockVM.commitTransaction();
 
     expect(() => {
-      // try to mint tokens
-      const tkn = new Token();
-      const mintArgs = new token.mint_arguments(MOCK_ACCT2, u64.MAX_VALUE);
-      tkn.mint(mintArgs);
+      const tokenContract = new Token();
+      const mintArgs = new kcs4.mint_arguments(MOCK_ACCT2, u64.MAX_VALUE);
+      tokenContract.mint(mintArgs);
     }).toThrow();
 
-    expect(MockVM.getErrorMessage()).toStrictEqual(
-      "Mint would overflow supply"
-    );
-
     // check total supply
-    totalSupplyRes = tkn.total_supply(totalSupplyArgs);
-    expect(totalSupplyRes.value).toBe(123);
-  });
-
-  it("should not mint tokens if new total supply overflows max supply", () => {
-    const tkn = new Token();
-
-    // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const auth = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      CONTRACT_ID,
-      true
-    );
-    MockVM.setAuthorities([auth]);
-
-    let mintArgs = new token.mint_arguments(MOCK_ACCT2, 123);
-    tkn.mint(mintArgs);
-
-    // check total supply
-    let totalSupplyArgs = new token.total_supply_arguments();
-    let totalSupplyRes = tkn.total_supply(totalSupplyArgs);
+    totalSupplyRes = tokenContract.total_supply();
     expect(totalSupplyRes.value).toBe(123);
 
-    // save the MockVM state because the mint is going to revert the transaction
-    MockVM.commitTransaction();
-
-    expect(() => {
-      // try to mint tokens
-      const tkn = new Token();
-      tkn._maxSupply = 400;
-      const mintArgs = new token.mint_arguments(MOCK_ACCT2, 500);
-      tkn.mint(mintArgs);
-    }).toThrow();
-
-    expect(MockVM.getErrorMessage()).toStrictEqual(
-      "Mint would overflow max supply"
-    );
-
-    // check total supply
-    totalSupplyRes = tkn.total_supply(totalSupplyArgs);
-    expect(totalSupplyRes.value).toBe(123);
+    // check error message
+    expect(MockVM.getErrorMessage()).toBe("mint would overflow supply");
   });
 
   it("should transfer tokens", () => {
-    const tkn = new Token();
+    const tokenContract = new Token();
 
-    MockVM.setContractArguments(new Uint8Array(0));
-    MockVM.setEntryPoint(1);
+    // set kernel mode
+    MockVM.setCaller(new chain.caller_data(new Uint8Array(0), chain.privilege.kernel_mode));
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const authContractId = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      CONTRACT_ID,
-      true
-    );
+    const authContractId = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
 
     // set contract_call authority for MOCK_ACCT1 to true so that we can transfer tokens
-    const authMockAcct1 = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      MOCK_ACCT1,
-      true
-    );
+    const authMockAcct1 = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
     MockVM.setAuthorities([authContractId, authMockAcct1]);
 
     // mint tokens
-    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
-    tkn.mint(mintArgs);
+    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    tokenContract.mint(mintArgs);
 
     // transfer tokens
-    const transferArgs = new token.transfer_arguments(
-      MOCK_ACCT1,
-      MOCK_ACCT2,
-      10
-    );
-    tkn.transfer(transferArgs);
+    const transferArgs = new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10);
+    tokenContract.transfer(transferArgs);
 
     // check balances
-    let balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
-    let balanceRes = tkn.balance_of(balanceArgs);
+    let balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(113);
 
-    balanceArgs = new token.balance_of_arguments(MOCK_ACCT2);
-    balanceRes = tkn.balance_of(balanceArgs);
+    balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT2);
+    balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(10);
 
     // check events
     const events = MockVM.getEvents();
     // 2 events, 1st one is the mint event, the second one is the transfer event
     expect(events.length).toBe(2);
-    expect(events[1].name).toBe("koinos.contracts.token.transfer_event");
+    expect(events[1].name).toBe('token.transfer_event');
     expect(events[1].impacted.length).toBe(2);
     expect(Arrays.equal(events[1].impacted[0], MOCK_ACCT2)).toBe(true);
     expect(Arrays.equal(events[1].impacted[1], MOCK_ACCT1)).toBe(true);
 
-    const transferEvent = Protobuf.decode<token.transfer_event>(
-      events[1].data!,
-      token.transfer_event.decode
-    );
+    const transferEvent = Protobuf.decode<kcs4.transfer_event>(events[1].data, kcs4.transfer_event.decode);
     expect(Arrays.equal(transferEvent.from, MOCK_ACCT1)).toBe(true);
     expect(Arrays.equal(transferEvent.to, MOCK_ACCT2)).toBe(true);
     expect(transferEvent.value).toBe(10);
   });
 
   it("should not transfer tokens without the proper authorizations", () => {
-    MockVM.setContractArguments(new Uint8Array(0));
-    MockVM.setEntryPoint(1);
-    const tkn = new Token();
+    const tokenContract = new Token();
+
+    // set kernel mode
+    MockVM.setCaller(new chain.caller_data(new Uint8Array(0), chain.privilege.kernel_mode));
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const authContractId = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      CONTRACT_ID,
-      true
-    );
+    const authContractId = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
     // do not set authority for MOCK_ACCT1
     MockVM.setAuthorities([authContractId]);
 
     // mint tokens
-    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
-    tkn.mint(mintArgs);
+    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    tokenContract.mint(mintArgs);
 
     // save the MockVM state because the transfer is going to revert the transaction
     MockVM.commitTransaction();
 
     expect(() => {
       // try to transfer tokens without the proper authorizations for MOCK_ACCT1
-      const tkn = new Token();
-      const transferArgs = new token.transfer_arguments(
-        MOCK_ACCT1,
-        MOCK_ACCT2,
-        10
-      );
-      tkn.transfer(transferArgs);
+      const tokenContract = new Token();
+      const transferArgs = new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10);
+      tokenContract.transfer(transferArgs);
     }).toThrow();
 
-    expect(MockVM.getErrorMessage()).toStrictEqual(
-      "'from' has not authorized transfer"
-    );
-
     // check balances
-    let balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
-    let balanceRes = tkn.balance_of(balanceArgs);
+    let balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(123);
 
-    balanceArgs = new token.balance_of_arguments(MOCK_ACCT2);
-    balanceRes = tkn.balance_of(balanceArgs);
+    balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT2);
+    balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(0);
   });
 
   it("should not transfer tokens to self", () => {
-    const tkn = new Token();
+    const tokenContract = new Token();
+
+    // set kernel mode
+    MockVM.setCaller(new chain.caller_data(new Uint8Array(0), chain.privilege.kernel_mode));
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const authContractId = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      CONTRACT_ID,
-      true
-    );
+    const authContractId = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
 
     // set contract_call authority for MOCK_ACCT1 to true so that we can transfer tokens
-    const authMockAcct1 = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      MOCK_ACCT1,
-      true
-    );
+    const authMockAcct1 = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
     MockVM.setAuthorities([authContractId, authMockAcct1]);
 
     // mint tokens
-    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
-    tkn.mint(mintArgs);
+    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    tokenContract.mint(mintArgs);
 
     // save the MockVM state because the transfer is going to revert the transaction
     MockVM.commitTransaction();
 
+    // try to transfer tokens
     expect(() => {
-      // try to transfer tokens
-      const tkn = new Token();
-      const transferArgs = new token.transfer_arguments(
-        MOCK_ACCT1,
-        MOCK_ACCT1,
-        10
-      );
-      tkn.transfer(transferArgs);
+      const tokenContract = new Token();
+      const transferArgs = new kcs4.transfer_arguments(Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG"), MOCK_ACCT1, 10);
+      tokenContract.transfer(transferArgs);
     }).toThrow();
 
-    expect(MockVM.getErrorMessage()).toStrictEqual("Cannot transfer to self");
-
     // check balances
-    let balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
-    let balanceRes = tkn.balance_of(balanceArgs);
+    let balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(123);
+
+    // check error message
+    expect(MockVM.getErrorMessage()).toBe('cannot transfer to yourself');
   });
 
   it("should not transfer if insufficient balance", () => {
-    MockVM.setContractArguments(new Uint8Array(0));
-    MockVM.setEntryPoint(1);
-    const tkn = new Token();
+    const tokenContract = new Token();
+
+    // set kernel mode
+    MockVM.setCaller(new chain.caller_data(new Uint8Array(0), chain.privilege.kernel_mode));
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
-    const authContractId = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      CONTRACT_ID,
-      true
-    );
+    const authContractId = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
 
     // set contract_call authority for MOCK_ACCT1 to true so that we can transfer tokens
-    const authMockAcct1 = new MockVM.MockAuthority(
-      authority.authorization_type.contract_call,
-      MOCK_ACCT1,
-      true
-    );
+    const authMockAcct1 = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
     MockVM.setAuthorities([authContractId, authMockAcct1]);
 
     // mint tokens
-    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
-    tkn.mint(mintArgs);
+    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    tokenContract.mint(mintArgs);
 
     // save the MockVM state because the transfer is going to revert the transaction
     MockVM.commitTransaction();
 
+    // try to transfer tokens
     expect(() => {
-      // try to transfer tokens
-      const tkn = new Token();
-      const transferArgs = new token.transfer_arguments(
-        MOCK_ACCT1,
-        MOCK_ACCT2,
-        456
-      );
-      tkn.transfer(transferArgs);
+      const tokenContract = new Token();
+      const transferArgs = new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 456);
+      tokenContract.transfer(transferArgs);
     }).toThrow();
 
-    expect(MockVM.getErrorMessage()).toStrictEqual(
-      "'from' has insufficient balance"
-    );
-
     // check balances
-    let balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
-    let balanceRes = tkn.balance_of(balanceArgs);
+    let balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(123);
 
-    balanceArgs = new token.balance_of_arguments(MOCK_ACCT2);
-    balanceRes = tkn.balance_of(balanceArgs);
-    expect(balanceRes.value).toBe(0);
+    // check error message
+    expect(MockVM.getErrorMessage()).toBe("account 'from' has insufficient balance");
+  });
+
+  it("should transfer tokens without authority", () => {
+    const tokenContract = new Token();
+
+    // set kernel mode
+    MockVM.setCaller(new chain.caller_data(new Uint8Array(0), chain.privilege.kernel_mode));
+
+    // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
+    const authContractId = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
+
+    MockVM.setAuthorities([authContractId]);
+
+    // mint tokens
+    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    tokenContract.mint(mintArgs);
+
+    // set caller with MOCK_ACCT1 to allow transfer if the caller is the same from
+    MockVM.setCaller(new chain.caller_data(MOCK_ACCT1, chain.privilege.kernel_mode));
+
+    // transfer tokens
+    const transferArgs = new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10);
+    tokenContract.transfer(transferArgs);
+
+    // check balances
+    let balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceRes = tokenContract.balance_of(balanceArgs);
+    expect(balanceRes.value).toBe(113);
+
+    balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT2);
+    balanceRes = tokenContract.balance_of(balanceArgs);
+    expect(balanceRes.value).toBe(10);
+
+    // check events
+    const events = MockVM.getEvents();
+    // 2 events, 1st one is the mint event, the second one is the transfer event
+    expect(events.length).toBe(2);
+    expect(events[1].name).toBe('token.transfer_event');
+    expect(events[1].impacted.length).toBe(2);
+    expect(Arrays.equal(events[1].impacted[0], MOCK_ACCT2)).toBe(true);
+    expect(Arrays.equal(events[1].impacted[1], MOCK_ACCT1)).toBe(true);
+
+    const transferEvent = Protobuf.decode<kcs4.transfer_event>(events[1].data, kcs4.transfer_event.decode);
+    expect(Arrays.equal(transferEvent.from, MOCK_ACCT1)).toBe(true);
+    expect(Arrays.equal(transferEvent.to, MOCK_ACCT2)).toBe(true);
+    expect(transferEvent.value).toBe(10);
+  });
+
+  it("should approve", () => {
+    const tokenContract = new Token();
+
+    expect(tokenContract.allowance(new kcs4.allowance_arguments(MOCK_ACCT1, MOCK_ACCT2)).value).toBe(0);
+
+    const mockAcc1Auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
+    MockVM.setAuthorities([mockAcc1Auth]);
+    tokenContract.approve(new kcs4.approve_arguments(MOCK_ACCT1, MOCK_ACCT2, 10));
+
+    expect(tokenContract.allowance(new kcs4.allowance_arguments(MOCK_ACCT1, MOCK_ACCT2)).value).toBe(10);
+
+    MockVM.setAuthorities([mockAcc1Auth]);
+    tokenContract.approve(new kcs4.approve_arguments(MOCK_ACCT1, MOCK_ACCT3, 20));
+
+    expect(tokenContract.allowance(new kcs4.allowance_arguments(MOCK_ACCT1, MOCK_ACCT3)).value).toBe(20);
+
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT2, true)]);
+    tokenContract.approve(new kcs4.approve_arguments(MOCK_ACCT2, MOCK_ACCT3, 30));
+
+    expect(tokenContract.allowance(new kcs4.allowance_arguments(MOCK_ACCT2, MOCK_ACCT3)).value).toBe(30);
+
+    // check events
+    const events = MockVM.getEvents();
+    expect(events.length).toBe(3);
+    expect(events[0].name).toBe('token.approve_event');
+    expect(events[0].impacted.length).toBe(2);
+    expect(Arrays.equal(events[0].impacted[0], MOCK_ACCT1)).toBe(true);
+    expect(Arrays.equal(events[0].impacted[1], MOCK_ACCT2)).toBe(true);
+
+    expect(events[1].name).toBe('token.approve_event');
+    expect(events[1].impacted.length).toBe(2);
+    expect(Arrays.equal(events[1].impacted[0], MOCK_ACCT1)).toBe(true);
+    expect(Arrays.equal(events[1].impacted[1], MOCK_ACCT3)).toBe(true);
+
+    expect(events[2].name).toBe('token.approve_event');
+    expect(events[2].impacted.length).toBe(2);
+    expect(Arrays.equal(events[2].impacted[0], MOCK_ACCT2)).toBe(true);
+    expect(Arrays.equal(events[2].impacted[1], MOCK_ACCT3)).toBe(true);
+
+    // Tests basic allowances return
+    let allowances = tokenContract.get_allowances(new kcs4.get_allowances_arguments(MOCK_ACCT1, new Uint8Array(0), 10));
+    expect(Arrays.equal(allowances.owner, MOCK_ACCT1)).toBe(true);
+    expect(allowances.allowances.length).toBe(2);
+    expect(Arrays.equal(allowances.allowances[0].spender, MOCK_ACCT2)).toBe(true);
+    expect(allowances.allowances[0].value).toBe(10);
+    expect(Arrays.equal(allowances.allowances[1].spender, MOCK_ACCT3)).toBe(true);
+    expect(allowances.allowances[1].value).toBe(20);
+
+    // Tests allowances descending
+    allowances = tokenContract.get_allowances(new kcs4.get_allowances_arguments(MOCK_ACCT1, MOCK_ACCT3, 10, true));
+    expect(Arrays.equal(allowances.owner, MOCK_ACCT1)).toBe(true);
+    expect(allowances.allowances.length).toBe(1);
+    expect(Arrays.equal(allowances.allowances[0].spender, MOCK_ACCT2)).toBe(true);
+    expect(allowances.allowances[0].value).toBe(10);
+
+    // Tests allowances limit
+    allowances = tokenContract.get_allowances(new kcs4.get_allowances_arguments(MOCK_ACCT1, new Uint8Array(0), 1));
+    expect(Arrays.equal(allowances.owner, MOCK_ACCT1)).toBe(true);
+    expect(allowances.allowances.length).toBe(1);
+    expect(Arrays.equal(allowances.allowances[0].spender, MOCK_ACCT2)).toBe(true);
+    expect(allowances.allowances[0].value).toBe(10);
+
+    // Tests allowances pagination
+    allowances = tokenContract.get_allowances(new kcs4.get_allowances_arguments(MOCK_ACCT1, MOCK_ACCT2, 10));
+    expect(Arrays.equal(allowances.owner, MOCK_ACCT1)).toBe(true);
+    expect(allowances.allowances.length).toBe(1);
+    expect(Arrays.equal(allowances.allowances[0].spender, MOCK_ACCT3)).toBe(true);
+    expect(allowances.allowances[0].value).toBe(20);
+
+    // Tests another owner's allowances
+    allowances = tokenContract.get_allowances(new kcs4.get_allowances_arguments(MOCK_ACCT2, new Uint8Array(0), 10));
+    expect(Arrays.equal(allowances.owner, MOCK_ACCT2)).toBe(true);
+    expect(allowances.allowances.length).toBe(1);
+    expect(Arrays.equal(allowances.allowances[0].spender, MOCK_ACCT3)).toBe(true);
+    expect(allowances.allowances[0].value).toBe(30);
+  });
+
+  it("should require an approval", () => {
+    const tokenContract = new Token();
+
+    MockVM.setCaller(new chain.caller_data(CONTRACT_ID, chain.privilege.user_mode));
+    tokenContract.mint(new kcs4.mint_arguments(MOCK_ACCT1, 100));
+
+    MockVM.setCaller(new chain.caller_data(MOCK_ACCT2, chain.privilege.user_mode));
+
+    // should not transfer because allowance does not exist
+    expect(() => {
+      const tokenContract = new Token();
+      tokenContract.transfer(new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10));
+    }).toThrow();
+
+    expect(MockVM.getErrorMessage()).toBe("account 'from' has not authorized transfer");
+
+    // create allowance for 20 tokens
+    MockVM.setCaller(new chain.caller_data(new Uint8Array(0), chain.privilege.kernel_mode));
+    MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true)]);
+    tokenContract.approve(new kcs4.approve_arguments(MOCK_ACCT1, MOCK_ACCT2, 20));
+
+    MockVM.setCaller(new chain.caller_data(MOCK_ACCT2, chain.privilege.user_mode));
+
+    // should not transfer because allowance is too small
+    expect(() => {
+      const tokenContract = new Token();
+      tokenContract.transfer(new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 25));
+    }).toThrow();
+
+    // should transfer partial amount of allowance
+    tokenContract.transfer(new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10));
+    expect(tokenContract.balance_of(new kcs4.balance_of_arguments(MOCK_ACCT1)).value).toBe(90);
+    expect(tokenContract.balance_of(new kcs4.balance_of_arguments(MOCK_ACCT2)).value).toBe(10);
+    expect(tokenContract.allowance(new kcs4.allowance_arguments(MOCK_ACCT1, MOCK_ACCT2)).value).toBe(10);
   });
 });
 
@@ -1045,89 +1114,111 @@ koinos-sdk-as-cli run-tests
 ``` { .text .no-copy }
 Running tests...
 yarn asp --verbose --config as-pect.config.js
-yarn run v1.22.19
-warning ../../../../../package.json: No license field
-$ /path/to/token/node_modules/.bin/asp --verbose --config as-pect.config.js
-       ___   _____                       __
-      /   | / ___/      ____  ___  _____/ /_
-     / /| | \__ \______/ __ \/ _ \/ ___/ __/
-    / ___ |___/ /_____/ /_/ /  __/ /__/ /_
-   /_/  |_/____/     / .___/\___/\___/\__/
-                    /_/
+$ /home/sgerbino/Workspace/token/node_modules/.bin/asp --verbose --config as-pect.config.js
+       ___   _____                       __    
+      /   | / ___/      ____  ___  _____/ /_   
+     / /| | \__ \______/ __ \/ _ \/ ___/ __/   
+    / ___ |___/ /_____/ /_/ /  __/ /__/ /_     
+   /_/  |_/____/     / .___/\___/\___/\__/     
+                    /_/                        
 
-⚡AS-pect⚡ Test suite runner [6.2.4]
-
-[Log] Loading asc compiler
-Assemblyscript Folder:assemblyscript
-[Log] Compiler loaded in 165.113ms.
-[Log] Using configuration /path/to/token/as-pect.config.js
-[Log] Using VerboseReporter
-[Log] Including files: assembly/__tests__/**/*.spec.ts
-[Log] Running tests that match: (:?)
-[Log] Running groups that match: (:?)
-[Log] Effective command line args:
-  [TestFile.ts] node_modules/@as-pect/assembly/assembly/index.ts --runtime incremental --debug --binaryFile output.wasm --explicitStart --use ASC_RTRACE=1 --exportTable --importMemory --transform /path/to/token/node_modules/@as-covers/transform/lib/index.js,/path/to/token/node_modules/@as-pect/core/lib/transform/index.js --lib node_modules/@as-covers/assembly/index.ts
-
+⚡AS-pect⚡ Test suite runner [8.1.0]
+Using config: /home/sgerbino/Workspace/token/as-pect.config.js
+ASC Version: 0.27.29
+[Log]Using code coverage: assembly/*.ts
+[Log]Using coverage: assembly/*.ts
 [Describe]: token
 
- [Success]: ✔ should get the name RTrace: +26
- [Success]: ✔ should get the symbol RTrace: +26
- [Success]: ✔ should get the decimals RTrace: +22
- [Success]: ✔ should get the max supply RTrace: +22
-[Event] koinos.contracts.token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
-[Event] koinos.contracts.token.burn_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EAo=
-[Contract Exit] 'from' has insufficient balance
-[Contract Exit] 'from' has not authorized transfer
- [Success]: ✔ should/not burn tokens RTrace: +656
-[Event] koinos.contracts.token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
- [Success]: ✔ should mint tokens RTrace: +281
+ [Success]: ✔ should get the name
+ [Success]: ✔ should get the symbol
+ [Success]: ✔ should get the decimals
+ [Success]: ✔ should get token info
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+[Event] token.burn_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EAo=
+[Contract Exit] account 'from' has insufficient balance
+[Contract Exit] account 'from' has not authorized burn
+ [Success]: ✔ should/not burn tokens
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+ [Success]: ✔ should mint tokens
 [Contract Exit] account '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe' authorization failed
- [Success]: ✔ should not mint tokens if not contract account RTrace: +207
-[Event] koinos.contracts.token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6EHs=
-[Contract Exit] Mint would overflow supply
- [Success]: ✔ should not mint tokens if new total supply overflows RTrace: +338
-[Event] koinos.contracts.token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6EHs=
-[Contract Exit] Mint would overflow max supply
- [Success]: ✔ should not mint tokens if new total supply overflows max supply RTrace: +338
-[Event] koinos.contracts.token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
-[Event] koinos.contracts.token.transfer_event / [
+ [Success]: ✔ should not mint tokens if not contract account
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6EHs=
+[Contract Exit] mint would overflow supply
+ [Success]: ✔ should not mint tokens if new total supply overflows
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+[Event] token.transfer_event / [
   '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK',
   '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG'
 ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6GAo=
- [Success]: ✔ should transfer tokens RTrace: +391
-[Event] koinos.contracts.token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
-[Contract Exit] 'from' has not authorized transfer
- [Success]: ✔ should not transfer tokens without the proper authorizations RTrace: +295
-[Event] koinos.contracts.token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
-[Contract Exit] Cannot transfer to self
- [Success]: ✔ should not transfer tokens to self RTrace: +234
-[Event] koinos.contracts.token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
-[Contract Exit] 'from' has insufficient balance
- [Success]: ✔ should not transfer if insufficient balance RTrace: +307
+ [Success]: ✔ should transfer tokens
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+[Contract Exit] account 'from' has not authorized transfer
+ [Success]: ✔ should not transfer tokens without the proper authorizations
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+[Contract Exit] cannot transfer to yourself
+ [Success]: ✔ should not transfer tokens to self
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+[Contract Exit] account 'from' has insufficient balance
+ [Success]: ✔ should not transfer if insufficient balance
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+[Event] token.transfer_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6GAo=
+ [Success]: ✔ should transfer tokens without authority
+[Event] token.approve_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6GAo=
+[Event] token.approve_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqP'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc+GBQ=
+[Event] token.approve_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqP'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc+GB4=
+ [Success]: ✔ should approve
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EGQ=
+[Contract Exit] account 'from' has not authorized transfer
+[Event] token.approve_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6GBQ=
+[Contract Exit] account 'from' has not authorized transfer
+[Event] token.transfer_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6GAo=
+ [Success]: ✔ should require an approval
 
     [File]: assembly/__tests__/Token.spec.ts
   [Groups]: 2 pass, 2 total
   [Result]: ✔ PASS
 [Snapshot]: 0 total, 0 added, 0 removed, 0 different
- [Summary]: 13 pass,  0 fail, 13 total
-    [Time]: 131.568ms
+ [Summary]: 15 pass,  0 fail, 15 total
+    [Time]: 419.176ms
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  [Result]: ✔ PASS
-   [Files]: 1 total
-  [Groups]: 2 count, 2 pass
-   [Tests]: 13 pass, 0 fail, 13 total
-    [Time]: 4894.475ms
-┌───────────────────┬───────┬───────┬──────┬──────┬───────────┐
-│ File              │ Total │ Block │ Func │ Expr │ Uncovered │
-├───────────────────┼───────┼───────┼──────┼──────┼───────────┤
-│ assembly/Token.ts │ 100%  │ 100%  │ 100% │ 100% │           │
-├───────────────────┼───────┼───────┼──────┼──────┼───────────┤
-│ total             │ 100%  │ 100%  │ 100% │ 100% │           │
-└───────────────────┴───────┴───────┴──────┴──────┴───────────┘
 
-Done in 5.19s.
+Coverage Report:
+
+┌───────────────────┬───────┬───────┬──────┬───────┬───────────┐
+│ File              │ Total │ Block │ Func │ Expr  │ Uncovered │
+├───────────────────┼───────┼───────┼──────┼───────┼───────────┤
+│ assembly/Token.ts │ 97.7% │ 100%  │ 100% │ 83.3% │ 80:39     │
+├───────────────────┼───────┼───────┼──────┼───────┼───────────┤
+│ total             │ 97.7% │ 100%  │ 100% │ 83.3% │           │
+└───────────────────┴───────┴───────┴──────┴───────┴───────────┘
+
+  [Summary]
+    [Tests]: 15 / 15
+   [Groups]: 2 / 2
+[Snapshots]: 0 / 0, Added 0, Changed 0
+   [Result]: ✔ Pass!
+
+Done in 2.12s.
 ```
 
 ---
@@ -1142,20 +1233,18 @@ Let's customize the specifics of our token project by modifying `./assembly/Toke
 
 Let's change the default values to the name and symbol of our token.
 
-```ts linenums="9" title="assembly/Token.ts" hl_lines="7-8"
+```ts linenums="9" title="assembly/Token.ts" hl_lines="9-11"
+import { Arrays, authority, chain, error, kcs4, Protobuf, Storage, System } from "@koinos/sdk-as";
 import { token } from "./proto/token";
-import { SupplyStorage } from "./state/SupplyStorage";
-import { BalancesStorage } from "./state/BalancesStorage";
+
+const SUPPLY_SPACE_ID = 0;
+const BALANCES_SPACE_ID = 1;
+const ALLOWANCES_SPACE_ID = 2;
 
 export class Token {
-  // SETTINGS BEGIN
-  _name: string = "My Token Name";
-  _symbol: string = "MTN";
+  _name: string = "[token name]";
+  _symbol: string = "[token symbol]";
   _decimals: u32 = 8;
-
-  // set _maxSupply to zero if there is no max supply
-  // if set to zero, the supply would still be limited by how many tokens can fit in a u64 (u64.MAX_VALUE)
-  _maxSupply: u64 = 0;
 
 
 ```
@@ -1172,47 +1261,83 @@ koinos-sdk-as-cli run-tests
 
 
 ``` { .text .no-copy }
+Running tests...
+yarn asp --verbose --config as-pect.config.js
+yarn run v1.22.22
+$ /home/sgerbino/Workspace/token/node_modules/.bin/asp --verbose --config as-pect.config.js
+       ___   _____                       __    
+      /   | / ___/      ____  ___  _____/ /_   
+     / /| | \__ \______/ __ \/ _ \/ ___/ __/   
+    / ___ |___/ /_____/ /_/ /  __/ /__/ /_     
+   /_/  |_/____/     / .___/\___/\___/\__/     
+                    /_/                        
+
+⚡AS-pect⚡ Test suite runner [8.1.0]
+Using config: /home/sgerbino/Workspace/token/as-pect.config.js
+ASC Version: 0.27.29
+[Log]Using code coverage: assembly/*.ts
+[Log]Using coverage: assembly/*.ts
 [Describe]: token
 
     [Fail]: ✖ should get the name
-  [Actual]: "My Token Name"
+  [Actual]: "test"
 [Expected]: "[token name]"
    [Stack]: RuntimeError: unreachable
-            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/00070616:wasm-function[64]:0x30c8)
-            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String|null>#toBe (wasm://wasm/00070616:wasm-function[129]:0xb1bb)
-            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|1 (wasm://wasm/00070616:wasm-function[130]:0xb392)
-            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/00070616:wasm-function[236]:0x14f37)
+            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/001260d2:wasm-function[318]:0x2aa0)
+            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String>#toBe (wasm://wasm/001260d2:wasm-function[930]:0xf02c)
+            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|1 (wasm://wasm/001260d2:wasm-function[931]:0xf0da)
+            at node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/001260d2:wasm-function[556]:0x36c0)
+            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/001260d2:wasm-function[1265]:0x21d71)
     [Fail]: ✖ should get the symbol
-  [Actual]: "MTN"
+  [Actual]: "TEST"
 [Expected]: "[token symbol]"
    [Stack]: RuntimeError: unreachable
-            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/00070616:wasm-function[64]:0x30c8)
-            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String|null>#toBe (wasm://wasm/00070616:wasm-function[129]:0xb1bb)
-            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|2 (wasm://wasm/00070616:wasm-function[131]:0xb557)
-            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/00070616:wasm-function[236]:0x14f37)
+            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/001260d2:wasm-function[318]:0x2aa0)
+            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String>#toBe (wasm://wasm/001260d2:wasm-function[930]:0xf02c)
+            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|2 (wasm://wasm/001260d2:wasm-function[934]:0xf251)
+            at node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/001260d2:wasm-function[556]:0x36c0)
+            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/001260d2:wasm-function[1265]:0x21d71)
+ [Success]: ✔ should get the decimals
+    [Fail]: ✖ should get token info
+  [Actual]: "test"
+[Expected]: "[token name]"
+   [Stack]: RuntimeError: unreachable
+            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/001260d2:wasm-function[318]:0x2aa0)
+            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String>#toBe (wasm://wasm/001260d2:wasm-function[930]:0xf02c)
+            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|4 (wasm://wasm/001260d2:wasm-function[943]:0xf737)
+            at node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/001260d2:wasm-function[556]:0x36c0)
+            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/001260d2:wasm-function[1265]:0x21d71)
 ```
 
 We now get these errors because we haven't updated the tests to reflect the changes we made to the token. Let's update the tests to reflect the changes we made to the token.
 
 In the following code snippets the highlighted lines were added.
 
-```ts linenums="25" title="assembly/__tests__/Token.spec.ts" hl_lines="7 16"
- it("should get the name", () => {
-    const tkn = new Token();
-
-    const args = new token.name_arguments();
-    const res = tkn.name(args);
-
+```ts linenums="25" title="assembly/__tests__/Token.spec.ts" hl_lines="4 10 22-23"
+  it("should get the name", () => {
+    const tokenContract = new Token();
+    const res = tokenContract.name();
     expect(res.value).toBe("My Token Name");
   });
 
   it("should get the symbol", () => {
-    const tkn = new Token();
-
-    const args = new token.symbol_arguments();
-    const res = tkn.symbol(args);
-
+    const tokenContract = new Token();
+    const res = tokenContract.symbol();
     expect(res.value).toBe("MTN");
+  });
+
+  it("should get the decimals", () => {
+    const tokenContract = new Token();
+    const res = tokenContract.decimals();
+    expect(res.value).toBe(8);
+  });
+
+  it("should get token info", () => {
+    const tokenContract = new Token();
+    const res = tokenContract.get_info();
+    expect(res.name).toBe("My Token Name");
+    expect(res.symbol).toBe("MTN");
+    expect(res.decimals).toBe(8);
   });
 
 ```
@@ -1225,20 +1350,113 @@ koinos-sdk-as-cli run-tests
 
 
 ``` { .text .no-copy }
+Running tests...
+yarn asp --verbose --config as-pect.config.js
+$ /home/sgerbino/Workspace/token/node_modules/.bin/asp --verbose --config as-pect.config.js
+       ___   _____                       __    
+      /   | / ___/      ____  ___  _____/ /_   
+     / /| | \__ \______/ __ \/ _ \/ ___/ __/   
+    / ___ |___/ /_____/ /_/ /  __/ /__/ /_     
+   /_/  |_/____/     / .___/\___/\___/\__/     
+                    /_/                        
+
+⚡AS-pect⚡ Test suite runner [8.1.0]
+Using config: /home/sgerbino/Workspace/token/as-pect.config.js
+ASC Version: 0.27.29
+[Log]Using code coverage: assembly/*.ts
+[Log]Using coverage: assembly/*.ts
+[Describe]: token
+
+ [Success]: ✔ should get the name
+ [Success]: ✔ should get the symbol
+ [Success]: ✔ should get the decimals
+ [Success]: ✔ should get token info
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+[Event] token.burn_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EAo=
+[Contract Exit] account 'from' has insufficient balance
+[Contract Exit] account 'from' has not authorized burn
+ [Success]: ✔ should/not burn tokens
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+ [Success]: ✔ should mint tokens
+[Contract Exit] account '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe' authorization failed
+ [Success]: ✔ should not mint tokens if not contract account
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6EHs=
+[Contract Exit] mint would overflow supply
+ [Success]: ✔ should not mint tokens if new total supply overflows
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+[Event] token.transfer_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6GAo=
+ [Success]: ✔ should transfer tokens
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+[Contract Exit] account 'from' has not authorized transfer
+ [Success]: ✔ should not transfer tokens without the proper authorizations
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+[Contract Exit] cannot transfer to yourself
+ [Success]: ✔ should not transfer tokens to self
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+[Contract Exit] account 'from' has insufficient balance
+ [Success]: ✔ should not transfer if insufficient balance
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EHs=
+[Event] token.transfer_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6GAo=
+ [Success]: ✔ should transfer tokens without authority
+[Event] token.approve_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6GAo=
+[Event] token.approve_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqP'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc+GBQ=
+[Event] token.approve_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqP'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc+GB4=
+ [Success]: ✔ should approve
+[Event] token.mint_event / [ '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG' ] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EGQ=
+[Contract Exit] account 'from' has not authorized transfer
+[Event] token.approve_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6GBQ=
+[Contract Exit] account 'from' has not authorized transfer
+[Event] token.transfer_event / [
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqK',
+  '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG'
+] / ChkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc3EhkAiCtotTmdMTyQZ/OEFgfmKMEtVCA8jEc6GAo=
+ [Success]: ✔ should require an approval
+
+    [File]: assembly/__tests__/Token.spec.ts
+  [Groups]: 2 pass, 2 total
+  [Result]: ✔ PASS
+[Snapshot]: 0 total, 0 added, 0 removed, 0 different
+ [Summary]: 15 pass,  0 fail, 15 total
+    [Time]: 419.176ms
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  [Result]: ✔ PASS
-   [Files]: 1 total
-  [Groups]: 2 count, 2 pass
-   [Tests]: 13 pass, 0 fail, 13 total
-    [Time]: 4944.864ms
-┌───────────────────┬───────┬───────┬──────┬──────┬───────────┐
-│ File              │ Total │ Block │ Func │ Expr │ Uncovered │
-├───────────────────┼───────┼───────┼──────┼──────┼───────────┤
-│ assembly/Token.ts │ 100%  │ 100%  │ 100% │ 100% │           │
-├───────────────────┼───────┼───────┼──────┼──────┼───────────┤
-│ total             │ 100%  │ 100%  │ 100% │ 100% │           │
-└───────────────────┴───────┴───────┴──────┴──────┴───────────┘
+
+Coverage Report:
+
+┌───────────────────┬───────┬───────┬──────┬───────┬───────────┐
+│ File              │ Total │ Block │ Func │ Expr  │ Uncovered │
+├───────────────────┼───────┼───────┼──────┼───────┼───────────┤
+│ assembly/Token.ts │ 97.7% │ 100%  │ 100% │ 83.3% │ 80:39     │
+├───────────────────┼───────┼───────┼──────┼───────┼───────────┤
+│ total             │ 97.7% │ 100%  │ 100% │ 83.3% │           │
+└───────────────────┴───────┴───────┴──────┴───────┴───────────┘
+
+  [Summary]
+    [Tests]: 15 / 15
+   [Groups]: 2 / 2
+[Snapshots]: 0 / 0, Added 0, Changed 0
+   [Result]: ✔ Pass!
+
+Done in 2.12s.
 ```
 
 

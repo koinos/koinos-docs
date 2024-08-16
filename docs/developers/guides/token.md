@@ -84,12 +84,15 @@ message hello_result {
 
 We can remove the boilerplate code and replace it with our token arguments and results.
 ```proto linenums="1" title="assembly/proto/token.proto"
-
 syntax = "proto3";
 
 package token;
 
 import "koinos/options.proto";
+
+message balance_object {
+  uint64 value = 1;
+}
 
 // @description Returns the token's name
 // @read-only true
@@ -126,7 +129,7 @@ message total_supply_result {
 // @description Checks the balance at an address
 // @read-only true
 message balance_of_arguments {
-   bytes owner = 1 [(btype) = ADDRESS];
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
 }
 
 message balance_of_result {
@@ -175,10 +178,10 @@ message get_allowances_result {
 
 // @description Transfers the token
 // @read-only false
-// @result empty_message
+// @result transfer_result
 message transfer_arguments {
-   bytes from = 1 [(btype) = ADDRESS];
-   bytes to = 2 [(btype) = ADDRESS];
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
    string memo = 4;
 }
@@ -187,9 +190,9 @@ message transfer_result {}
 
 // @description Mints the token
 // @read-only false
-// @result empty_message
+// @result mint_result
 message mint_arguments {
-   bytes to = 1 [(btype) = ADDRESS];
+   bytes to = 1 [(koinos.btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
 
@@ -197,9 +200,9 @@ message mint_result {}
 
 // @description Burns the token
 // @read-only false
-// @result empty_message
+// @result burn_result
 message burn_arguments {
-   bytes from = 1 [(btype) = ADDRESS];
+   bytes from = 1 [(koinos.btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
 
@@ -207,7 +210,7 @@ message burn_result {}
 
 // @description Adds an allownance for a given owner and account pairing
 // @read-only false
-// @result empty_message
+// @result approve_result
 message approve_arguments {
    bytes owner = 1 [(koinos.btype) = ADDRESS];
    bytes spender = 2 [(koinos.btype) = ADDRESS];
@@ -217,18 +220,18 @@ message approve_arguments {
 message approve_result {}
 
 message burn_event {
-   bytes from = 1 [(btype) = ADDRESS];
+   bytes from = 1 [(koinos.btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
 
 message mint_event {
-   bytes to = 1 [(btype) = ADDRESS];
+   bytes to = 1 [(koinos.btype) = ADDRESS];
    uint64 value = 2 [jstype = JS_STRING];
 }
 
 message transfer_event {
-   bytes from = 1 [(btype) = ADDRESS];
-   bytes to = 2 [(btype) = ADDRESS];
+   bytes from = 1 [(koinos.btype) = ADDRESS];
+   bytes to = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
    string memo = 4;
 }
@@ -238,6 +241,7 @@ message approve_event {
    bytes spender = 2 [(koinos.btype) = ADDRESS];
    uint64 value = 3 [jstype = JS_STRING];
 }
+
 
 ```
 Now that we have our Protobuf definition, let's generate the derived AssemblyScript code.
@@ -286,7 +290,7 @@ vi assembly/Token.ts
 Let's open our implementation file and write logic to add our token's functionality.
 
 ```ts linenums="1" title="assembly/Token.ts"
-import { Arrays, authority, chain, error, kcs4, Protobuf, Storage, System } from "@koinos/sdk-as";
+import { Arrays, authority, chain, error, Protobuf, Storage, System } from "@koinos/sdk-as";
 import { token } from "./proto/token";
 
 const SUPPLY_SPACE_ID = 0;
@@ -325,49 +329,49 @@ export class Token {
     true
   );
 
-  name(): kcs4.name_result {
-    return new kcs4.name_result(this._name);
+  name(args: token.name_arguments): token.name_result {
+    return new token.name_result(this._name);
   }
 
-  symbol(): kcs4.symbol_result {
-    return new kcs4.symbol_result(this._symbol);
+  symbol(args: token.symbol_arguments): token.symbol_result {
+    return new token.symbol_result(this._symbol);
   }
 
-  decimals(): kcs4.decimals_result {
-    return new kcs4.decimals_result(this._decimals);
+  decimals(args: token.decimals_arguments): token.decimals_result {
+    return new token.decimals_result(this._decimals);
   }
 
-  get_info(): kcs4.get_info_result {
-    return new kcs4.get_info_result(this._name, this._symbol, this._decimals);
+  get_info(args: token.get_info_arguments): token.get_info_result {
+    return new token.get_info_result(this._name, this._symbol, this._decimals);
   }
 
-  total_supply(): kcs4.total_supply_result {
-    return new kcs4.total_supply_result(this.supply.get()!.value);
+  total_supply(args: token.total_supply_arguments): token.total_supply_result {
+    return new token.total_supply_result(this.supply.get()!.value);
   }
 
-  balance_of(args: kcs4.balance_of_arguments): kcs4.balance_of_result {
-    return new kcs4.balance_of_result(this.balances.get(args.owner)!.value);
+  balance_of(args: token.balance_of_arguments): token.balance_of_result {
+    return new token.balance_of_result(this.balances.get(args.owner!)!.value);
   }
 
-  allowance(args: kcs4.allowance_arguments): kcs4.allowance_result {
+  allowance(args: token.allowance_arguments): token.allowance_result {
     System.require(args.owner != null, "account 'owner' cannot be null");
     System.require(args.spender != null, "account 'spender' cannot be null");
 
     const key = new Uint8Array(50);
-    key.set(args.owner, 0);
-    key.set(args.spender, 25);
+    key.set(args.owner!, 0);
+    key.set(args.spender!, 25);
 
-    return new kcs4.allowance_result(this.allowances.get(key)!.value);
+    return new token.allowance_result(this.allowances.get(key)!.value);
   }
 
-  get_allowances(args: kcs4.get_allowances_arguments): kcs4.get_allowances_result {
+  get_allowances(args: token.get_allowances_arguments): token.get_allowances_result {
     System.require(args.owner != null, "account 'owner' cannot be null");
 
     let key = new Uint8Array(50);
-    key.set(args.owner, 0);
-    key.set(args.start ? args.start : new Uint8Array(0), 25);
+    key.set(args.owner!, 0);
+    key.set(args.start ? args.start! : new Uint8Array(0), 25);
 
-    let result = new kcs4.get_allowances_result(args.owner, []);
+    let result = new token.get_allowances_result(args.owner, []);
 
     for (let i = 0; i < args.limit; i++) {
       const nextAllowance = args.descending
@@ -383,7 +387,7 @@ export class Token {
       }
 
       result.allowances.push(
-        new kcs4.spender_value(nextAllowance.key!.slice(25), nextAllowance.value.value)
+        new token.spender_value(nextAllowance.key!.slice(25), nextAllowance.value.value)
       );
 
       key = nextAllowance.key!;
@@ -392,38 +396,38 @@ export class Token {
     return result;
   }
 
-  transfer(args: kcs4.transfer_arguments): kcs4.transfer_result {
+  transfer(args: token.transfer_arguments): token.transfer_result {
     System.require(args.to != null, "account 'to' cannot be null");
     System.require(args.from != null, "account 'from' cannot be null");
     System.require(!Arrays.equal(args.from, args.to), 'cannot transfer to yourself');
 
     System.require(
-      this._check_authority(args.from, args.value),
+      this._check_authority(args.from!, args.value),
       "account 'from' has not authorized transfer",
       error.error_code.authorization_failure
     );
 
-    let fromBalance = this.balances.get(args.from)!;
+    let fromBalance = this.balances.get(args.from!)!;
     System.require(fromBalance.value >= args.value, "account 'from' has insufficient balance", error.error_code.failure);
 
-    let toBalance = this.balances.get(args.to)!;
+    let toBalance = this.balances.get(args.to!)!;
 
     fromBalance.value -= args.value;
     toBalance.value += args.value;
 
-    this.balances.put(args.from, fromBalance);
-    this.balances.put(args.to, toBalance);
+    this.balances.put(args.from!, fromBalance);
+    this.balances.put(args.to!, toBalance);
 
     System.event(
       'token.transfer_event',
-      Protobuf.encode(new kcs4.transfer_event(args.from, args.to, args.value, args.memo), kcs4.transfer_event.encode),
-      [args.to, args.from]
+      Protobuf.encode(new token.transfer_event(args.from, args.to, args.value, args.memo), token.transfer_event.encode),
+      [args.to!, args.from!]
     );
 
-    return new kcs4.transfer_result();
+    return new token.transfer_result();
   }
 
-  mint(args: kcs4.mint_arguments): kcs4.mint_result {
+  mint(args: token.mint_arguments): token.mint_result {
     System.require(args.to != null, "account 'to' cannot be null");
     System.require(args.value != 0, "account 'value' cannot be zero");
 
@@ -435,34 +439,33 @@ export class Token {
     let supply = this.supply.get()!;
     System.require(supply.value <= u64.MAX_VALUE - args.value, 'mint would overflow supply', error.error_code.failure);
 
-    let balance = this.balances.get(args.to)!;
+    let balance = this.balances.get(args.to!)!;
 
     supply.value += args.value;
     balance.value += args.value;
 
     this.supply.put(supply);
-    this.balances.put(args.to, balance);
+    this.balances.put(args.to!, balance);
 
     System.event(
       'token.mint_event',
-      Protobuf.encode(new kcs4.mint_event(args.to, args.value), kcs4.mint_event.encode),
-      [args.to]
+      Protobuf.encode(new token.mint_event(args.to, args.value), token.mint_event.encode),
+      [args.to!]
     );
 
-    return new kcs4.mint_result();
+    return new token.mint_result();
   }
 
-  burn(args: kcs4.burn_arguments): kcs4.burn_result {
+  burn(args: token.burn_arguments): token.burn_result {
     System.require(args.from != null, "account 'from' cannot be null");
 
-    let callerData = System.getCaller();
     System.require(
-      callerData.caller_privilege == chain.privilege.kernel_mode || this._check_authority(args.from, args.value),
+      this._check_authority(args.from!, args.value),
       "account 'from' has not authorized burn",
       error.error_code.authorization_failure
     );
 
-    let fromBalance = this.balances.get(args.from)!;
+    let fromBalance = this.balances.get(args.from!)!;
     System.require(fromBalance.value >= args.value, "account 'from' has insufficient balance", error.error_code.failure);
 
     let supply = this.supply.get()!;
@@ -472,34 +475,34 @@ export class Token {
     fromBalance.value -= args.value;
 
     this.supply.put(supply);
-    this.balances.put(args.from, fromBalance);
+    this.balances.put(args.from!, fromBalance);
 
     System.event(
       'token.burn_event',
-      Protobuf.encode(new kcs4.burn_event(args.from, args.value), kcs4.burn_event.encode),
-      [args.from]
+      Protobuf.encode(new token.burn_event(args.from, args.value), token.burn_event.encode),
+      [args.from!]
     );
 
-    return new kcs4.burn_result();
+    return new token.burn_result();
   }
 
-  approve(args: kcs4.approve_arguments): kcs4.approve_result {
+  approve(args: token.approve_arguments): token.approve_result {
     System.require(args.owner != null, "account 'owner' cannot be null");
     System.require(args.spender != null, "account 'spender' cannot be null");
-    System.requireAuthority(authority.authorization_type.contract_call, args.owner);
+    System.requireAuthority(authority.authorization_type.contract_call, args.owner!);
 
     const key = new Uint8Array(50);
-    key.set(args.owner, 0);
-    key.set(args.spender, 25);
+    key.set(args.owner!, 0);
+    key.set(args.spender!, 25);
     this.allowances.put(key, new token.balance_object(args.value));
 
     System.event(
       "token.approve_event",
-      Protobuf.encode(new kcs4.approve_event(args.owner, args.spender, args.value), kcs4.approve_event.encode),
-      [args.owner, args.spender]
+      Protobuf.encode(new token.approve_event(args.owner, args.spender, args.value), token.approve_event.encode),
+      [args.owner!, args.spender!]
     );
 
-    return new kcs4.approve_result();
+    return new token.approve_result();
   }
 
   _check_authority(account: Uint8Array, amount: u64): bool {
@@ -528,8 +531,9 @@ Let's open up `assembly/__tests__/Token.spec.ts` and write some tests.
 
 
 ```ts linenums="1" title="assembly/__tests__/Token.spec.ts"
-import { Base58, MockVM, authority, Arrays, chain, Protobuf, System, kcs4, protocol } from "@koinos/sdk-as";
+import { Base58, MockVM, authority, Arrays, chain, Protobuf, System, protocol } from "@koinos/sdk-as";
 import { Token } from "../Token";
+import { token } from "../proto/token";
 
 const CONTRACT_ID = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe");
 
@@ -555,25 +559,25 @@ describe("token", () => {
 
   it("should get the name", () => {
     const tokenContract = new Token();
-    const res = tokenContract.name();
+    const res = tokenContract.name(new token.name_arguments());
     expect(res.value).toBe("[token name]");
   });
 
   it("should get the symbol", () => {
     const tokenContract = new Token();
-    const res = tokenContract.symbol();
+    const res = tokenContract.symbol(new token.symbol_arguments());
     expect(res.value).toBe("[token symbol]");
   });
 
   it("should get the decimals", () => {
     const tokenContract = new Token();
-    const res = tokenContract.decimals();
+    const res = tokenContract.decimals(new token.decimals_arguments());
     expect(res.value).toBe(8);
   });
 
   it("should get token info", () => {
     const tokenContract = new Token();
-    const res = tokenContract.get_info();
+    const res = tokenContract.get_info(new token.get_info_arguments());
     expect(res.name).toBe("[token name]");
     expect(res.symbol).toBe("[token symbol]");
     expect(res.decimals).toBe(8);
@@ -583,7 +587,7 @@ describe("token", () => {
     const tokenContract = new Token();
     let callerData = new chain.caller_data();
     callerData.caller = CONTRACT_ID;
-    callerData.caller_privilege = chain.privilege.kernel_mode;
+    callerData.caller_privilege = chain.privilege.user_mode;
     MockVM.setCaller(callerData);
 
     // set contract_call authority for CONTRACT_ID to true so that we can mint tokens
@@ -591,25 +595,28 @@ describe("token", () => {
     MockVM.setAuthorities([auth]);
 
     // check total supply
-    let totalSupplyRes = tokenContract.total_supply();
+    let totalSupplyRes = tokenContract.total_supply(new token.total_supply_arguments());
     expect(totalSupplyRes.value).toBe(0);
 
     // mint tokens
-    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
     tokenContract.mint(mintArgs);
 
-    totalSupplyRes = tokenContract.total_supply();
+    totalSupplyRes = tokenContract.total_supply(new token.total_supply_arguments());
     expect(totalSupplyRes.value).toBe(123);
 
-    let balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
     let balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(123);
 
     auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
     MockVM.setAuthorities([auth]);
 
+    callerData.caller = new Uint8Array(0);
+    MockVM.setCaller(callerData);
+
     // burn tokens
-    tokenContract.burn(new kcs4.burn_arguments(MOCK_ACCT1, 10));
+    tokenContract.burn(new token.burn_arguments(MOCK_ACCT1, 10));
 
     // check events
     const events = MockVM.getEvents();
@@ -621,17 +628,17 @@ describe("token", () => {
     expect(events[1].impacted.length).toBe(1);
     expect(Arrays.equal(events[1].impacted[0], MOCK_ACCT1)).toBe(true);
 
-    const burnEvent = Protobuf.decode<kcs4.burn_event>(events[1].data, kcs4.burn_event.decode);
+    const burnEvent = Protobuf.decode<token.burn_event>(events[1].data, token.burn_event.decode);
     expect(Arrays.equal(burnEvent.from, MOCK_ACCT1)).toBe(true);
     expect(burnEvent.value).toBe(10);
 
     // check balance
-    balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
     balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(113);
 
     // check total supply
-    totalSupplyRes = tokenContract.total_supply();
+    totalSupplyRes = tokenContract.total_supply(new token.total_supply_arguments());
     expect(totalSupplyRes.value).toBe(113);
 
     // save the MockVM state because the burn is going to revert the transaction
@@ -640,7 +647,7 @@ describe("token", () => {
     // does not burn tokens
     expect(() => {
       const tokenContract = new Token();
-      const burnArgs = new kcs4.burn_arguments(MOCK_ACCT1, 200);
+      const burnArgs = new token.burn_arguments(MOCK_ACCT1, 200);
       tokenContract.burn(burnArgs);
     }).toThrow();
 
@@ -658,7 +665,7 @@ describe("token", () => {
     expect(() => {
       // try to burn tokens
       const koinContract = new Token();
-      const burnArgs = new kcs4.burn_arguments(MOCK_ACCT1, 123);
+      const burnArgs = new token.burn_arguments(MOCK_ACCT1, 123);
       koinContract.burn(burnArgs);
     }).toThrow();
 
@@ -666,12 +673,12 @@ describe("token", () => {
     expect(MockVM.getErrorMessage()).toBe("account 'from' has not authorized burn");
 
     // check balance
-    balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
     balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(113);
 
     // check total supply
-    totalSupplyRes = tokenContract.total_supply();
+    totalSupplyRes = tokenContract.total_supply(new token.total_supply_arguments());
     expect(totalSupplyRes.value).toBe(113);
   });
 
@@ -682,11 +689,11 @@ describe("token", () => {
     MockVM.setCaller(new chain.caller_data(CONTRACT_ID, chain.privilege.user_mode));
 
     // check total supply
-    let totalSupplyRes = tokenContract.total_supply();
+    let totalSupplyRes = tokenContract.total_supply(new token.total_supply_arguments());
     expect(totalSupplyRes.value).toBe(0);
 
     // mint tokens
-    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
     tokenContract.mint(mintArgs);
 
     // check events
@@ -696,17 +703,17 @@ describe("token", () => {
     expect(events[0].impacted.length).toBe(1);
     expect(Arrays.equal(events[0].impacted[0], MOCK_ACCT1)).toBe(true);
 
-    const mintEvent = Protobuf.decode<kcs4.mint_event>(events[0].data, kcs4.mint_event.decode);
+    const mintEvent = Protobuf.decode<token.mint_event>(events[0].data, token.mint_event.decode);
     expect(Arrays.equal(mintEvent.to, MOCK_ACCT1)).toBe(true);
     expect(mintEvent.value).toBe(123);
 
     // check balance
-    const balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    const balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
     const balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(123);
 
     // check total supply
-    totalSupplyRes = tokenContract.total_supply();
+    totalSupplyRes = tokenContract.total_supply(new token.total_supply_arguments());
     expect(totalSupplyRes.value).toBe(123);
   });
 
@@ -718,11 +725,11 @@ describe("token", () => {
     MockVM.setAuthorities([auth]);
 
     // check total supply
-    let totalSupplyRes = tokenContract.total_supply();
+    let totalSupplyRes = tokenContract.total_supply(new token.total_supply_arguments());
     expect(totalSupplyRes.value).toBe(0);
 
     // check balance
-    const balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    const balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
     let balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(0);
 
@@ -732,7 +739,7 @@ describe("token", () => {
     expect(() => {
       // try to mint tokens
       const tokenContract = new Token();
-      const mintArgs = new kcs4.mint_arguments(MOCK_ACCT2, 123);
+      const mintArgs = new token.mint_arguments(MOCK_ACCT2, 123);
       tokenContract.mint(mintArgs);
     }).toThrow();
 
@@ -754,11 +761,11 @@ describe("token", () => {
     const auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, CONTRACT_ID, true);
     MockVM.setAuthorities([auth]);
 
-    let mintArgs = new kcs4.mint_arguments(MOCK_ACCT2, 123);
+    let mintArgs = new token.mint_arguments(MOCK_ACCT2, 123);
     tokenContract.mint(mintArgs);
 
     // check total supply
-    let totalSupplyRes = tokenContract.total_supply();
+    let totalSupplyRes = tokenContract.total_supply(new token.total_supply_arguments());
     expect(totalSupplyRes.value).toBe(123);
 
     // save the MockVM state because the mint is going to revert the transaction
@@ -766,12 +773,12 @@ describe("token", () => {
 
     expect(() => {
       const tokenContract = new Token();
-      const mintArgs = new kcs4.mint_arguments(MOCK_ACCT2, u64.MAX_VALUE);
+      const mintArgs = new token.mint_arguments(MOCK_ACCT2, u64.MAX_VALUE);
       tokenContract.mint(mintArgs);
     }).toThrow();
 
     // check total supply
-    totalSupplyRes = tokenContract.total_supply();
+    totalSupplyRes = tokenContract.total_supply(new token.total_supply_arguments());
     expect(totalSupplyRes.value).toBe(123);
 
     // check error message
@@ -792,19 +799,19 @@ describe("token", () => {
     MockVM.setAuthorities([authContractId, authMockAcct1]);
 
     // mint tokens
-    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
     tokenContract.mint(mintArgs);
 
     // transfer tokens
-    const transferArgs = new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10);
+    const transferArgs = new token.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10);
     tokenContract.transfer(transferArgs);
 
     // check balances
-    let balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
     let balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(113);
 
-    balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT2);
+    balanceArgs = new token.balance_of_arguments(MOCK_ACCT2);
     balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(10);
 
@@ -817,7 +824,7 @@ describe("token", () => {
     expect(Arrays.equal(events[1].impacted[0], MOCK_ACCT2)).toBe(true);
     expect(Arrays.equal(events[1].impacted[1], MOCK_ACCT1)).toBe(true);
 
-    const transferEvent = Protobuf.decode<kcs4.transfer_event>(events[1].data, kcs4.transfer_event.decode);
+    const transferEvent = Protobuf.decode<token.transfer_event>(events[1].data, token.transfer_event.decode);
     expect(Arrays.equal(transferEvent.from, MOCK_ACCT1)).toBe(true);
     expect(Arrays.equal(transferEvent.to, MOCK_ACCT2)).toBe(true);
     expect(transferEvent.value).toBe(10);
@@ -835,7 +842,7 @@ describe("token", () => {
     MockVM.setAuthorities([authContractId]);
 
     // mint tokens
-    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
     tokenContract.mint(mintArgs);
 
     // save the MockVM state because the transfer is going to revert the transaction
@@ -844,16 +851,16 @@ describe("token", () => {
     expect(() => {
       // try to transfer tokens without the proper authorizations for MOCK_ACCT1
       const tokenContract = new Token();
-      const transferArgs = new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10);
+      const transferArgs = new token.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10);
       tokenContract.transfer(transferArgs);
     }).toThrow();
 
     // check balances
-    let balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
     let balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(123);
 
-    balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT2);
+    balanceArgs = new token.balance_of_arguments(MOCK_ACCT2);
     balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(0);
   });
@@ -872,7 +879,7 @@ describe("token", () => {
     MockVM.setAuthorities([authContractId, authMockAcct1]);
 
     // mint tokens
-    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
     tokenContract.mint(mintArgs);
 
     // save the MockVM state because the transfer is going to revert the transaction
@@ -881,12 +888,12 @@ describe("token", () => {
     // try to transfer tokens
     expect(() => {
       const tokenContract = new Token();
-      const transferArgs = new kcs4.transfer_arguments(Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG"), MOCK_ACCT1, 10);
+      const transferArgs = new token.transfer_arguments(Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqG"), MOCK_ACCT1, 10);
       tokenContract.transfer(transferArgs);
     }).toThrow();
 
     // check balances
-    let balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
     let balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(123);
 
@@ -908,7 +915,7 @@ describe("token", () => {
     MockVM.setAuthorities([authContractId, authMockAcct1]);
 
     // mint tokens
-    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
     tokenContract.mint(mintArgs);
 
     // save the MockVM state because the transfer is going to revert the transaction
@@ -917,12 +924,12 @@ describe("token", () => {
     // try to transfer tokens
     expect(() => {
       const tokenContract = new Token();
-      const transferArgs = new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 456);
+      const transferArgs = new token.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 456);
       tokenContract.transfer(transferArgs);
     }).toThrow();
 
     // check balances
-    let balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
     let balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(123);
 
@@ -942,22 +949,22 @@ describe("token", () => {
     MockVM.setAuthorities([authContractId]);
 
     // mint tokens
-    const mintArgs = new kcs4.mint_arguments(MOCK_ACCT1, 123);
+    const mintArgs = new token.mint_arguments(MOCK_ACCT1, 123);
     tokenContract.mint(mintArgs);
 
     // set caller with MOCK_ACCT1 to allow transfer if the caller is the same from
     MockVM.setCaller(new chain.caller_data(MOCK_ACCT1, chain.privilege.kernel_mode));
 
     // transfer tokens
-    const transferArgs = new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10);
+    const transferArgs = new token.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10);
     tokenContract.transfer(transferArgs);
 
     // check balances
-    let balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT1);
+    let balanceArgs = new token.balance_of_arguments(MOCK_ACCT1);
     let balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(113);
 
-    balanceArgs = new kcs4.balance_of_arguments(MOCK_ACCT2);
+    balanceArgs = new token.balance_of_arguments(MOCK_ACCT2);
     balanceRes = tokenContract.balance_of(balanceArgs);
     expect(balanceRes.value).toBe(10);
 
@@ -970,7 +977,7 @@ describe("token", () => {
     expect(Arrays.equal(events[1].impacted[0], MOCK_ACCT2)).toBe(true);
     expect(Arrays.equal(events[1].impacted[1], MOCK_ACCT1)).toBe(true);
 
-    const transferEvent = Protobuf.decode<kcs4.transfer_event>(events[1].data, kcs4.transfer_event.decode);
+    const transferEvent = Protobuf.decode<token.transfer_event>(events[1].data, token.transfer_event.decode);
     expect(Arrays.equal(transferEvent.from, MOCK_ACCT1)).toBe(true);
     expect(Arrays.equal(transferEvent.to, MOCK_ACCT2)).toBe(true);
     expect(transferEvent.value).toBe(10);
@@ -979,23 +986,23 @@ describe("token", () => {
   it("should approve", () => {
     const tokenContract = new Token();
 
-    expect(tokenContract.allowance(new kcs4.allowance_arguments(MOCK_ACCT1, MOCK_ACCT2)).value).toBe(0);
+    expect(tokenContract.allowance(new token.allowance_arguments(MOCK_ACCT1, MOCK_ACCT2)).value).toBe(0);
 
     const mockAcc1Auth = new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true);
     MockVM.setAuthorities([mockAcc1Auth]);
-    tokenContract.approve(new kcs4.approve_arguments(MOCK_ACCT1, MOCK_ACCT2, 10));
+    tokenContract.approve(new token.approve_arguments(MOCK_ACCT1, MOCK_ACCT2, 10));
 
-    expect(tokenContract.allowance(new kcs4.allowance_arguments(MOCK_ACCT1, MOCK_ACCT2)).value).toBe(10);
+    expect(tokenContract.allowance(new token.allowance_arguments(MOCK_ACCT1, MOCK_ACCT2)).value).toBe(10);
 
     MockVM.setAuthorities([mockAcc1Auth]);
-    tokenContract.approve(new kcs4.approve_arguments(MOCK_ACCT1, MOCK_ACCT3, 20));
+    tokenContract.approve(new token.approve_arguments(MOCK_ACCT1, MOCK_ACCT3, 20));
 
-    expect(tokenContract.allowance(new kcs4.allowance_arguments(MOCK_ACCT1, MOCK_ACCT3)).value).toBe(20);
+    expect(tokenContract.allowance(new token.allowance_arguments(MOCK_ACCT1, MOCK_ACCT3)).value).toBe(20);
 
     MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT2, true)]);
-    tokenContract.approve(new kcs4.approve_arguments(MOCK_ACCT2, MOCK_ACCT3, 30));
+    tokenContract.approve(new token.approve_arguments(MOCK_ACCT2, MOCK_ACCT3, 30));
 
-    expect(tokenContract.allowance(new kcs4.allowance_arguments(MOCK_ACCT2, MOCK_ACCT3)).value).toBe(30);
+    expect(tokenContract.allowance(new token.allowance_arguments(MOCK_ACCT2, MOCK_ACCT3)).value).toBe(30);
 
     // check events
     const events = MockVM.getEvents();
@@ -1016,7 +1023,7 @@ describe("token", () => {
     expect(Arrays.equal(events[2].impacted[1], MOCK_ACCT3)).toBe(true);
 
     // Tests basic allowances return
-    let allowances = tokenContract.get_allowances(new kcs4.get_allowances_arguments(MOCK_ACCT1, new Uint8Array(0), 10));
+    let allowances = tokenContract.get_allowances(new token.get_allowances_arguments(MOCK_ACCT1, new Uint8Array(0), 10));
     expect(Arrays.equal(allowances.owner, MOCK_ACCT1)).toBe(true);
     expect(allowances.allowances.length).toBe(2);
     expect(Arrays.equal(allowances.allowances[0].spender, MOCK_ACCT2)).toBe(true);
@@ -1025,28 +1032,28 @@ describe("token", () => {
     expect(allowances.allowances[1].value).toBe(20);
 
     // Tests allowances descending
-    allowances = tokenContract.get_allowances(new kcs4.get_allowances_arguments(MOCK_ACCT1, MOCK_ACCT3, 10, true));
+    allowances = tokenContract.get_allowances(new token.get_allowances_arguments(MOCK_ACCT1, MOCK_ACCT3, 10, true));
     expect(Arrays.equal(allowances.owner, MOCK_ACCT1)).toBe(true);
     expect(allowances.allowances.length).toBe(1);
     expect(Arrays.equal(allowances.allowances[0].spender, MOCK_ACCT2)).toBe(true);
     expect(allowances.allowances[0].value).toBe(10);
 
     // Tests allowances limit
-    allowances = tokenContract.get_allowances(new kcs4.get_allowances_arguments(MOCK_ACCT1, new Uint8Array(0), 1));
+    allowances = tokenContract.get_allowances(new token.get_allowances_arguments(MOCK_ACCT1, new Uint8Array(0), 1));
     expect(Arrays.equal(allowances.owner, MOCK_ACCT1)).toBe(true);
     expect(allowances.allowances.length).toBe(1);
     expect(Arrays.equal(allowances.allowances[0].spender, MOCK_ACCT2)).toBe(true);
     expect(allowances.allowances[0].value).toBe(10);
 
     // Tests allowances pagination
-    allowances = tokenContract.get_allowances(new kcs4.get_allowances_arguments(MOCK_ACCT1, MOCK_ACCT2, 10));
+    allowances = tokenContract.get_allowances(new token.get_allowances_arguments(MOCK_ACCT1, MOCK_ACCT2, 10));
     expect(Arrays.equal(allowances.owner, MOCK_ACCT1)).toBe(true);
     expect(allowances.allowances.length).toBe(1);
     expect(Arrays.equal(allowances.allowances[0].spender, MOCK_ACCT3)).toBe(true);
     expect(allowances.allowances[0].value).toBe(20);
 
     // Tests another owner's allowances
-    allowances = tokenContract.get_allowances(new kcs4.get_allowances_arguments(MOCK_ACCT2, new Uint8Array(0), 10));
+    allowances = tokenContract.get_allowances(new token.get_allowances_arguments(MOCK_ACCT2, new Uint8Array(0), 10));
     expect(Arrays.equal(allowances.owner, MOCK_ACCT2)).toBe(true);
     expect(allowances.allowances.length).toBe(1);
     expect(Arrays.equal(allowances.allowances[0].spender, MOCK_ACCT3)).toBe(true);
@@ -1057,14 +1064,14 @@ describe("token", () => {
     const tokenContract = new Token();
 
     MockVM.setCaller(new chain.caller_data(CONTRACT_ID, chain.privilege.user_mode));
-    tokenContract.mint(new kcs4.mint_arguments(MOCK_ACCT1, 100));
+    tokenContract.mint(new token.mint_arguments(MOCK_ACCT1, 100));
 
     MockVM.setCaller(new chain.caller_data(MOCK_ACCT2, chain.privilege.user_mode));
 
     // should not transfer because allowance does not exist
     expect(() => {
       const tokenContract = new Token();
-      tokenContract.transfer(new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10));
+      tokenContract.transfer(new token.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10));
     }).toThrow();
 
     expect(MockVM.getErrorMessage()).toBe("account 'from' has not authorized transfer");
@@ -1072,21 +1079,21 @@ describe("token", () => {
     // create allowance for 20 tokens
     MockVM.setCaller(new chain.caller_data(new Uint8Array(0), chain.privilege.kernel_mode));
     MockVM.setAuthorities([new MockVM.MockAuthority(authority.authorization_type.contract_call, MOCK_ACCT1, true)]);
-    tokenContract.approve(new kcs4.approve_arguments(MOCK_ACCT1, MOCK_ACCT2, 20));
+    tokenContract.approve(new token.approve_arguments(MOCK_ACCT1, MOCK_ACCT2, 20));
 
     MockVM.setCaller(new chain.caller_data(MOCK_ACCT2, chain.privilege.user_mode));
 
     // should not transfer because allowance is too small
     expect(() => {
       const tokenContract = new Token();
-      tokenContract.transfer(new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 25));
+      tokenContract.transfer(new token.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 25));
     }).toThrow();
 
     // should transfer partial amount of allowance
-    tokenContract.transfer(new kcs4.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10));
-    expect(tokenContract.balance_of(new kcs4.balance_of_arguments(MOCK_ACCT1)).value).toBe(90);
-    expect(tokenContract.balance_of(new kcs4.balance_of_arguments(MOCK_ACCT2)).value).toBe(10);
-    expect(tokenContract.allowance(new kcs4.allowance_arguments(MOCK_ACCT1, MOCK_ACCT2)).value).toBe(10);
+    tokenContract.transfer(new token.transfer_arguments(MOCK_ACCT1, MOCK_ACCT2, 10));
+    expect(tokenContract.balance_of(new token.balance_of_arguments(MOCK_ACCT1)).value).toBe(90);
+    expect(tokenContract.balance_of(new token.balance_of_arguments(MOCK_ACCT2)).value).toBe(10);
+    expect(tokenContract.allowance(new token.allowance_arguments(MOCK_ACCT1, MOCK_ACCT2)).value).toBe(10);
   });
 });
 

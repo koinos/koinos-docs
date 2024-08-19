@@ -1239,7 +1239,7 @@ Let's customize the specifics of our token project by modifying `./assembly/Toke
 Let's change the default values to the name and symbol of our token.
 
 ```ts linenums="9" title="assembly/Token.ts" hl_lines="9-11"
-import { Arrays, authority, chain, error, kcs4, Protobuf, Storage, System } from "@koinos/sdk-as";
+import { Arrays, authority, chain, error, Protobuf, Storage, System } from "@koinos/sdk-as";
 import { token } from "./proto/token";
 
 const SUPPLY_SPACE_ID = 0;
@@ -1247,8 +1247,8 @@ const BALANCES_SPACE_ID = 1;
 const ALLOWANCES_SPACE_ID = 2;
 
 export class Token {
-  _name: string = "[token name]";
-  _symbol: string = "[token symbol]";
+  _name: string = "My Token Name";
+  _symbol: string = "MTN";
   _decimals: u32 = 8;
 
 
@@ -1268,7 +1268,6 @@ koinos-sdk-as-cli run-tests
 ``` { .text .no-copy }
 Running tests...
 yarn asp --verbose --config as-pect.config.js
-yarn run v1.22.22
 $ /home/sgerbino/Workspace/token/node_modules/.bin/asp --verbose --config as-pect.config.js
        ___   _____                       __    
       /   | / ___/      ____  ___  _____/ /_   
@@ -1285,33 +1284,33 @@ ASC Version: 0.27.29
 [Describe]: token
 
     [Fail]: ✖ should get the name
-  [Actual]: "test"
+  [Actual]: "My Token Name"
 [Expected]: "[token name]"
    [Stack]: RuntimeError: unreachable
-            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/001260d2:wasm-function[318]:0x2aa0)
-            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String>#toBe (wasm://wasm/001260d2:wasm-function[930]:0xf02c)
-            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|1 (wasm://wasm/001260d2:wasm-function[931]:0xf0da)
-            at node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/001260d2:wasm-function[556]:0x36c0)
-            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/001260d2:wasm-function[1265]:0x21d71)
+            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/0012d0ca:wasm-function[319]:0x2ac3)
+            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String|null>#toBe (wasm://wasm/0012d0ca:wasm-function[938]:0x120a3)
+            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|1 (wasm://wasm/0012d0ca:wasm-function[939]:0x12156)
+            at node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/0012d0ca:wasm-function[561]:0x37e5)
+            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/0012d0ca:wasm-function[1267]:0x24d50)
     [Fail]: ✖ should get the symbol
-  [Actual]: "TEST"
+  [Actual]: "MTN"
 [Expected]: "[token symbol]"
    [Stack]: RuntimeError: unreachable
-            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/001260d2:wasm-function[318]:0x2aa0)
-            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String>#toBe (wasm://wasm/001260d2:wasm-function[930]:0xf02c)
-            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|2 (wasm://wasm/001260d2:wasm-function[934]:0xf251)
-            at node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/001260d2:wasm-function[556]:0x36c0)
-            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/001260d2:wasm-function[1265]:0x21d71)
+            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/0012d0ca:wasm-function[319]:0x2ac3)
+            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String|null>#toBe (wasm://wasm/0012d0ca:wasm-function[938]:0x120a3)
+            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|2 (wasm://wasm/0012d0ca:wasm-function[942]:0x122e3)
+            at node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/0012d0ca:wasm-function[561]:0x37e5)
+            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/0012d0ca:wasm-function[1267]:0x24d50)
  [Success]: ✔ should get the decimals
     [Fail]: ✖ should get token info
-  [Actual]: "test"
+  [Actual]: "My Token Name"
 [Expected]: "[token name]"
    [Stack]: RuntimeError: unreachable
-            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/001260d2:wasm-function[318]:0x2aa0)
-            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String>#toBe (wasm://wasm/001260d2:wasm-function[930]:0xf02c)
-            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|4 (wasm://wasm/001260d2:wasm-function[943]:0xf737)
-            at node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/001260d2:wasm-function[556]:0x36c0)
-            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/001260d2:wasm-function[1265]:0x21d71)
+            at node_modules/@as-pect/assembly/assembly/internal/assert/assert (wasm://wasm/0012d0ca:wasm-function[319]:0x2ac3)
+            at node_modules/@as-pect/assembly/assembly/internal/Expectation/Expectation<~lib/string/String|null>#toBe (wasm://wasm/0012d0ca:wasm-function[938]:0x120a3)
+            at start:assembly/__tests__/Token.spec~anonymous|0~anonymous|4 (wasm://wasm/0012d0ca:wasm-function[951]:0x127e5)
+            at node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/0012d0ca:wasm-function[561]:0x37e5)
+            at export:node_modules/@as-pect/assembly/assembly/internal/call/__call (wasm://wasm/0012d0ca:wasm-function[1267]:0x24d50)
 ```
 
 We now get these errors because we haven't updated the tests to reflect the changes we made to the token. Let's update the tests to reflect the changes we made to the token.
@@ -1321,25 +1320,25 @@ In the following code snippets the highlighted lines were added.
 ```ts linenums="25" title="assembly/__tests__/Token.spec.ts" hl_lines="4 10 22-23"
   it("should get the name", () => {
     const tokenContract = new Token();
-    const res = tokenContract.name();
+    const res = tokenContract.name(new token.name_arguments());
     expect(res.value).toBe("My Token Name");
   });
 
   it("should get the symbol", () => {
     const tokenContract = new Token();
-    const res = tokenContract.symbol();
+    const res = tokenContract.symbol(new token.symbol_arguments());
     expect(res.value).toBe("MTN");
   });
 
   it("should get the decimals", () => {
     const tokenContract = new Token();
-    const res = tokenContract.decimals();
+    const res = tokenContract.decimals(new token.decimals_arguments());
     expect(res.value).toBe(8);
   });
 
   it("should get token info", () => {
     const tokenContract = new Token();
-    const res = tokenContract.get_info();
+    const res = tokenContract.get_info(new token.get_info_arguments());
     expect(res.name).toBe("My Token Name");
     expect(res.symbol).toBe("MTN");
     expect(res.decimals).toBe(8);

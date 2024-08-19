@@ -1550,17 +1550,11 @@ test.mint 14xHsbnNnHVqDXaHq99A3ZEAEzQAwd9mtt 100000000000000
 !!! note
     Since we are using the `register` command to mint the tokens, the decimals of the token are not taken into consideration. When we created out token contract we did not change the default 8 decimal places (see highlighted).
 
-    ```ts linenums="13" title="token/assembly/Token.ts" hl_lines="5"
+    ```ts linenums="8" title="token/assembly/Token.ts" hl_lines="4"
     export class Token {
-      // SETTINGS BEGIN
       _name: string = "My Token Name";
       _symbol: string = "MTN";
       _decimals: u32 = 8;
-
-      // set _maxSupply to zero if there is no max supply
-      // if set to zero, the supply would still be limited by how many tokens can fit in a u64 (u64.MAX_VALUE)
-      _maxSupply: u64 = 0;
-
 
     ```
 

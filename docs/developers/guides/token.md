@@ -1238,7 +1238,7 @@ Let's customize the specifics of our token project by modifying `./assembly/Toke
 
 Let's change the default values to the name and symbol of our token.
 
-```ts linenums="9" title="assembly/Token.ts" hl_lines="9-11"
+```ts linenums="1" title="assembly/Token.ts" hl_lines="9-11"
 import { Arrays, authority, chain, error, Protobuf, Storage, System } from "@koinos/sdk-as";
 import { token } from "./proto/token";
 
@@ -1317,7 +1317,7 @@ We now get these errors because we haven't updated the tests to reflect the chan
 
 In the following code snippets the highlighted lines were added.
 
-```ts linenums="25" title="assembly/__tests__/Token.spec.ts" hl_lines="4 10 22-23"
+```ts linenums="27" title="assembly/__tests__/Token.spec.ts" hl_lines="4 10 22-23"
   it("should get the name", () => {
     const tokenContract = new Token();
     const res = tokenContract.name(new token.name_arguments());

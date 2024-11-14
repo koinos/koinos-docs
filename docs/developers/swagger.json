@@ -6,11 +6,11 @@
   },
   "servers": [
     {
-      "url": "https://api.koinos.pro",
+      "url": "https://api.koinos.io",
       "description": "Koinos Mainnet"
     },
     {
-      "url": "https://api.harbinger.koinos.pro",
+      "url": "https://harbinger-api.koinos.io",
       "description": "Koinos Harbinger Testnet"
     }
   ],
@@ -171,13 +171,6 @@
           }
         }
       }
-    },
-    "securitySchemes": {
-      "apikey": {
-        "type": "apiKey",
-        "name": "X-API-KEY",
-        "in": "header"
-      }
     }
   },
   "tags": [
@@ -213,9 +206,6 @@
       "name": "Transactions",
       "description": "Groups endpoints handling transaction related operations, including querying transaction details, preparing a transaction, and submitting it."
     }
-  ],
-  "security": [
-    {"apikey": []}
   ],
   "paths": {
     "/v1/account/{account}/balance/{contract_id}": {

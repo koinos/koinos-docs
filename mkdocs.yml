@@ -58,13 +58,13 @@ theme:
     # - content.tabs.link
     - content.tooltips
     # - header.autohide
-    # - navigation.expand
+    - navigation.expand
     - navigation.footer
     - navigation.indexes
     # - navigation.instant
     # - navigation.prune
     - navigation.sections
-    - navigation.tabs
+    # - navigation.tabs
     # - navigation.tabs.sticky
     - navigation.top
     - navigation.tracking
@@ -115,48 +115,31 @@ plugins:
 
 nav:
   - Home: index.md
+  - Getting Started:
+    - getting-started/index.md
+    - getting-started/what-is-koinos.md
+    - getting-started/accounts-keys-wallets.md
+    - getting-started/mainnet-vs-testnet.md
+    - getting-started/tooling-overview.md
   - Overview:
     - overview/index.md
     - overview/blockchain-basics.md
+    - overview/governance.md
     - overview/mana.md
     - overview/proof-of-burn.md
-    - overview/tokenomics.md
     - overview/smart-contracts.md
-    - overview/governance.md
-  - Developers:
-    - developers/index.md
-    - developers/cli.md
-    - developers/as-sdk.md
-    - developers/payer-payee.md
-    - developers/rc-limits.md
-    - developers/rest.md
-    - developers/testnet.md
-    - developers/resource-management.md
-    - developers/deploy-contract.md
-    - developers/protobuf.md
-    - developers/transactions.md
-    - developers/authority.md
-    - Contract guides:
-      - developers/guides/calculator.md
-  - Validators:
-    - validators/index.md
-    - validators/node-requirements.md
-    - validators/docker-compose-profiles.md
-    - validators/microservices.md
-    - validators/configuration.md
-    - validators/node-security.md
-    - validators/node-management.md
-    - Validator guides:
-      - validators/guides/running-a-node.md
-      - validators/guides/block-production.md
-  - Exchanges:
-    - exchanges/index.md
-    - Technologies:
-      - exchanges/cli.md
-      - exchanges/koilib.md
-      - exchanges/jsonrpc.md
-      - exchanges/rest.md
-    - Common tasks:
+    - overview/tokenomics.md
+  - Interacting with Koinos:
+    - interacting/index.md
+    - interacting/quick-start.md
+    - interacting/read-contract-data.md
+    - interacting/submit-transaction.md
+    - interacting/multiple-operations.md
+    - interacting/testnet.md
+    - interacting/rest-api.md
+    - interacting/kondor-wallet.md
+    - Common Tasks:
+      - exchanges/index.md
       - exchanges/head-block.md
       - exchanges/create-wallet.md
       - exchanges/account-balance.md
@@ -166,15 +149,123 @@ nav:
       - exchanges/multisig.md
       - exchanges/finality.md
       - exchanges/account-history.md
+      - exchanges/cli.md
+      - exchanges/jsonrpc.md
+      - exchanges/koilib.md
+      - exchanges/rest.md
+    - Tutorials:
+      - interacting/tutorials/frontend-guide.md
+  - Smart Contract Development:
+    - contracts/index.md
+    - contracts/quick-start.md
+    - contracts/storage.md
+    - contracts/external-functions.md
+    - contracts/protobuffers.md
+    - contracts/call-other-contracts.md
+    - contracts/check-authorization.md
+    - contracts/authorize-function.md
+    - contracts/verify-signatures.md
+    - contracts/system-events.md
+    - contracts/logs.md
+    - contracts/build-testnet.md
+    - contracts/deploy-contract.md
+    - contracts/examples.md
+    - Tutorials:
+      - contracts/tutorials/contract-guide.md
+  - Developers:
+    - developers/index.md
+    - developers/as-sdk.md
+    - developers/authority.md
+    - developers/cli.md
+    - developers/deploy-contract.md
+    - developers/payer-payee.md
+    - developers/protobuf.md
+    - developers/rc-limits.md
+    - developers/resource-management.md
+    - developers/rest.md
+    - developers/testnet.md
+    - developers/transactions.md
+    - Guides:
+      - developers/guides/calculator.md
+      - developers/guides/token.md
+  - Node Operators:
+    - nodes/index.md
+    - nodes/running-node.md
+    - nodes/block-production.md
+    - nodes/rpc-node.md
+    - nodes/requirements.md
+    - nodes/docker-profiles.md
+    - nodes/microservices.md
+    - nodes/configuration.md
+    - nodes/security.md
+    - nodes/management.md
+  - Validators:
+    - validators/index.md
+    - validators/configuration.md
+    - validators/docker-compose-profiles.md
+    - validators/microservices.md
+    - validators/node-management.md
+    - validators/node-requirements.md
+    - validators/node-security.md
+    - Guides:
+      - validators/guides/block-production.md
+      - validators/guides/running-a-node.md
   - Architecture:
     - architecture/index.md
-    - architecture/microservices.md
+    - Microservices:
+      - architecture/microservices/koinos-chain.md
+      - architecture/microservices/block-store.md
+      - architecture/microservices/p2p.md
+      - architecture/microservices/mempool.md
+      - architecture/microservices/transaction-store.md
+      - architecture/microservices/block-producer.md
+      - architecture/microservices/json-rpc.md
+      - architecture/microservices/grpc.md
+      - architecture/microservices/contract-meta-store.md
+      - architecture/microservices/account-history.md
     - architecture/interprocess-communication.md
-    - architecture/proof-of-burn.md
     - architecture/serialization.md
     - architecture/smart-contracts.md
     - architecture/contract-abi.md
     - architecture/resources.md
     - architecture/system-calls.md
+    - architecture/proof-of-burn.md
+  - System Contracts:
+    - system-contracts/index.md
+    - system-contracts/tokenomics.md
+    - system-contracts/koin-vhp.md
+    - system-contracts/proof-of-burn.md
+    - system-contracts/mana.md
+    - system-contracts/governance.md
+    - system-contracts/name-service.md
+    - system-contracts/resources.md
+    - system-contracts/koinos-fund.md
+  - Governance Proposals:
+    - governance/index.md
+    - governance/submit-proposal.md
+    - History of Updates:
+      - governance/history/vhp-bug.md
+      - governance/history/system-contract-metadata.md
+      - governance/history/allowances.md
+      - governance/history/koinos-fund.md
+  - References:
+    - references/index.md
+    - Koilib Reference:
+      - references/koilib/contract-class.md
+      - references/koilib/provider-class.md
+      - references/koilib/serializer-class.md
+      - references/koilib/signer-class.md
+      - references/koilib/transaction-class.md
+      - references/koilib/util-functions.md
+    - Assembly Script SDK Reference:
+      - references/as-sdk/system-class.md
+      - references/as-sdk/storage-classes.md
+      - references/as-sdk/encoding-functions.md
+      - references/as-sdk/koinosbox-functions.md
   - Resources:
     - resources/index.md
+    - resources/wallets.md
+    - resources/explorers.md
+    - resources/ecosystem-platforms.md
+    - resources/contract-standards.md
+    - resources/software-libraries.md

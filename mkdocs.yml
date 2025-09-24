@@ -121,14 +121,14 @@ nav:
     - getting-started/accounts-keys-wallets.md
     - getting-started/mainnet-vs-testnet.md
     - getting-started/tooling-overview.md
-  - Overview:
-    - overview/index.md
-    - overview/blockchain-basics.md
-    - overview/governance.md
-    - overview/mana.md
-    - overview/proof-of-burn.md
-    - overview/smart-contracts.md
-    - overview/tokenomics.md
+  # - Overview:
+  #   - overview/index.md
+  #   - overview/blockchain-basics.md
+  #   - overview/governance.md
+  #   - overview/mana.md
+  #   - overview/proof-of-burn.md
+  #   - overview/smart-contracts.md
+  #   - overview/tokenomics.md
   - Interacting with Koinos:
     - interacting/index.md
     - interacting/quick-start.md
@@ -172,22 +172,22 @@ nav:
     - contracts/examples.md
     - Tutorials:
       - contracts/tutorials/contract-guide.md
-  - Developers:
-    - developers/index.md
-    - developers/as-sdk.md
-    - developers/authority.md
-    - developers/cli.md
-    - developers/deploy-contract.md
-    - developers/payer-payee.md
-    - developers/protobuf.md
-    - developers/rc-limits.md
-    - developers/resource-management.md
-    - developers/rest.md
-    - developers/testnet.md
-    - developers/transactions.md
-    - Guides:
-      - developers/guides/calculator.md
-      - developers/guides/token.md
+  # - Developers:
+  #   - developers/index.md
+  #   - developers/as-sdk.md
+  #   - developers/authority.md
+  #   - developers/cli.md
+  #   - developers/deploy-contract.md
+  #   - developers/payer-payee.md
+  #   - developers/protobuf.md
+  #   - developers/rc-limits.md
+  #   - developers/resource-management.md
+  #   - developers/rest.md
+  #   - developers/testnet.md
+  #   - developers/transactions.md
+  #   - Guides:
+  #     - developers/guides/calculator.md
+  #     - developers/guides/token.md
   - Node Operators:
     - nodes/index.md
     - nodes/running-node.md
@@ -199,17 +199,17 @@ nav:
     - nodes/configuration.md
     - nodes/security.md
     - nodes/management.md
-  - Validators:
-    - validators/index.md
-    - validators/configuration.md
-    - validators/docker-compose-profiles.md
-    - validators/microservices.md
-    - validators/node-management.md
-    - validators/node-requirements.md
-    - validators/node-security.md
-    - Guides:
-      - validators/guides/block-production.md
-      - validators/guides/running-a-node.md
+  # - Validators:
+  #   - validators/index.md
+  #   - validators/configuration.md
+  #   - validators/docker-compose-profiles.md
+  #   - validators/microservices.md
+  #   - validators/node-management.md
+  #   - validators/node-requirements.md
+  #   - validators/node-security.md
+  #   - Guides:
+  #     - validators/guides/block-production.md
+  #     - validators/guides/running-a-node.md
   - Architecture:
     - architecture/index.md
     - Microservices:

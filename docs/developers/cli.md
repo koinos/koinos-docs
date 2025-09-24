@@ -134,6 +134,54 @@ After registering a smart contract's ABI, you then have access to it's methods.
     ```
 
 ---
+## Register token
+Tokens are a special type of smart contract. Contracts adhering to the Koinos token standard can be interacted with using the `register_token` command. The `register_token` command will automatically take in to account a token's precision and use the current open wallet to fill in arguments in commands where applicable. This command does not add any new features over and above `register`, but it makes interacting with a token much easier.
+
+!!! example
+    Registering a token:
+    ```
+    🔐 > register_token koin 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL
+    Token 'koin' at address 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL registered
+    ```
+
+!!! tip
+    After registering a token, methods to interact with the token will be added to the list of available commands in the CLI.
+    ```
+    🔐 > list
+    ...
+    koin.balance_of                           - Checks the balance at an address
+    koin.total_supply                         - Checks the token total supply
+    koin.transfer                             - Transfers the token
+    ...
+    ```
+
+After register a token, you have access to it's methods.
+
+!!! example
+    And example of interacting with the KOIN token using the Koinos CLI.
+    ```
+    🔓 > address
+    Wallet address: 1H7NoCkYiVciGLGA92LyAR2VvFLNN38qyM
+
+    🔓 > help koin.balance_of
+    Checks the balance at an address
+    Usage: koin.balance_of [address:address]
+
+    🔓 > koin.balance_of
+    318700 KOIN
+
+    🔓 > koin.balance_of 1H7NoCkYiVciGLGA92LyAR2VvFLNN38qyM
+    318700 KOIN
+
+    🔓 > koin.total_supply
+    39604161.08054679 KOIN
+
+    🔓 > help koin.transfer
+    Transfers the token
+    Usage: koin.transfer <to:address> <amount:amount>
+    ```
+
+---
 ## Transaction sessions
 Sometimes it is important to ensure multiple operations are included in the same block in a specific order. To accomplish this with the CLI, you use a session.
 

@@ -8,7 +8,6 @@ This guide is intended for use by exchanges when integrating Koinos. It is subje
 
 Most of this information may also be useful to dApp developers, but because the target audience are exchanges, there may be large gaps.
 
----
 ## Technologies
 This guide will use four technologies for interacting with Koinos. They are not equal. Some perform certain jobs better than others, or not at all. What technologies you choose to use are going to be dependent upon your existing application stack and how best to integrate Koinos in to it. If this guide is lacking a feature or some critical component to your integration, please contact us. It may be that we didn't think to document that particular requirement, or we could add it as a feature (depending upon complexity).
 
@@ -32,14 +31,6 @@ This guide will use four technologies for interacting with Koinos. They are not 
 
     [:octicons-arrow-right-24: Let's use JavaScript](koilib.md)
 
--   :fontawesome-solid-server:{ .lg .middle } __JSON-RPC__
-
-    ---
-
-    The primary way to access the Koinos API is via JSON-RPC. The API grants you full access to all read-only data about Koinos as well as providing mechanism for submitting transfers. The primary drawback of the API is that you must still sign transactions locally using another technology such as the CLI or Koilib.
-
-    [:octicons-arrow-right-24: Explore the JSON-RPC API](jsonrpc.md)
-
 -   :fontawesome-solid-server:{ .lg .middle } __REST__
 
     ---
@@ -50,7 +41,6 @@ This guide will use four technologies for interacting with Koinos. They are not 
 
 </div>
 
----
 ## Common tasks
 
 Additionally, this guide will provide examples on how to execute tasks on Koinos commonly used by exchanges. Each task will contain a short guide with examples for each technology that can complete the task. If your required task is not covered here or you cannot figure out how to do what you need using these guides, please reach out in Telegram or Discord and we will be happy to assist you.

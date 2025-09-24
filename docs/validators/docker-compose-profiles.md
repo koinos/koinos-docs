@@ -11,7 +11,7 @@ You can run additional microservices or set common configurations by enabled on,
 
 | <div style="width:150px">Docker Compose profile</div> | Description |
 | --- | --- |
-| `block_production`     | Enables the block production. |
+| `block_producer`       | Enables the block production. |
 | `jsonrpc`              | Enables JSON-RPC API handling. |
 | `grpc`                 | Enables gRPC API handling. |
 | `transaction_store`    | Enables transaction history tracking. |

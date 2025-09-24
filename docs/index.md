@@ -47,6 +47,7 @@ The Koinos blockchain is purposefully designed with developers in mind, offering
     ---
 
     Explore the innovative features, consensus mechanism, scalability solutions, and technical details that make Koinos a robust and developer-friendly blockchain platform.
+    <br/><br/>
 
     [:octicons-arrow-right-24: How it works](architecture/index.md)
 

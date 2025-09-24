@@ -1,35 +1,24 @@
-site_name: Koinos documentation
+site_name: Koinos Developer Hub
 site_url: https://docs.koinos.io
 
-site_description: Documentation for Koinos
+site_description: Build a decentralized future with The World's First Feeless Smart Contract Platform. From running validators to smart contract development, Koinos Documentation has you covered.
 
 repo_name: koinos
 repo_url: https://github.com/koinos/koinos
 
-edit_uri: https://github.com/koinos/koinos-docs/master/docs/
+edit_uri: https://github.com/koinos/koinos-docs/blob/master/docs/
 
 copyright: Copyright 2023-2024 Koinos Group
 
 docs_dir: docs
+extra_css:
+  - stylesheets/extra.css
 
 theme:
   name: material
   language: en
-  icon:
-    edit: material/pencil
-    admonition:
-      note: fontawesome/solid/note-sticky
-      abstract: fontawesome/solid/book
-      info: fontawesome/solid/circle-info
-      tip: fontawesome/solid/bullhorn
-      success: fontawesome/solid/check
-      question: fontawesome/solid/circle-question
-      warning: fontawesome/solid/triangle-exclamation
-      failure: fontawesome/solid/bomb
-      danger: fontawesome/solid/skull
-      bug: fontawesome/solid/robot
-      example: fontawesome/solid/flask
-      quote: fontawesome/solid/quote-left
+  font:
+    text: Plus Jakarta Sans
   palette:
     - media: "(prefers-color-scheme)"
       primary: black
@@ -49,6 +38,21 @@ theme:
       toggle:
         icon: material/toggle-switch-off
         name: Switch to system preference
+  icon:
+    edit: material/pencil
+    admonition:
+      note: fontawesome/solid/note-sticky
+      abstract: fontawesome/solid/book
+      info: fontawesome/solid/circle-info
+      tip: fontawesome/solid/bullhorn
+      success: fontawesome/solid/check
+      question: fontawesome/solid/circle-question
+      warning: fontawesome/solid/triangle-exclamation
+      failure: fontawesome/solid/bomb
+      danger: fontawesome/solid/skull
+      bug: fontawesome/solid/robot
+      example: fontawesome/solid/flask
+      quote: fontawesome/solid/quote-left
   features:
     - announce.dismiss
     - content.action.edit
@@ -73,8 +77,8 @@ theme:
     - search.suggest
     - toc.follow
     # - toc.integrate
-  favicon: assets/koinos-icon-dark.svg
-  logo: assets/koinos-mark-light.svg
+  favicon: assets/favicon.png
+  logo: assets/koinos-logo-white.png
 
 extra:
   generator: false

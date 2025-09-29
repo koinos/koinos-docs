@@ -82,7 +82,7 @@ async function sendTokens() {
     
     // Create contract instance with Kondor signer
     const koin = new Contract({
-      id: '15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL',
+      id: '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK',
       provider: signer.provider,
       signer: signer,
       abi: utils.tokenAbi

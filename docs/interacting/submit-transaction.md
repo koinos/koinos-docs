@@ -21,7 +21,7 @@ const { Provider, Signer, Contract, utils } = require('koilib');
 
 // Create provider and signer
 const provider = new Provider('https://api.koinos.io');
-const signer = Signer.fromPrivateKey('your-private-key');
+const signer = Signer.fromWif('your-private-key');
 
 // Set provider for signer
 signer.provider = provider;
@@ -34,7 +34,7 @@ async function submitTransaction() {
   try {
     // Create contract instance
     const koin = new Contract({
-      id: '15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL',
+      id: '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK',
       provider: provider,
       signer: signer,
       abi: utils.tokenAbi
@@ -68,7 +68,7 @@ async function submitTransaction() {
 const { transaction, receipt } = await contract.functions.myFunction(
   { /* parameters */ },
   {
-    rcLimit: 100000000, // Custom RC limit
+    rcLimit: 1000000000, // Custom RC limit
     sendTransaction: true
   }
 );
@@ -77,11 +77,11 @@ const { transaction, receipt } = await contract.functions.myFunction(
 ### Dry Run (Simulation)
 
 ```javascript
-// Test transaction without submitting
+// Test transaction without broadcasting
 const { transaction, receipt } = await contract.functions.transfer(
   { /* parameters */ },
   {
-    sendTransaction: false // Only simulate
+    broadcast: false // Only simulate
   }
 );
 
@@ -101,13 +101,7 @@ try {
   
   await transaction.wait();
 } catch (error) {
-  if (error.message.includes('insufficient mana')) {
-    console.error('Not enough mana for transaction');
-  } else if (error.message.includes('insufficient balance')) {
-    console.error('Not enough tokens for transfer');
-  } else {
-    console.error('Transaction error:', error);
-  }
+  console.error('Transaction error:', error);
 }
 ```
 

@@ -46,7 +46,7 @@ POST /v1/chain/read_contract
 Content-Type: application/json
 
 {
-  "contract_id": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+  "contract_id": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
   "entry_point": 0x82a3537ff,
   "args": "base64-encoded-args"
 }
@@ -73,7 +73,7 @@ async function getHeadInfo() {
 async function getAccountBalance(address) {
   try {
     const response = await axios.post(`${API_BASE}/v1/chain/read_contract`, {
-      contract_id: '15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL',
+      contract_id: '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK',
       entry_point: 0x82a3537ff, // balanceOf function
       args: btoa(address) // base64 encode address
     });
@@ -118,7 +118,7 @@ curl -X GET "https://api.koinos.io/v1/chain/get_account_rc?account=1DQzuCcTKacbs
 curl -X POST "https://api.koinos.io/v1/chain/read_contract" \
   -H "Content-Type: application/json" \
   -d '{
-    "contract_id": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+    "contract_id": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
     "entry_point": 2186741247,
     "args": "base64-encoded-arguments"
   }'

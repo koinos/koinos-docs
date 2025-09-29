@@ -1,4 +1,4 @@
-# Quick Start: Read KOIN Balance
+# Quick Start
 
 Learn how to read a KOIN balance from the Koinos blockchain in just a few lines of code.
 
@@ -33,22 +33,20 @@ async function readBalance() {
   const provider = new Provider('https://api.koinos.io');
   
   // KOIN contract address
-  const koinAddress = '15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL';
+  const koinAddress = '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK';
   
   // Create contract instance
   const koin = new Contract({
     id: koinAddress,
-    provider: provider,
+    provider,
     abi: utils.tokenAbi, // Built-in token ABI
   });
-  
-  // Address to check (replace with any Koinos address)
-  const address = '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe';
   
   try {
     // Read the balance
     const { result } = await koin.functions.balanceOf({
-      owner: address
+      // Address to check (replace with any Koinos address)
+      owner: '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'
     });
     
     // Convert from smallest unit to KOIN
@@ -86,9 +84,3 @@ Balance: 1234.56789012 KOIN
 - [Read data from other contracts](read-contract-data.md)
 - [Submit your first transaction](submit-transaction.md)
 - [Work with multiple operations](multiple-operations.md)
-
-## Troubleshooting
-
-**Network Error**: Check your internet connection and try again.
-**Invalid Address**: Ensure the address is a valid Koinos address.
-**Contract Error**: The KOIN contract address should not change, but verify if needed.

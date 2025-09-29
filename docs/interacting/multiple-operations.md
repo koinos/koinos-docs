@@ -34,13 +34,13 @@ async function multipleOperations() {
     from: signer.address,
     to: '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe',
     value: utils.parseUnits('1', 8)
-  }, '15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL'); // KOIN contract
+  }, '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK'); // KOIN contract
   
   transaction.pushOperation('token.transfer', {
     from: signer.address,
     to: '1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q',
     value: utils.parseUnits('0.5', 8)
-  }, '15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL'); // KOIN contract
+  }, '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK'); // KOIN contract
   
   // Submit transaction
   const { receipt } = await transaction.send();
@@ -59,7 +59,7 @@ async function multipleOperations() {
 async function multiOperationWithContracts() {
   // Setup contracts
   const koin = new Contract({
-    id: '15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL',
+    id: '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK',
     provider,
     signer,
     abi: utils.tokenAbi

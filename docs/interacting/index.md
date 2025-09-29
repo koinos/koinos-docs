@@ -1,5 +1,9 @@
 # Interacting with Koinos
 
+This section is designed for **frontend and backend developers** who want to build applications that interact with smart contracts that are already deployed on the Koinos blockchain. 
+
+**Important**: This section is **not** for creating new smart contracts. If you want to develop and deploy new smart contracts, see the [Smart Contracts](../contracts/index.md) section instead.
+
 Learn how to interact with the Koinos blockchain through various methods and tools.
 
 ## What You'll Learn

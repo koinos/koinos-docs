@@ -213,7 +213,7 @@
         "tags": [
           "Accounts"
         ],
-        "description": "Retrieves the balance of a specific fungible token for a given account. The balance is determined by the contract address of the token. The example demonstrates how to query the balance of the token with contract ID 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL for the account with address 1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS.",
+        "description": "Retrieves the balance of a specific fungible token for a given account. The balance is determined by the contract address of the token. The example demonstrates how to query the balance of the token with contract ID 19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK for the account with address 1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS.",
         "summary": "Retrieves the balance of a specific fungible token for a given account.",
         "parameters": [
           {
@@ -221,9 +221,9 @@
             "in": "path",
             "schema": {
               "type": "string",
-              "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+              "example": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK"
             },
-            "description": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL is the contract address of the fungible token.  Alternatively, the name of the contract, KOIN, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet.",
+            "description": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK is the contract address of the fungible token.  Alternatively, the name of the contract, KOIN, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet.",
             "required": true
           },
           {
@@ -272,7 +272,7 @@
               "type": "string",
               "example": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS"
             },
-            "description": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS is the account address of the fungible token.  Alternatively, the nickname of the address, burnkoin, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet. The same logic applies to contract addresses such as 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL.",
+            "description": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS is the account address of the fungible token.  Alternatively, the nickname of the address, burnkoin, can also be used. Its KAP names can also be used, however, this contract address does not have any registered yet. The same logic applies to contract addresses such as 19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK.",
             "required": true
           },
           {
@@ -818,7 +818,7 @@
             },
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
-            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+            "example": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK"
           },
           {
             "name": "method",
@@ -871,7 +871,7 @@
             },
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
-            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+            "example": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK"
           },
           {
             "name": "method",
@@ -931,7 +931,7 @@
             "in": "path",
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
-            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+            "example": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK"
           }
         ],
         "responses": {
@@ -943,7 +943,7 @@
                   "$ref": "#/components/schemas/ContractAbi"
                 },
                 "example": {
-                  "contract_id": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+                  "contract_id": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
                   "abi": {
                     "methods": {
                       "name": {
@@ -1032,7 +1032,7 @@
                   },
                   {
                     "sequence": 1,
-                    "source": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+                    "source": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
                     "name": "koinos.contracts.token.mint_event",
                     "data": "ChkA7-Mh3yERswBXFp2UPvegxIiGAauR1O_zELW7zHU=",
                     "impacted": [
@@ -1099,7 +1099,7 @@
                     },
                     {
                       "sequence": 1,
-                      "source": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+                      "source": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
                       "name": "koinos.contracts.token.mint_event",
                       "data": {
                         "to": "1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS",
@@ -1177,7 +1177,7 @@
                       "contract_id": "1D53GFQkL5TkQ9okuf6r3Gta3oeTMVgGJW",
                       "entry_point": "set_latest_price",
                       "args": {
-                        "token_address": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+                        "token_address": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
                         "price": "107852000"
                       }
                     }
@@ -1473,7 +1473,7 @@
             },
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
-            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+            "example": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK"
           },
           {
             "name": "account",
@@ -1524,7 +1524,7 @@
             },
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
-            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+            "example": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK"
           }
         ],
         "responses": {
@@ -1566,7 +1566,7 @@
             },
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
-            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+            "example": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK"
           }
         ],
         "responses": {
@@ -1620,7 +1620,7 @@
             },
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
-            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+            "example": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK"
           }
         ],
         "responses": {
@@ -1661,7 +1661,7 @@
             },
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
-            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+            "example": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK"
           }
         ],
         "responses": {
@@ -1702,7 +1702,7 @@
             },
             "description": "Koinos address of the contract, name of the contract (for system contracts) or KAP name",
             "required": true,
-            "example": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL"
+            "example": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK"
           }
         ],
         "responses": {

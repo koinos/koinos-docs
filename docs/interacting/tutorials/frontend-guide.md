@@ -273,7 +273,7 @@ class KoinosWallet {
         
         // Setup KOIN contract
         this.koinContract = new Contract({
-            id: '15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL',
+            id: '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK',
             provider: this.provider,
             abi: utils.tokenAbi
         });

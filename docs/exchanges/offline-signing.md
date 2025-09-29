@@ -196,7 +196,7 @@ The RC, or "Resource Credit", limit is like the gas limit on Ethereum. It specif
     As an example, to do a KOIN transfer on an offline wallet, you would need to send the following commands.
 
     ``` { .txt hl_lines="6-8" }
-    register_token koin 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL KOIN 8
+    register_token koin 19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK KOIN 8
     chain_id EiBZK_GGVP0H_fXVAM3j6EAuz3-B-l3ejxRSewi7qIBfSA==
     open wallets/test.wallet password
     nonce 10
@@ -209,7 +209,7 @@ The RC, or "Resource Credit", limit is like the gas limit on Ethereum. It specif
     The output of running these commands looks like:
 
     ``` { .txt .no-copy hl_lines="7-29 31-32" }
-    Token 'koin' at address 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL registered
+    Token 'koin' at address 19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK registered
     Opened wallet: wallets/test.wallet
     Set rc limit to 1
     Began transaction session
@@ -228,7 +228,7 @@ The RC, or "Resource Credit", limit is like the gas limit on Ethereum. It specif
       "operations": [
         {
           "call_contract": {
-            "contract_id": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+            "contract_id": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
             "entry_point": 670398154,
             "args": "ChkAld7Gt6Kcrgx74cp4Bu_njyA2IGaZDR5YEhkAGXLSOrScwx8XLD8aABah1ZaR4KkxDyzZGMCp0zo="
           }
@@ -266,7 +266,7 @@ The RC, or "Resource Credit", limit is like the gas limit on Ethereum. It specif
 
     ```ts
     const koin = new Contract({
-      id: "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+      id: "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
       abi: utils.tokenAbi,
     }).functions;
 

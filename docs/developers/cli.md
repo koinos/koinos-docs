@@ -140,8 +140,8 @@ Tokens are a special type of smart contract. Contracts adhering to the Koinos to
 !!! example
     Registering a token:
     ```
-    🔐 > register_token koin 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL
-    Token 'koin' at address 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL registered
+    🔐 > register_token koin 19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK
+    Token 'koin' at address 19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK registered
     ```
 
 !!! tip
@@ -233,7 +233,7 @@ You can configure the wallet to automatically execute commands when launching. T
 
 ```title=".koinosrc"
 connect https://api.koinos.io/
-register_token koin 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL
+register_token koin 19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK
 register_token vhp 18tWNU7E4yuQzz7hMVpceb9ixmaWLVyQsr
 register pob 159myq5YUhhoVWu3wsHKHiJYKPKGUrGiyv
 register name_service 19WxDJ9Kcvx4VqQFkpwVmwVEy1hMuwXtQE

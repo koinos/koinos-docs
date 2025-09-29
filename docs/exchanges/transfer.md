@@ -30,7 +30,7 @@ Below you can find examples of how to transfer your KOIN using a variety of supp
     When using the `register_token` command as indicated by the documentation on [Koinos CLI](../developers/cli.md) under the [`.koinosrc`](../developers/cli.md#koinos-cli-rc-file) section, the decimals of the token are taken into consideration. As demonstrated above, we are sending 0.00000001 KOIN as indicated by the 8 decimal places. If you want to use `register_token` with an offline wallet, you need to provide the precision and symbol manually.
 
     ```
-    register_token koin 15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL KOIN 8
+    register_token koin 19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK KOIN 8
     ```
 
 === "Koilib"
@@ -44,7 +44,7 @@ Below you can find examples of how to transfer your KOIN using a variety of supp
         const signer = Signer.fromWif("KwkAq...");
         signer.provider = provider;
         const koinContract = new Contract({
-            id: "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+            id: "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
             abi: utils.tokenAbi,
             provider,
             signer,

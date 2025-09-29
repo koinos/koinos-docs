@@ -39,7 +39,7 @@ Below you can find examples of how to retrieve your KOIN balance using a variety
         const signer = Signer.fromWif("Kzl...");
         signer.provider = provider;
         const koinContract = new Contract({
-          id: "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+          id: "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
           abi: utils.tokenAbi,
           provider,
           signer,
@@ -60,7 +60,7 @@ Below you can find examples of how to retrieve your KOIN balance using a variety
 
     Using the path `/v1/token/{contract_id}/balance/{account}` you can retrieve that balance for any account for any token.
 
-    `contract_id` can be a contract address (e.g. `15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL`), a system contract name (e.g. `koin`), a Nickname (e.g. `@vapor`), or a KAP domain.
+    `contract_id` can be a contract address (e.g. `19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK`), a system contract name (e.g. `koin`), a Nickname (e.g. `@vapor`), or a KAP domain.
 
     To request an address' KOIN balance, query on the path `/v1/token/koin/balance/{account}`.
 

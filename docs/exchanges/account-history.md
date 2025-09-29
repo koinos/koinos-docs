@@ -111,7 +111,7 @@ A crucial feature of blockchain technology is the ability to audit the history o
             "events": [
               {
                 "sequence": 2,
-                "source": "15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL",
+                "source": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
                 "name": "koinos.contracts.token.transfer_event",
                 "data": {
                   "from": "189zu13ZVKWMuoczZR7XWx4mUuRkiJzt4y",

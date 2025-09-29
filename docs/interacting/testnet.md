@@ -77,7 +77,7 @@ const { Provider, Signer, Contract, utils } = require('koilib');
 const TESTNET_CONFIG = {
   endpoint: 'https://harbinger-api.koinos.io',
   chainId: 'EiBncD4pKRIQWco_WRqo5Q-xnXR7JuO3PtZv983mKdKHSQ',
-  koinContract: '15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL'
+  koinContract: '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK'
 };
 
 async function setupTestnet() {

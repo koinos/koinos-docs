@@ -16,26 +16,25 @@ Reading contract data is a fundamental operation when building applications on K
 ### Basic Contract Read
 
 ```javascript
-const { Provider, Contract } = require('koilib');
-
 async function readContractData() {
   // Connect to Koinos
   const provider = new Provider('https://api.koinos.io');
   
   // Contract address and ABI
-  const contractAddress = '1NsQbH5AhQXgtSNg1ejpFqTi2hmCWz1eQS';
+  const contractAddress = '1KD9Es7LBBjA1FY3ViCgQJ7e6WH1ipKbhz';
   
   // Create contract instance
   const contract = new Contract({
     id: contractAddress,
-    provider: provider,
-    abi: contractAbi // Your contract's ABI
+    provider,
+    abi: utils.nicknamesAbi // contract's ABI
   });
   
   try {
     // Call a read function
-    const { result } = await contract.functions.getData({
+    const { result } = await contract.functions.get_address({
       // function parameters
+      value: "jgapool"
     });
     
     console.log('Contract data:', result);
@@ -44,6 +43,68 @@ async function readContractData() {
   }
 }
 ```
+
+## Working Without a Local ABI
+
+### Fetching ABI from the Blockchain
+
+If you don't have the ABI of the contract locally, you can fetch it dynamically from the blockchain:
+
+```javascript
+const { Provider, Contract } = require('koilib');
+
+async function readContractWithoutLocalAbi() {
+  // Connect to Koinos
+  const provider = new Provider('https://api.koinos.io');
+  
+  // Contract address (no ABI needed initially)
+  const contractAddress = '1KD9Es7LBBjA1FY3ViCgQJ7e6WH1ipKbhz';
+  
+  // Create contract instance without ABI
+  const contract = new Contract({
+    id: contractAddress,
+    provider
+    // Note: no abi parameter here
+  });
+  
+  try {
+    // Fetch ABI from the blockchain
+    await contract.fetchAbi();
+    
+    // Now you can call contract functions
+    const { result } = await contract.functions.get_address({
+      // function parameters
+      value: "jgapool"
+    });
+    
+    console.log('Contract data:', result);
+  } catch (error) {
+    console.error('Error reading contract:', error);
+  }
+}
+```
+
+### ABI Fetching Explained
+
+The `fetchAbi()` function:
+
+- **Retrieves the ABI** directly from the blockchain where it's stored
+- **Links it to the contract interface** so you can call functions
+- **Works with any contract** as long as you have the contract address and the ABI was deployed by the creator
+
+### When to Use Each Approach
+
+**Local ABI (Recommended):**
+
+- Better performance (no network call)
+- Works offline during development
+- More predictable for production applications
+
+**Dynamic ABI Fetching:**
+
+- When you don't have the ABI available locally
+- For exploring unknown contracts
+- When building tools that work with arbitrary contracts
 
 ## Common Read Operations
 

@@ -68,8 +68,8 @@ theme:
     # - navigation.instant
     # - navigation.prune
     - navigation.sections
-    # - navigation.tabs
-    # - navigation.tabs.sticky
+    - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.top
     - navigation.tracking
     - search.highlight
@@ -119,21 +119,13 @@ plugins:
 
 nav:
   - Home: index.md
-  - Getting Started:
+  - Get Started:
     - getting-started/index.md
     - getting-started/what-is-koinos.md
     - getting-started/accounts-keys-wallets.md
     - getting-started/mainnet-vs-testnet.md
     - getting-started/tooling-overview.md
-  # - Overview:
-  #   - overview/index.md
-  #   - overview/blockchain-basics.md
-  #   - overview/governance.md
-  #   - overview/mana.md
-  #   - overview/proof-of-burn.md
-  #   - overview/smart-contracts.md
-  #   - overview/tokenomics.md
-  - Interacting with Koinos:
+  - Interacting:
     - interacting/index.md
     - interacting/quick-start.md
     - interacting/read-contract-data.md
@@ -159,7 +151,7 @@ nav:
       - exchanges/rest.md
     - Tutorials:
       - interacting/tutorials/frontend-guide.md
-  - Smart Contract Development:
+  - Smart Contracts:
     - contracts/index.md
     - contracts/quick-start.md
     - contracts/storage.md
@@ -176,23 +168,7 @@ nav:
     - contracts/examples.md
     - Tutorials:
       - contracts/tutorials/contract-guide.md
-  # - Developers:
-  #   - developers/index.md
-  #   - developers/as-sdk.md
-  #   - developers/authority.md
-  #   - developers/cli.md
-  #   - developers/deploy-contract.md
-  #   - developers/payer-payee.md
-  #   - developers/protobuf.md
-  #   - developers/rc-limits.md
-  #   - developers/resource-management.md
-  #   - developers/rest.md
-  #   - developers/testnet.md
-  #   - developers/transactions.md
-  #   - Guides:
-  #     - developers/guides/calculator.md
-  #     - developers/guides/token.md
-  - Node Operators:
+  - Nodes:
     - nodes/index.md
     - nodes/running-node.md
     - nodes/block-production.md
@@ -234,7 +210,7 @@ nav:
     - architecture/resources.md
     - architecture/system-calls.md
     - architecture/proof-of-burn.md
-  - System Contracts:
+  - System:
     - system-contracts/index.md
     - system-contracts/tokenomics.md
     - system-contracts/koin-vhp.md
@@ -244,7 +220,7 @@ nav:
     - system-contracts/name-service.md
     - system-contracts/resources.md
     - system-contracts/koinos-fund.md
-  - Governance Proposals:
+  - Governance:
     - governance/index.md
     - governance/submit-proposal.md
     - History of Updates:

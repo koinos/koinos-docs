@@ -1,0 +1,20 @@
+[build]
+  publish = "site"
+  command = "pip install -r requirements.txt && mkdocs build"
+
+[build.environment]
+  PYTHON_VERSION = "3.9"
+
+# Deploy previews for pull requests
+[context.deploy-preview]
+  command = "pip install -r requirements.txt && mkdocs build"
+
+# Branch deploys (optional)
+[context.branch-deploy]
+  command = "pip install -r requirements.txt && mkdocs build"
+
+# Redirect settings (optional)
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404

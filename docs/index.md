@@ -8,54 +8,75 @@ The Koinos blockchain is purposefully designed with developers in mind, offering
 
 <div class="grid cards" markdown>
 
--   :fontawesome-solid-mountain-sun:{ .lg .middle } __Overview__
+-   :fontawesome-solid-play:{ .lg .middle } __Getting Started__
 
     ---
 
-    Gain insight into the innovative features and unique capabilities that make Koinos a powerful platform for decentralized applications and smart contracts.
+    Quick overview to get your first KOIN balance, create accounts, and perform essential tasks to start using the Koinos blockchain.
 
-    [:octicons-arrow-right-24: Getting started](overview/index.md)
+    [:octicons-arrow-right-24: Get started](getting-started/index.md)
 
--   :fontawesome-solid-laptop-code:{ .lg .middle } __Developers__
-
-    ---
-
-    Explore the developer section of the Koinos documentation to delve into comprehensive resources and tools tailored for building on the Koinos blockchain.
-
-    [:octicons-arrow-right-24: Start building](developers/index.md)
-
--   :fontawesome-solid-check:{ .lg .middle } __Validators__
+-   :fontawesome-solid-plug:{ .lg .middle } __Interacting with Koinos__
 
     ---
 
-    Learn how to participate in block production, secure the network, and earn rewards by becoming a validator in the Koinos ecosystem.
-    <br/><br/>
+    Learn how to interact with the Koinos blockchain using Koilib, REST APIs, and web development tools to build applications and integrations.
 
-    [:octicons-arrow-right-24: Power the network](validators/index.md)
+    [:octicons-arrow-right-24: Start interacting](interacting/index.md)
 
--   :fontawesome-solid-right-left:{ .lg .middle } __Exchanges__
+-   :fontawesome-solid-code:{ .lg .middle } __Smart Contract Development__
 
     ---
 
-    Explore best practices, technical specifications, and tools necessary to support KOIN trading and liquidity within the broader cryptocurrency market.
-    <br/><br/>
+    Comprehensive guide to developing smart contracts on Koinos using AssemblyScript SDK, contract deployment, and testing frameworks.
 
-    [:octicons-arrow-right-24: Let's integrate](exchanges/index.md)
+    [:octicons-arrow-right-24: Start building](contracts/index.md)
+
+-   :fontawesome-solid-server:{ .lg .middle } __Node Operators__
+
+    ---
+
+    Everything you need to know about running Koinos nodes, from RPC nodes to block producers, including setup, configuration, and maintenance.
+
+    [:octicons-arrow-right-24: Run a node](nodes/index.md)
 
 -   :fontawesome-solid-sitemap:{ .lg .middle } __Architecture__
 
     ---
 
-    Explore the innovative features, consensus mechanism, scalability solutions, and technical details that make Koinos a robust and developer-friendly blockchain platform.
-    <br/><br/>
+    Deep technical dive into Koinos architecture, microservices, consensus mechanisms, and the innovative features that power the blockchain.
 
     [:octicons-arrow-right-24: How it works](architecture/index.md)
 
--   :fontawesome-solid-list:{ .lg .middle } __Resources__
+-   :fontawesome-solid-cogs:{ .lg .middle } __System Contracts__
 
     ---
 
-    The resources section is your comprehensive hub for accessing essential tools, libraries, and community resources to accelerate your development journey on the Koinos blockchain. 
+    Understand the core system contracts that govern tokenomics, governance, resource management, and other fundamental blockchain operations.
 
-    [:octicons-arrow-right-24: Browse resources](resources/index.md)
+    [:octicons-arrow-right-24: System internals](system-contracts/index.md)
+
+-   :fontawesome-solid-vote-yea:{ .lg .middle } __Governance Proposals__
+
+    ---
+
+    Learn how to participate in Koinos governance by submitting proposals, voting on changes, and contributing to the network's evolution.
+
+    [:octicons-arrow-right-24: Participate](governance/index.md)
+
+-   :fontawesome-solid-book:{ .lg .middle } __References__
+
+    ---
+
+    Complete API references for Koilib, AssemblyScript SDK, and other development tools with detailed documentation and examples.
+
+    [:octicons-arrow-right-24: Browse references](references/index.md)
+
+-   :fontawesome-solid-link:{ .lg .middle } __Resources__
+
+    ---
+
+    External links, explorers, wallets, libraries, and community resources to accelerate your development journey on Koinos.
+
+    [:octicons-arrow-right-24: Explore tools](resources/index.md)
 </div>

@@ -48,7 +48,7 @@ The Koinos blockchain is purposefully designed with developers in mind, offering
 
     [:octicons-arrow-right-24: How it works](architecture/index.md)
 
--   :fontawesome-solid-cogs:{ .lg .middle } __System Contracts__
+-   :fontawesome-solid-gears:{ .lg .middle } __System Contracts__
 
     ---
 
@@ -56,7 +56,7 @@ The Koinos blockchain is purposefully designed with developers in mind, offering
 
     [:octicons-arrow-right-24: System internals](system-contracts/index.md)
 
--   :fontawesome-solid-vote-yea:{ .lg .middle } __Governance Proposals__
+-   :fontawesome-solid-square-poll-vertical:{ .lg .middle } __Governance Proposals__
 
     ---
 

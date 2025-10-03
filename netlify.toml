@@ -1,14 +1,9 @@
-[build][build]
+[build]
+  publish = "site"
+  command = "pip3 install --upgrade pip && pip3 install -r requirements.txt && mkdocs build"
 
-  publish = "site"  publish = "site"
-
-  command = "pip3 install -r requirements.txt && mkdocs build"  command = "pip3 install --upgrade pip && pip3 install -r requirements.txt && mkdocs build"
-
-
-
-[build.environment][build.environment]
-
-  PYTHON_VERSION = "3.9"  PYTHON_VERSION = "3.9"
+[build.environment]
+  PYTHON_VERSION = "3.9"
   PIP_UPGRADE_STRATEGY = "only-if-needed"
 
 # Deploy previews for pull requests

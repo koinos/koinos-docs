@@ -1,16 +1,22 @@
 # REST API
 
-Learn how to interact with Koinos using the REST API for HTTP-based blockchain access.
+Learn how to interact with Koinos using standard HTTP requests.
 
 ## Overview
 
-The Koinos REST API provides HTTP endpoints for blockchain interaction, making it easy to integrate with web applications and services that prefer REST over JSON-RPC.
+The Koinos REST API provides HTTP endpoints for querying blockchain data, preparing transactions, submitting signed transactions, and interacting with smart contracts. It is useful for web applications, services, exchanges, and backends that prefer REST over direct JSON-RPC calls.
 
 ## Base URL
 
-```
+```text
 Mainnet: https://api.koinos.io
 Testnet: https://harbinger-api.koinos.io
+```
+
+The live Swagger documentation is available at:
+
+```text
+https://api.koinos.io/swagger
 ```
 
 ## Common Endpoints
@@ -18,70 +24,57 @@ Testnet: https://harbinger-api.koinos.io
 ### Chain Information
 
 ```bash
-# Get head block info
-GET /v1/chain/head_info
-
-# Get block by height
-GET /v1/chain/get_block?height=12345
-
-# Get block by ID
-GET /v1/chain/get_block?id=0x1220...
+# Get current head block information
+curl https://api.koinos.io/v1/chain/head_info
 ```
 
-### Account Information
+### Transactions
+
+The REST API can help prepare and submit transactions, but applications are still responsible for safely managing accounts and signatures.
 
 ```bash
-# Get account balance
-GET /v1/chain/get_account_nonce?account=1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe
-
-# Get account RC (mana)
-GET /v1/chain/get_account_rc?account=1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe
+# Prepare a transaction
+curl -X POST https://api.koinos.io/v1/transaction/prepare \
+  -H "Content-Type: application/json" \
+  -d '{
+    "header": {
+      "rc_limit": "200000000",
+      "payer": "17CmTGbriMyCypF6WdTRJGhzur3SoJXAG5"
+    },
+    "operations": []
+  }'
 ```
 
-### Contract Calls
+If the transaction is already built and signed, it can be submitted over HTTP to `/v1/transaction/submit`. If an application needs to create and sign Koinos transactions itself, it should use a Koinos-compatible signing library or service before calling the submit endpoint.
+
+### JSON-RPC Access
+
+For lower-level access, the public API also exposes JSON-RPC:
 
 ```bash
-# Read contract (GET)
-POST /v1/chain/read_contract
-Content-Type: application/json
-
-{
-  "contract_id": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
-  "entry_point": 0x82a3537ff,
-  "args": "base64-encoded-args"
-}
+curl -X POST https://api.koinos.io/jsonrpc \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "chain.get_head_info",
+    "params": {},
+    "id": 1
+  }'
 ```
 
 ## Example Usage
 
-### JavaScript/Node.js
+### JavaScript / Node.js
 
 ```javascript
-const axios = require('axios');
-
-const API_BASE = 'https://api.koinos.io';
+const API_BASE = "https://api.koinos.io";
 
 async function getHeadInfo() {
-  try {
-    const response = await axios.get(`${API_BASE}/v1/chain/head_info`);
-    console.log('Head block:', response.data);
-  } catch (error) {
-    console.error('API Error:', error.response.data);
+  const response = await fetch(`${API_BASE}/v1/chain/head_info`);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
   }
-}
-
-async function getAccountBalance(address) {
-  try {
-    const response = await axios.post(`${API_BASE}/v1/chain/read_contract`, {
-      contract_id: '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK',
-      entry_point: 0x82a3537ff, // balanceOf function
-      args: btoa(address) // base64 encode address
-    });
-    
-    console.log('Balance:', response.data);
-  } catch (error) {
-    console.error('Balance query failed:', error);
-  }
+  return response.json();
 }
 ```
 
@@ -89,87 +82,37 @@ async function getAccountBalance(address) {
 
 ```python
 import requests
-import base64
 
-API_BASE = 'https://api.koinos.io'
+API_BASE = "https://api.koinos.io"
 
 def get_head_info():
-    response = requests.get(f'{API_BASE}/v1/chain/head_info')
-    return response.json()
-
-def get_account_rc(account):
-    response = requests.get(
-        f'{API_BASE}/v1/chain/get_account_rc',
-        params={'account': account}
-    )
+    response = requests.get(f"{API_BASE}/v1/chain/head_info")
+    response.raise_for_status()
     return response.json()
 ```
 
-### cURL
-
-```bash
-# Get head block
-curl -X GET "https://api.koinos.io/v1/chain/head_info"
-
-# Get account RC
-curl -X GET "https://api.koinos.io/v1/chain/get_account_rc?account=1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe"
-
-# Read contract
-curl -X POST "https://api.koinos.io/v1/chain/read_contract" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "contract_id": "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
-    "entry_point": 2186741247,
-    "args": "base64-encoded-arguments"
-  }'
-```
+PHP backends can call the same HTTP endpoints with their preferred HTTP client. They can submit signed transactions with normal HTTP requests, but building and signing transactions requires Koinos-compatible transaction serialization and signing before submission.
 
 ## Error Handling
 
-```javascript
-async function handleAPICall() {
-  try {
-    const response = await axios.get(`${API_BASE}/v1/chain/head_info`);
-    return response.data;
-  } catch (error) {
-    if (error.response) {
-      // Server responded with error status
-      console.error('API Error:', error.response.status, error.response.data);
-    } else if (error.request) {
-      // Request was made but no response
-      console.error('Network Error:', error.message);
-    } else {
-      // Something else happened
-      console.error('Error:', error.message);
-    }
-    throw error;
-  }
-}
-```
+REST endpoints return JSON responses for validation and execution errors. For example, submitting an empty transaction body to `/v1/transaction/submit` returns a validation error because the endpoint expects a prepared transaction object.
 
-## Rate Limiting
+Applications should:
 
-Most public endpoints have rate limits:
-- Respect rate limit headers in responses
-- Implement exponential backoff for retries
-- Consider caching responses when appropriate
+1. Check HTTP status codes.
+2. Parse JSON error bodies.
+3. Retry transient network errors with backoff.
+4. Use testnet for development before submitting transactions on mainnet.
 
 ## Best Practices
 
-1. **Use appropriate HTTP methods** (GET for reads, POST for writes)
-2. **Handle errors gracefully** with proper error codes
-3. **Implement retries** with exponential backoff
-4. **Cache responses** when data doesn't change frequently
-5. **Use testnet** for development and testing
-
-## Limitations
-
-- REST API may not support all JSON-RPC methods
-- Some operations may require JSON-RPC for full functionality
-- Transaction submission typically requires JSON-RPC
+1. Use `GET` for read endpoints and `POST` for transaction, contract, and decode endpoints.
+2. Keep private keys out of public clients and logs.
+3. Sign transactions with a Koinos-compatible wallet, SDK, or signing service.
+4. Use the Swagger documentation to confirm request and response shapes.
+5. Cache responses when data does not need to be live.
 
 ## Next Steps
 
 - [Work with Kondor wallet](kondor-wallet.md)
 - [Explore testnet](testnet.md)
-

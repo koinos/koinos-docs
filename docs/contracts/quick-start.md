@@ -6,7 +6,7 @@ Create and deploy your first token contract using the Arkinos framework.
 
 - Node.js 16+ installed
 - Basic TypeScript/AssemblyScript knowledge
-- Testnet KOIN for deployment (get from [faucet](https://faucet.koinos.io))
+- Testnet KOIN for deployment (get from the [Telegram faucet bot](https://t.me/KoinosTestnetFaucetBot))
 
 ## Installation
 
@@ -106,7 +106,7 @@ arkinos generate
 module.exports = {
   networks: {
     harbinger: {
-      rpcUrl: "https://harbinger-api.koinos.io",
+      rpcUrl: "https://testnet.koinosfoundation.org",
       accounts: {
         manaSharer: {
           privateKey: "YOUR_PRIVATE_KEY" // Use environment variable
@@ -130,7 +130,7 @@ After deployment, you'll get a contract address. Test it:
 const { Provider, Contract } = require('koilib');
 const abi = require('./abi/mytoken-abi.json');
 
-const provider = new Provider('https://harbinger-api.koinos.io');
+const provider = new Provider('https://testnet.koinosfoundation.org');
 const contract = new Contract({
   id: 'YOUR_CONTRACT_ADDRESS',
   provider,

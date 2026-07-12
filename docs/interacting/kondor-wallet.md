@@ -153,7 +153,7 @@ window.kondor.on('networkChanged', (network) => {
     updateProvider('https://api.koinos.io');
   } else if (network === 'testnet') {
     // Switch to testnet endpoints
-    updateProvider('https://harbinger-api.koinos.io');
+    updateProvider('https://testnet.koinosfoundation.org');
   }
 });
 ```
@@ -232,7 +232,7 @@ class KondorIntegration {
     console.log('Network changed:', network);
     const endpoint = network === 'mainnet' 
       ? 'https://api.koinos.io' 
-      : 'https://harbinger-api.koinos.io';
+      : 'https://testnet.koinosfoundation.org';
     
     this.provider = new Provider(endpoint);
     if (this.signer) {

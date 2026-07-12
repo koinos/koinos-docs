@@ -10,7 +10,7 @@ You can view the [REST documentation](../developers/rest.md) to learn more.
 The public REST API is available at:
 
 - Mainnet: [`https://api.koinos.io`](https://api.koinos.io)
-- Testnet: [`https://harbinger-api.koinos.io`](https://harbinger-api.koinos.io)
+- Testnet: [`https://testnet.koinosfoundation.org`](https://testnet.koinosfoundation.org)
 
 The same API is also available on [Koinos**Pro**](https://koinos.pro). You can sign up for a free account and begin working with the REST API immediately.
 

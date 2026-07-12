@@ -498,7 +498,7 @@ class KoinosApp {
         if (network === 'mainnet') {
             this.wallet.provider = new Provider('https://api.koinos.io');
         } else if (network === 'testnet') {
-            this.wallet.provider = new Provider('https://harbinger-api.koinos.io');
+            this.wallet.provider = new Provider('https://testnet.koinosfoundation.org');
         }
     }
     

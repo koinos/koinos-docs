@@ -9,7 +9,7 @@ Understanding the different Koinos networks and how to connect to them.
 - **KOIN**: Real cryptocurrency with market value
 - **Use for**: Live applications and real transactions
 
-### Testnet (Harbinger)
+### Testnet
 - **Purpose**: Testing and development
 - **KOIN**: Test tokens with no real value
 - **Use for**: Development, testing, and experimentation
@@ -27,25 +27,24 @@ const provider = new Provider('https://api.koinos.io');
 ```javascript
 import { Provider } from 'koilib';
 
-const provider = new Provider('https://harbinger-api.koinos.io');
+const provider = new Provider('https://testnet.koinosfoundation.org');
 ```
 
 ### Network Configuration
 
 | Setting | Mainnet | Testnet |
 |---------|---------|---------|
-| Chain ID | `EiBZK_GGVP0H_fXVAM3j6EAuz3-B-l3ejxRSewi7qIBfSA` | `EiBncD4pKRIQWco_WRqo5Q-xnXR7JuO3PtZv983mKdKHSQ` |
-| API Endpoint | `https://api.koinos.io` | `https://harbinger-api.koinos.io` |
-| RPC Endpoint | `https://api.koinos.io` | `https://harbinger-api.koinos.io` |
+| Chain ID | `EiBZK_GGVP0H_fXVAM3j6EAuz3-B-l3ejxRSewi7qIBfSA` | `EiAIKVvm6-V2qmsmUvPJy09vCCLbtn9lHFpwrJbcTIEWRQ==` |
+| API Endpoint | `https://api.koinos.io` | `https://testnet.koinosfoundation.org` |
+| RPC Endpoint | `https://api.koinos.io/jsonrpc` | `https://testnet.koinosfoundation.org/jsonrpc` |
 
 ## Getting Test Tokens
 
 For testnet development, you can get free test KOIN from the faucet:
 
-1. Visit the [Koinos Testnet Faucet](https://faucet.koinos.io)
-2. Enter your testnet address
-3. Complete the captcha
-4. Receive test KOIN
+1. Open the [Koinos Testnet Faucet bot](https://t.me/KoinosTestnetFaucetBot) on Telegram.
+2. Send `/faucet YOUR_KOINOS_ADDRESS`.
+3. Receive test KOIN for development and testing.
 
 ## Best Practices
 

@@ -9,7 +9,7 @@ The Chain ID is a unique identifier for the specific chain you are transacting o
 | Blockchain        | Chain ID                                           |
 |-------------------|----------------------------------------------------|
 | Koinos Mainnet    | `EiBZK_GGVP0H_fXVAM3j6EAuz3-B-l3ejxRSewi7qIBfSA==` |
-| Harbinger Testnet | `EiBncD4pKRIQWco_WRqo5Q-xnXR7JuO3PtZv983mKdKHSQ==` |
+| Koinos Foundation Testnet | `EiAIKVvm6-V2qmsmUvPJy09vCCLbtn9lHFpwrJbcTIEWRQ==` |
 
 ---
 ## Nonce

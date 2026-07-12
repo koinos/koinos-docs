@@ -98,7 +98,7 @@ Command-line interface for blockchain interaction
 
 ### Development Networks
 - **Local testnet**: For private development
-- **Harbinger testnet**: Public testing network
+- **Koinos Foundation testnet**: Public testing network
 
 ## Choosing the Right Tool
 

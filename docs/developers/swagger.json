@@ -10,8 +10,8 @@
       "description": "Koinos Mainnet"
     },
     {
-      "url": "https://harbinger-api.koinos.io",
-      "description": "Koinos Harbinger Testnet"
+      "url": "https://testnet.koinosfoundation.org",
+      "description": "Koinos Foundation Testnet"
     }
   ],
   "components": {
@@ -2135,4 +2135,3 @@
     }
   }
 }
-

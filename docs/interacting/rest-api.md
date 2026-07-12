@@ -10,7 +10,7 @@ The Koinos REST API provides HTTP endpoints for querying blockchain data, prepar
 
 ```text
 Mainnet: https://api.koinos.io
-Testnet: https://harbinger-api.koinos.io
+Testnet: https://testnet.koinosfoundation.org
 ```
 
 The live Swagger documentation is available at:

@@ -10,7 +10,7 @@ The REST API provided by Koinos offers developers a convenient and straightforwa
 Public endpoints are available at:
 
 - Mainnet: [`https://api.koinos.io`](https://api.koinos.io)
-- Testnet: [`https://harbinger-api.koinos.io`](https://harbinger-api.koinos.io)
+- Testnet: [`https://testnet.koinosfoundation.org`](https://testnet.koinosfoundation.org)
 
 For example, the current head block information can be queried with:
 

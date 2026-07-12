@@ -1,10 +1,10 @@
 # Testnet Development
 
-Learn how to use the Koinos testnet (Harbinger) for development and testing.
+Learn how to use the Koinos testnet for development and testing.
 
 ## Overview
 
-The Koinos testnet, called "Harbinger," is a testing environment that mirrors mainnet functionality but uses test tokens with no real value. It's perfect for development, testing, and experimentation.
+The Koinos testnet is a testing environment that mirrors mainnet functionality but uses test tokens with no real value. It's perfect for development, testing, and experimentation.
 
 ## Network Configuration
 
@@ -12,11 +12,11 @@ The Koinos testnet, called "Harbinger," is a testing environment that mirrors ma
 
 | Setting | Value |
 |---------|-------|
-| Network Name | Harbinger (Testnet) |
-| Chain ID | `EiBncD4pKRIQWco_WRqo5Q-xnXR7JuO3PtZv983mKdKHSQ` |
-| API Endpoint | `https://harbinger-api.koinos.io` |
-| RPC Endpoint | `https://harbinger-api.koinos.io` |
-| Explorer | [Harbinger Explorer](https://harbinger.koinosblocks.com) |
+| Network Name | Koinos Foundation testnet |
+| Chain ID | `EiAIKVvm6-V2qmsmUvPJy09vCCLbtn9lHFpwrJbcTIEWRQ==` |
+| API Endpoint | `https://testnet.koinosfoundation.org` |
+| RPC Endpoint | `https://testnet.koinosfoundation.org/jsonrpc` |
+| Health | `https://testnet.koinosfoundation.org/health` |
 
 ### Connecting to Testnet
 
@@ -26,14 +26,14 @@ The Koinos testnet, called "Harbinger," is a testing environment that mirrors ma
 const { Provider } = require('koilib');
 
 // Connect to testnet
-const provider = new Provider('https://harbinger-api.koinos.io');
+const provider = new Provider('https://testnet.koinosfoundation.org');
 ```
 
 #### Using Kondor Wallet
 
 1. Open Kondor wallet
 2. Click on network selector (usually shows "Mainnet")
-3. Select "Harbinger" or "Testnet"
+3. Select the testnet network
 4. Confirm network switch
 
 ## Getting Test Tokens
@@ -42,29 +42,9 @@ const provider = new Provider('https://harbinger-api.koinos.io');
 
 Get free test KOIN from the faucet:
 
-1. **Visit the faucet**: [https://faucet.koinos.io](https://faucet.koinos.io)
-2. **Enter your testnet address**
-3. **Complete the captcha**
-4. **Receive test KOIN** (usually 100 KOIN)
-
-### Using the Faucet Programmatically
-
-```javascript
-const axios = require('axios');
-
-async function requestTestTokens(address) {
-  try {
-    const response = await axios.post('https://faucet.koinos.io/api/faucet', {
-      address: address,
-      captcha_token: 'your-captcha-token' // If required
-    });
-    
-    console.log('Faucet response:', response.data);
-  } catch (error) {
-    console.error('Faucet request failed:', error);
-  }
-}
-```
+1. **Open the faucet bot**: [https://t.me/KoinosTestnetFaucetBot](https://t.me/KoinosTestnetFaucetBot)
+2. **Send** `/faucet YOUR_KOINOS_ADDRESS`
+3. **Receive test KOIN** for development and testing
 
 ## Development Setup
 
@@ -75,9 +55,9 @@ const { Provider, Signer, Contract, utils } = require('koilib');
 
 // Testnet configuration
 const TESTNET_CONFIG = {
-  endpoint: 'https://harbinger-api.koinos.io',
-  chainId: 'EiBncD4pKRIQWco_WRqo5Q-xnXR7JuO3PtZv983mKdKHSQ',
-  koinContract: '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK'
+  endpoint: 'https://testnet.koinosfoundation.org',
+  chainId: 'EiAIKVvm6-V2qmsmUvPJy09vCCLbtn9lHFpwrJbcTIEWRQ==',
+  koinContract: '1FaSvLjQJsCJKq5ybmGsMMQs8RQYyVv8ju'
 };
 
 async function setupTestnet() {
@@ -107,8 +87,8 @@ async function setupTestnet() {
 const config = {
   development: {
     network: 'testnet',
-    endpoint: 'https://harbinger-api.koinos.io',
-    chainId: 'EiBncD4pKRIQWco_WRqo5Q-xnXR7JuO3PtZv983mKdKHSQ'
+    endpoint: 'https://testnet.koinosfoundation.org',
+    chainId: 'EiAIKVvm6-V2qmsmUvPJy09vCCLbtn9lHFpwrJbcTIEWRQ=='
   },
   production: {
     network: 'mainnet',
@@ -134,7 +114,7 @@ describe('Contract Tests', () => {
   
   beforeAll(async () => {
     // Use testnet for all tests
-    provider = new Provider('https://harbinger-api.koinos.io');
+    provider = new Provider('https://testnet.koinosfoundation.org');
     signer = Signer.fromPrivateKey(process.env.TEST_PRIVATE_KEY);
     signer.provider = provider;
     
@@ -168,8 +148,8 @@ describe('Contract Tests', () => {
 // test/integration.test.js
 describe('Integration Tests', () => {
   test('complete user flow', async () => {
-    // 1. Get test tokens from faucet
-    await requestTestTokens(testAddress);
+    // 1. Get test tokens from the faucet bot
+    // https://t.me/KoinosTestnetFaucetBot
     
     // 2. Deploy test contract
     const contract = await deployTestContract();
@@ -189,7 +169,7 @@ describe('Integration Tests', () => {
 
 ```javascript
 async function deployToTestnet() {
-  const provider = new Provider('https://harbinger-api.koinos.io');
+  const provider = new Provider('https://testnet.koinosfoundation.org');
   const signer = Signer.fromPrivateKey(process.env.TESTNET_PRIVATE_KEY);
   signer.provider = provider;
   
@@ -216,7 +196,7 @@ async function deployToTestnet() {
 
 ```javascript
 async function debugTransaction(txId) {
-  const provider = new Provider('https://harbinger-api.koinos.io');
+  const provider = new Provider('https://testnet.koinosfoundation.org');
   
   try {
     const transaction = await provider.getTransaction(txId);
@@ -236,8 +216,7 @@ async function debugTransaction(txId) {
 
 ### Monitoring Tools
 
-- **[Harbinger Explorer](https://harbinger.koinosblocks.com)**: View transactions and blocks
-- **[Koiner Testnet](https://harbinger.koiner.app)**: Advanced blockchain explorer
+- **Public health endpoint**: [https://testnet.koinosfoundation.org/health](https://testnet.koinosfoundation.org/health)
 - **Logs**: Monitor contract logs and events
 
 ## Best Practices
@@ -253,7 +232,7 @@ async function debugTransaction(txId) {
 ## Common Issues
 
 **Insufficient test tokens**: Use the faucet to get more KOIN
-**Network mismatch**: Ensure you're connected to Harbinger testnet
+**Network mismatch**: Ensure you're connected to the Koinos Foundation testnet
 **Contract not found**: Verify contract address on testnet
 **Transaction failures**: Check testnet block explorer for details
 
@@ -271,4 +250,3 @@ async function debugTransaction(txId) {
 
 - [Learn about common tasks](../exchanges/head-block.md)
 - [Explore frontend tutorials](tutorials/frontend-guide.md)
-

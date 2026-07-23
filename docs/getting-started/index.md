@@ -1,249 +1,121 @@
 ---
 hide:
-- toc
+  - toc
 ---
 
 # Getting Started
 
-Welcome to Koinos! This comprehensive guide will take you from blockchain newcomer to confident Koinos developer. Whether you're exploring your first blockchain or building your next dApp, you're in the right place.
+This section introduces Koinos, the networks and accounts you will use, and the
+main tools available to users and developers.
 
-## Why Koinos?
-
-Koinos stands out in the blockchain landscape with groundbreaking features designed specifically for developers:
-
-- **:fontawesome-solid-circle-check: Fee-less Transactions** - Build dApps without worrying about gas fees thanks to the innovative Mana system
-- **:fontawesome-solid-code: Familiar Languages** - Write smart contracts in AssemblyScript (TypeScript-like) or C++
-- **:fontawesome-solid-cubes: Modular Architecture** - Flexible microservices design for seamless upgrades
-- **:fontawesome-solid-fire: Proof of Burn** - Unique consensus mechanism ensuring security and decentralization
-- **:fontawesome-solid-bolt: High Performance** - Fast transaction processing with low latency
-
-## Quick Start: Your First 5 Minutes
-
-!!! tip "Ready to jump in?"
-    **Goal**: Read your first KOIN balance from the blockchain in under 5 minutes.
-    
-    ```javascript
-    import { Provider, Contract } from 'koilib';
-    
-    const provider = new Provider('https://api.koinos.io');
-    const koinContract = new Contract({
-      id: '15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL',
-      provider,
-    });
-    
-    const { result } = await koinContract.functions.balanceOf({
-      owner: 'YOUR_ADDRESS_HERE'
-    });
-    
-    console.log(`Balance: ${result.value} KOIN`);
-    ```
-    
-    **Next**: Follow the complete [Quick Start Guide](../interacting/quick-start.md) to understand this code.
-
-## What Should I Read First?
+## Choose a starting point
 
 <div class="grid cards" markdown>
 
--   :fontawesome-solid-rocket:{ .lg .middle } __New to Blockchain?__
+-   :fontawesome-solid-book-open:{ .lg .middle } __Learn the basics__
 
     ---
 
-    Start here to understand blockchain fundamentals and what makes Koinos special.
-    
-    **Estimated time**: 15 minutes
-    
-    **Path**:
-    
-    1. [What is Koinos?](what-is-koinos.md) ⏱️ 5 min
-    2. [Accounts, Keys, and Wallets](accounts-keys-wallets.md) ⏱️ 5 min
-    3. [Mainnet vs Testnet](mainnet-vs-testnet.md) ⏱️ 5 min
+    1. [What is Koinos?](what-is-koinos.md)
+    2. [Accounts, keys, and wallets](accounts-keys-wallets.md)
+    3. [Mainnet vs testnet](mainnet-vs-testnet.md)
 
--   :fontawesome-solid-laptop-code:{ .lg .middle } __Experienced Developer?__
+-   :fontawesome-solid-wallet:{ .lg .middle } __Set up a wallet__
 
     ---
 
-    Jump straight into building with the tools and APIs.
-    
-    **Estimated time**: 20 minutes
-    
-    **Path**:
-    
-    1. [Tooling Overview](tooling-overview.md) ⏱️ 10 min
-    2. [Quick Start: Read Data](../interacting/quick-start.md) ⏱️ 5 min
-    3. [Submit Transaction](../interacting/submit-transaction.md) ⏱️ 5 min
+    1. Review the [key-safety guidance](accounts-keys-wallets.md#protect-your-keys)
+    2. Set up [Kondor](kondor-wallet.md) or the [Koinos CLI](cli-wallet.md)
+    3. Confirm the selected network before signing
 
--   :fontawesome-solid-pen-nib:{ .lg .middle } __Smart Contract Developer?__
+-   :fontawesome-solid-code:{ .lg .middle } __Start developing__
 
     ---
 
-    Ready to build and deploy your own smart contracts.
-    
-    **Estimated time**: 30 minutes
-    
-    **Path**:
-    
-    1. [What is Koinos?](what-is-koinos.md) ⏱️ 5 min
-    2. [Tooling Overview](tooling-overview.md) ⏱️ 10 min
-    3. [Contract Quick Start](../contracts/quick-start.md) ⏱️ 15 min
+    1. Review the [tooling overview](tooling-overview.md)
+    2. Connect to [mainnet or testnet](mainnet-vs-testnet.md)
+    3. Continue to [Interacting with Koinos](../interacting/index.md) or
+       [Smart Contract Development](../contracts/index.md)
 
 </div>
 
-## Learning Path
+## Read a KOIN balance
 
-### :material-numeric-1-circle:{ .lg } Beginner Level
+The following Node.js 18+ example reads a balance from the Koinos mainnet REST
+API. It does not create a wallet, request a private key, or submit a
+transaction.
 
-**Foundation concepts for all users**
+Create `index.js`:
 
-<div class="grid cards" markdown>
+```javascript
+const address = process.argv[2];
+const koinContract = "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK";
 
--   :fontawesome-solid-book-open:{ .lg .middle } __Core Concepts__
+if (!address) {
+  throw new Error("Usage: node index.js YOUR_KOINOS_ADDRESS");
+}
 
-    ---
+async function main() {
+  const url =
+    `https://api.koinos.io/v1/account/${encodeURIComponent(address)}` +
+    `/balance/${koinContract}`;
+  const response = await fetch(url);
 
-    Understand the essential concepts that power Koinos and make it unique in the blockchain ecosystem.
+  if (!response.ok) {
+    throw new Error(`Koinos REST API returned HTTP ${response.status}`);
+  }
 
-    - [What is Koinos?](what-is-koinos.md) - Platform overview and key features
-    - [Accounts, Keys, and Wallets](accounts-keys-wallets.md) - Identity and security basics
-    - [Mainnet vs Testnet](mainnet-vs-testnet.md) - Network environments
+  const { value } = await response.json();
+  console.log(`${value} KOIN`);
+}
 
--   :fontawesome-solid-screwdriver-wrench:{ .lg .middle } __Essential Tools__
+main().catch(console.error);
+```
 
-    ---
+Run it with a valid **public address**:
 
-    Get familiar with the core tools you'll use to interact with and build on Koinos.
+```bash
+node index.js YOUR_KOINOS_ADDRESS
+```
 
-    - [Tooling Overview](tooling-overview.md) - Koilib, Kondor, and Arkinos
-    - [Kondor Wallet](../interacting/kondor-wallet.md) - Browser wallet setup
-    - [REST API](../interacting/rest-api.md) - HTTP blockchain access
+!!! warning "Never paste a private key into this example"
 
-</div>
+    Reading a balance requires only a public address. A private key or recovery
+    phrase is not needed and must never be shared with a website, tutorial, or
+    support account.
 
-### :material-numeric-2-circle:{ .lg } Intermediate Level
+### What the example does
 
-**Building and interacting with the blockchain**
+- Node's `fetch` function calls the Koinos REST API.
+- The URL identifies both the public account and the mainnet KOIN contract.
+- The REST response returns the balance as a decimal string, so the example
+  does not introduce floating-point rounding.
 
-<div class="grid cards" markdown>
+The current mainnet KOIN contract can also be checked through the
+[Koinos REST API](https://api.koinos.io/v1/token/19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK/info).
 
--   :fontawesome-solid-arrows-rotate:{ .lg .middle } __Blockchain Interaction__
+## Core concepts
 
-    ---
+| Concept | What it means |
+| --- | --- |
+| KOIN | The native token of Koinos |
+| Mana | A regenerating resource used instead of a per-transaction fee |
+| Account | An on-chain identity identified by a Koinos address |
+| Wallet | Software that stores or accesses keys and requests signatures |
+| Mainnet | The production network where assets can have real value |
+| Testnet | A resettable network for development and testing |
+| Smart contract | WebAssembly code executed by the Koinos virtual machine |
 
-    Learn to read data and submit transactions to the Koinos blockchain.
+## Official entry points
 
-    - [Quick Start](../interacting/quick-start.md) - Read your first balance
-    - [Read Contract Data](../interacting/read-contract-data.md) - Query smart contracts
-    - [Submit Transaction](../interacting/submit-transaction.md) - Send transactions
-    - [Multiple Operations](../interacting/multiple-operations.md) - Batch operations
+- [Koinos website](https://koinos.io/)
+- [Koinos repositories](https://github.com/koinos)
+- [Public testnet operations](https://github.com/koinos/koinos-testnet)
+- [Koinos community Telegram](https://telegram.koinos.io/)
+- [Koinos community Discord](https://discord.koinos.io/)
 
--   :fontawesome-solid-folder-tree:{ .lg .middle } __Common Tasks__
+## Next step
 
-    ---
-
-    Master the everyday operations you'll need for your applications.
-
-    - [Account Balance](../exchanges/account-balance.md) - Check balances
-    - [Transfer Tokens](../exchanges/transfer.md) - Send KOIN
-    - [Account History](../exchanges/account-history.md) - Transaction history
-
-</div>
-
-### :material-numeric-3-circle:{ .lg } Advanced Level
-
-**Smart contract development and deployment**
-
-<div class="grid cards" markdown>
-
--   :fontawesome-solid-file-code:{ .lg .middle } __Contract Development__
-
-    ---
-
-    Create, test, and deploy your own smart contracts on Koinos.
-
-    - [Contract Quick Start](../contracts/quick-start.md) - Launch your first token
-    - [Contract Storage](../contracts/storage.md) - Data persistence
-    - [Deploy Contract](../contracts/deploy-contract.md) - Production deployment
-    - [Contract Examples](../contracts/examples.md) - Sample projects
-
--   :fontawesome-solid-graduation-cap:{ .lg .middle } __Deep Dive__
-
-    ---
-
-    Master advanced concepts for building sophisticated applications.
-
-    - [Call Other Contracts](../contracts/call-other-contracts.md) - Contract interaction
-    - [Authorization](../contracts/check-authorization.md) - Security & permissions
-    - [System Events](../contracts/system-events.md) - Event handling
-
-</div>
-
-## Key Resources
-
-### Development Tools
-
-<div class="grid cards" markdown>
-
--   :fontawesome-brands-js:{ .lg .middle } __Koilib__
-
-    ---
-
-    The official JavaScript/TypeScript SDK for interacting with Koinos from web and Node.js applications.
-
-    [:octicons-arrow-right-24: Learn more](tooling-overview.md#koilib)
-
--   :fontawesome-brands-chrome:{ .lg .middle } __Kondor Wallet__
-
-    ---
-
-    Browser extension wallet for secure key management and dApp integration.
-
-    [:octicons-arrow-right-24: Get started](accounts-keys-wallets.md#kondor-wallet)
-
--   :fontawesome-solid-terminal:{ .lg .middle } __Arkinos__
-
-    ---
-
-    Smart contract development framework with project templates, build tools, and deployment scripts.
-
-    [:octicons-arrow-right-24: Start building](tooling-overview.md#arkinos)
-
--   :fontawesome-solid-code:{ .lg .middle } __Koinos CLI__
-
-    ---
-
-    Command-line interface for advanced blockchain operations and automation.
-
-    [:octicons-arrow-right-24: Explore CLI](../exchanges/cli.md)
-
-</div>
-
-### Community & Support
-
-- **Discord**: Join our active community at [discord.koinos.io](https://discord.koinos.io)
-- **GitHub**: Explore open source code at [github.com/koinos](https://github.com/koinos)
-- **Telegram**: Connect with developers at [telegram.koinos.io](https://telegram.koinos.io)
-- **Documentation**: You're already here! Bookmark this site for reference
-
-## Popular Tutorials
-
-Ready to build something? These step-by-step guides will walk you through complete projects:
-
-- **[Frontend dApp Development](../interacting/tutorials/frontend-guide.md)** - Build a web app that interacts with Koinos
-- **[Smart Contract Development](../contracts/tutorials/contract-guide.md)** - Create and deploy a custom token
-- **[Running a Node](../nodes/running-node.md)** - Set up your own Koinos node
-
-## Next Steps
-
-Choose your path based on your goals:
-
-!!! success "Just Exploring?"
-    Start with [What is Koinos?](what-is-koinos.md) to understand the platform basics.
-
-!!! info "Building a dApp?"
-    Head to [Interacting with Koinos](../interacting/index.md) to learn blockchain integration.
-
-!!! example "Developing Smart Contracts?"
-    Jump to [Smart Contract Development](../contracts/index.md) to start building.
-
----
-
-**Need help?** Join our [Discord community](https://discord.koinos.io) where developers are always ready to assist!
+If Koinos is new to you, continue with [What is Koinos?](what-is-koinos.md).
+If you are ready to configure a development environment, open the
+[Tooling Overview](tooling-overview.md).

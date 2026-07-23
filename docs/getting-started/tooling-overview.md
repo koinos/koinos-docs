@@ -1,115 +1,120 @@
 # Tooling Overview
 
-An overview of the essential tools in the Koinos ecosystem: Koilib, Kondor, and Arkinos.
+Koinos tools fall into four groups: client libraries, wallets, command-line
+tools, and smart-contract SDKs. Choose the smallest toolset that matches the
+task.
 
-## Core Development Tools
+## Koilib
 
-### Koilib
-**JavaScript/TypeScript SDK for Koinos**
+[Koilib](https://github.com/joticajulian/koilib) is a JavaScript and TypeScript
+library for reading Koinos data, preparing transactions, and interacting with
+contracts.
 
-#### What it does:
-- Interact with the Koinos blockchain from web applications
-- Submit transactions and read blockchain data
-- Manage accounts and sign transactions
-- Work with smart contracts
+Install the current npm package:
 
-#### Key features:
-- Provider for blockchain connection
-- Contract abstraction
-- Transaction building
-- Serialization utilities
-
-#### Installation:
 ```bash
 npm install koilib
 ```
 
-#### Basic usage:
-```javascript
-import { Provider, Contract, Signer } from 'koilib';
+Its principal APIs include:
 
-const provider = new Provider('https://api.koinos.io');
-const signer = Signer.fromPrivateKey('your-private-key');
-```
+- `Provider` for JSON-RPC connections;
+- `Contract` for ABI-based contract calls;
+- `Signer` and `Transaction` for signed operations; and
+- `utils`, including token ABIs and unit conversion helpers.
 
-### Kondor Wallet
-**Browser Extension Wallet**
+Use `utils.formatUnits` and `utils.parseUnits` when converting token values.
+Never use JavaScript floating-point arithmetic for on-chain integer amounts.
 
-#### What it does:
-- Secure key management
-- Transaction signing for dApps
-- Account management
-- Network switching
+See the [Koilib API documentation](https://joticajulian.github.io/koilib/) for
+the installed version's interfaces.
 
-#### Key features:
-- Browser extension (Chrome, Firefox)
-- Hardware wallet-like security
-- dApp integration
-- Multi-account support
+## Kondor
 
-#### Integration:
-```javascript
-// Check if Kondor is available
-if (window.kondor) {
-  const signer = window.kondor.getSigner();
-}
-```
+[Kondor 2](kondor-wallet.md) is a self-custody Chrome extension. It is suitable
+for users who want a graphical wallet and for dApps that need a user-approved
+signature.
+
+Use the current [Kondor documentation](https://kondorwallet.com/docs/) rather
+than legacy browser-global examples. The extension requires a separate user
+approval for connections and signing requests.
+
+## Koinos CLI
+
+The [Koinos CLI](cli-wallet.md) is an official Go command-line application. It
+supports interactive wallet management, RPC connections, contract
+registration, token transfers, contract uploads, and transaction sessions.
+
+Download a binary from the
+[release page](https://github.com/koinos/koinos-cli/releases) or build the
+official repository from source. There is no published `@koinos/cli` npm
+package.
+
+## Smart-contract development
+
+### AssemblyScript SDK
+
+The official
+[Koinos AssemblyScript SDK](https://github.com/koinos/koinos-sdk-as) provides
+the runtime types and APIs used by AssemblyScript contracts. The associated
+[`@koinos/sdk-as-cli`](https://www.npmjs.com/package/@koinos/sdk-as-cli)
+package provides project tooling.
+
+### C++ SDK
+
+The official [Koinos C++ SDK](https://github.com/koinos/koinos-sdk-cpp)
+supports contracts written in C++.
 
 ### Arkinos
-**Smart Contract Development Framework**
 
-#### What it does:
-- Bootstrap smart contract projects
-- Compile AssemblyScript contracts
-- Deploy contracts to testnet/mainnet
-- Generate TypeScript bindings
+[Arkinos](https://github.com/joticajulian/koinos-contract) is a
+community-maintained project scaffolder for AssemblyScript contracts and
+optional frontends. The published package is named `arkinos`:
 
-#### Key features:
-- Project templates
-- Built-in testing framework
-- Deployment scripts
-- ABI generation
-
-#### Installation:
 ```bash
-npm install -g @arkinos/cli
+npx arkinos
 ```
 
-#### Usage:
-```bash
-# Create new project
-arkinos init my-contract
+The package `@arkinos/cli` does not exist. After scaffolding, follow the README
+generated inside the project because its scripts depend on the selected
+template.
 
-# Build contract
-arkinos build
+## Network access
 
-# Deploy contract
-arkinos deploy
-```
+Choose an endpoint based on the environment:
 
-## Additional Tools
+- mainnet JSON-RPC: `https://api.koinos.io/`
+- public testnet JSON-RPC:
+  `https://testnet.koinosfoundation.org/jsonrpc`
+- local development: a JSON-RPC service from your own Koinos node or test
+  environment
 
-### Koinos CLI
-Command-line interface for blockchain interaction
+See [Mainnet vs Testnet](mainnet-vs-testnet.md) before signing testnet
+transactions.
 
-### Block Explorers
-- **Koinosblocks**: Primary block explorer
-- **Koiner**: Alternative explorer with advanced features
+## Explorers
 
-### Development Networks
-- **Local testnet**: For private development
-- **Harbinger testnet**: Public testing network
+Explorers are useful for inspecting public blocks, accounts, contracts, and
+transactions. [Koinos Blocks](https://koinosblocks.com/) is linked from the
+official Koinos ecosystem site and was reachable during this review.
 
-## Choosing the Right Tool
+An explorer is not an authority for private-key requests. Never enter a private
+key or recovery phrase into an explorer.
 
-| Task | Recommended Tool |
-|------|------------------|
-| Web dApp development | Koilib + Kondor |
-| Smart contract development | Arkinos |
-| Blockchain queries | Koilib or CLI |
-| Wallet management | Kondor |
-| Testing | Arkinos + Local testnet |
+## Which tool should I use?
 
-## Next Steps
+| Task | Suggested starting point |
+| --- | --- |
+| Read chain or contract data in JavaScript | Koilib |
+| Approve dApp transactions in Chrome | Kondor |
+| Manage a wallet from a terminal | Koinos CLI |
+| Build an AssemblyScript contract | Koinos AssemblyScript SDK |
+| Scaffold a community contract template | Arkinos |
+| Build a C++ contract | Koinos C++ SDK |
+| Inspect a transaction | Koinos Blocks |
 
-You're now ready to start [Interacting with Koinos](../interacting/index.md)!
+## Next steps
+
+- [Connect to mainnet or testnet](mainnet-vs-testnet.md)
+- [Interacting with Koinos](../interacting/index.md)
+- [Smart Contract Development](../contracts/index.md)

@@ -1,59 +1,147 @@
 # Mainnet vs Testnet
 
-Understanding the different Koinos networks and how to connect to them.
+Mainnet and testnet run the same Koinos protocol concepts, but they are separate
+networks with different chain state, contract deployments, and economic
+meaning.
 
-## Networks Overview
+## Choose the correct network
+
+| | Mainnet | Public testnet |
+| --- | --- | --- |
+| Purpose | Production applications and assets | Development and testing |
+| Token value | KOIN can have real value | Test tokens have no monetary value |
+| State | Intended to persist | Can be reset |
+| JSON-RPC | `https://api.koinos.io/` | `https://testnet.koinosfoundation.org/jsonrpc` |
+| REST | `https://api.koinos.io/v1/...` | `https://testnet.koinosfoundation.org/v1/...` |
+| Health check | Endpoint-specific | `https://testnet.koinosfoundation.org/health` |
+
+!!! warning "Testnet is resettable"
+
+    Do not use the public testnet for production funds, production state, or
+    long-term persistence assumptions. A reset can change the state, deployed
+    contracts, and chain ID.
+
+## Connect with Koilib
 
 ### Mainnet
-- **Purpose**: Production network with real value
-- **KOIN**: Real cryptocurrency with market value
-- **Use for**: Live applications and real transactions
 
-### Testnet (Harbinger)
-- **Purpose**: Testing and development
-- **KOIN**: Test tokens with no real value
-- **Use for**: Development, testing, and experimentation
-
-## Connecting to Networks
-
-### Mainnet Connection
 ```javascript
-import { Provider } from 'koilib';
+const { Provider } = require("koilib");
 
-const provider = new Provider('https://api.koinos.io');
+const provider = new Provider("https://api.koinos.io/");
 ```
 
-### Testnet Connection
-```javascript
-import { Provider } from 'koilib';
+### Public testnet
 
-const provider = new Provider('https://harbinger-api.koinos.io');
+```javascript
+const { Provider } = require("koilib");
+
+const provider = new Provider(
+  "https://testnet.koinosfoundation.org/jsonrpc"
+);
 ```
 
-### Network Configuration
+Koilib sends JSON-RPC requests directly to the URL supplied to `Provider`.
+The testnet root, `https://testnet.koinosfoundation.org/`, is retained as a
+JSON-RPC compatibility endpoint, but `/jsonrpc` is the canonical explicit path.
 
-| Setting | Mainnet | Testnet |
-|---------|---------|---------|
-| Chain ID | `EiBZK_GGVP0H_fXVAM3j6EAuz3-B-l3ejxRSewi7qIBfSA` | `EiBncD4pKRIQWco_WRqo5Q-xnXR7JuO3PtZv983mKdKHSQ` |
-| API Endpoint | `https://api.koinos.io` | `https://harbinger-api.koinos.io` |
-| RPC Endpoint | `https://api.koinos.io` | `https://harbinger-api.koinos.io` |
+## Confirm the testnet is available
 
-## Getting Test Tokens
+Check the public health endpoint:
 
-For testnet development, you can get free test KOIN from the faucet:
+```bash
+curl -sS https://testnet.koinosfoundation.org/health
+```
 
-1. Visit the [Koinos Testnet Faucet](https://faucet.koinos.io)
-2. Enter your testnet address
-3. Complete the captcha
-4. Receive test KOIN
+Expected response:
 
-## Best Practices
+```text
+ok
+```
 
-1. **Always test on testnet first**
-2. **Use different wallets for mainnet and testnet**
-3. **Verify network before transactions**
-4. **Keep testnet and mainnet private keys separate**
+Read the current chain head:
 
-## Next Steps
+```bash
+curl -sS https://testnet.koinosfoundation.org/jsonrpc \
+  -H 'content-type: application/json' \
+  --data '{"jsonrpc":"2.0","id":1,"method":"chain.get_head_info","params":{}}'
+```
 
-Learn about the [Tooling Overview](tooling-overview.md) to understand the development ecosystem.
+## Retrieve the current chain ID
+
+Always retrieve the current testnet chain ID before constructing or signing a
+transaction:
+
+```bash
+curl -sS https://testnet.koinosfoundation.org/jsonrpc \
+  -H 'content-type: application/json' \
+  --data '{"jsonrpc":"2.0","id":1,"method":"chain.get_chain_id","params":{}}'
+```
+
+Do not copy an old testnet chain ID into a long-lived configuration. The current
+value is returned in `result.chain_id`.
+
+For comparison, Koinos mainnet has a persistent chain ID:
+
+```text
+EiBZK_GGVP0H_fXVAM3j6EAuz3-B-l3ejxRSewi7qIBfSA==
+```
+
+## REST endpoints
+
+The public testnet exposes:
+
+```text
+https://testnet.koinosfoundation.org/v1/...
+```
+
+The compatibility path below is also available:
+
+```text
+https://testnet.koinosfoundation.org/rest/...
+```
+
+Use a documented REST route in place of `...`. For raw Koinos service methods,
+use JSON-RPC.
+
+## Get test tokens
+
+The current public faucet is the
+[Koinos Testnet Faucet Bot](https://t.me/KoinosTestnetFaucetBot) on Telegram.
+
+Send:
+
+```text
+/faucet YOUR_KOINOS_ADDRESS
+```
+
+Check the faucet's available balance with:
+
+```text
+/balance
+```
+
+The faucet documentation describes its allocation as **vKOIN**. These are
+valueless testnet tokens and must not be confused with wrapped vKOIN assets on
+other blockchains.
+
+Faucet limits can change. Follow the bot's response and the
+[public testnet repository](https://github.com/koinos/koinos-testnet) for the
+current policy.
+
+## Network safety
+
+- Keep mainnet funds and testnet experiments in separate wallets.
+- Verify the active network in the wallet before every approval.
+- Retrieve the current chain ID instead of trusting a saved testnet value.
+- Expect testnet contracts and balances to change after a reset.
+- Never send mainnet KOIN to a faucet or to an address supplied by an
+  unsolicited support account.
+
+## Source of truth
+
+Current public endpoints, faucet information, chain details, and operational
+status are maintained in
+[koinos/koinos-testnet](https://github.com/koinos/koinos-testnet).
+
+Continue with the [Tooling Overview](tooling-overview.md).

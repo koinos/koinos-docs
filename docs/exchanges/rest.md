@@ -7,6 +7,17 @@ The Koinos REST API provides a clean and simple way of interacting with the Koin
 
 You can view the [REST documentation](../developers/rest.md) to learn more.
 
-The REST API is available on [Koinos**Pro**](https://koinos.pro). You can sign up for a free account and begin working with the REST API immediately. 
+Public REST endpoints are available at:
 
-You can also access the REST API by running your own Koinos node. Learn how to run a Koinos node [here](../validators/guides/running-a-node.md). To enable the REST API, you will need to have `rest`, `api`, or `all` set in your `COMPOSE_PROFILES`. 
+- mainnet: `https://api.koinos.io/v1/...`
+- public testnet: `https://testnet.koinosfoundation.org/v1/...`
+
+Preparing a transaction does not sign it. Submitting a transaction requires the
+necessary signatures, which must be produced by a Koinos-compatible wallet,
+SDK, or signing service.
+
+The REST API is also available on
+[Koinos**Pro**](https://koinos.pro) and through a node you operate. See
+[Running a Koinos node](../nodes/running-node.md) and
+[Docker Compose profiles](../nodes/docker-profiles.md) for the relevant
+services.

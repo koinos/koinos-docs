@@ -62,6 +62,284 @@
         "type": "stackblitz",
         "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/network-provider?startScript=testnet"
       }
+    },
+    {
+      "id": "tooling-koilib-client",
+      "status": "active",
+      "doc": "docs/getting-started/tooling-overview.md",
+      "line": 29,
+      "purpose": "Create a Koilib provider and disposable local signer",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "local-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "tooling",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "interacting-quick-start-balance",
+      "status": "active",
+      "doc": "docs/interacting/quick-start.md",
+      "line": 29,
+      "purpose": "Read a public mainnet KOIN balance",
+      "runtime": "node",
+      "dependencies": [],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/getting-started/read-koin-balance",
+      "source": "examples/javascript/getting-started/read-koin-balance/index.js",
+      "snippet": "program",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/read-koin-balance"
+      }
+    },
+    {
+      "id": "interacting-read-head-info",
+      "status": "active",
+      "doc": "docs/interacting/read-contract-data.md",
+      "line": 19,
+      "purpose": "Read the current mainnet head",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/interacting/read-only-queries",
+      "source": "examples/javascript/interacting/read-only-queries/index.js",
+      "snippet": "head-info",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries"
+      }
+    },
+    {
+      "id": "interacting-fetch-contract-abi",
+      "status": "active",
+      "doc": "docs/interacting/read-contract-data.md",
+      "line": 37,
+      "purpose": "Fetch a deployed contract ABI from metadata",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/interacting/read-only-queries",
+      "source": "examples/javascript/interacting/read-only-queries/index.js",
+      "snippet": "contract-abi",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries"
+      }
+    },
+    {
+      "id": "interacting-read-token-balance",
+      "status": "active",
+      "doc": "docs/interacting/read-contract-data.md",
+      "line": 73,
+      "purpose": "Read a public KOIN token balance",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/interacting/read-only-queries",
+      "source": "examples/javascript/interacting/read-only-queries/index.js",
+      "snippet": "balance",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries"
+      }
+    },
+    {
+      "id": "interacting-read-token-metadata",
+      "status": "active",
+      "doc": "docs/interacting/read-contract-data.md",
+      "line": 85,
+      "purpose": "Read KOIN token metadata",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/interacting/read-only-queries",
+      "source": "examples/javascript/interacting/read-only-queries/index.js",
+      "snippet": "token-metadata",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries"
+      }
+    },
+    {
+      "id": "interacting-rest-head-info",
+      "status": "active",
+      "doc": "docs/interacting/rest-api.md",
+      "line": 63,
+      "purpose": "Read mainnet head information over REST",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/interacting/read-only-queries",
+      "source": "examples/javascript/interacting/read-only-queries/index.js",
+      "snippet": "head-info",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries"
+      }
+    },
+    {
+      "id": "interacting-rest-retry",
+      "status": "active",
+      "doc": "docs/interacting/rest-api.md",
+      "line": 112,
+      "purpose": "Retry transient read failures with a bound",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/interacting/read-only-queries",
+      "source": "examples/javascript/interacting/read-only-queries/index.js",
+      "snippet": "error-handling",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries"
+      }
+    },
+    {
+      "id": "reference-koilib-contract",
+      "status": "active",
+      "doc": "docs/references/koilib/contract-class.md",
+      "line": 8,
+      "purpose": "Construct and identify a Koilib Contract",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "none",
+      "safety": "local-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "contract",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "reference-koilib-provider",
+      "status": "active",
+      "doc": "docs/references/koilib/provider-class.md",
+      "line": 7,
+      "purpose": "Read head topology through a Koilib Provider",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "provider",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "reference-koilib-serializer",
+      "status": "active",
+      "doc": "docs/references/koilib/serializer-class.md",
+      "line": 6,
+      "purpose": "Serialize and deserialize a protobuf message",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "none",
+      "safety": "local-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "serializer",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "reference-koilib-signer",
+      "status": "active",
+      "doc": "docs/references/koilib/signer-class.md",
+      "line": 8,
+      "purpose": "Sign a local message using a disposable key",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "none",
+      "safety": "local-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "signer",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "reference-koilib-transaction",
+      "status": "active",
+      "doc": "docs/references/koilib/transaction-class.md",
+      "line": 7,
+      "purpose": "Create an empty unsigned Koilib Transaction",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "none",
+      "safety": "local-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "transaction",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "reference-koilib-utils",
+      "status": "active",
+      "doc": "docs/references/koilib/util-functions.md",
+      "line": 7,
+      "purpose": "Format integer token units as KOIN",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "none",
+      "safety": "local-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "utils",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
     }
   ],
   "removed": [

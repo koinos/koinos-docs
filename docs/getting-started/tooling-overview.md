@@ -25,12 +25,16 @@ npm install koilib
 ```
 
 #### Basic usage:
+<!-- example: tooling-koilib-client -->
 ```javascript
-import { Provider, Contract, Signer } from 'koilib';
-
-const provider = new Provider('https://api.koinos.io');
-const signer = Signer.fromPrivateKey('your-private-key');
+--8<-- "examples/javascript/references/koilib-api-tour/index.js:tooling"
 ```
+
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/references/koilib-api-tour/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour)
+
+This Node.js example creates a mainnet provider and a disposable local signer.
+It does not broadcast a transaction.
 
 ### Kondor Wallet
 **Browser Extension Wallet**

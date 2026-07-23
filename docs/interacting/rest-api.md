@@ -10,8 +10,11 @@ The Koinos REST API provides HTTP endpoints for blockchain interaction, making i
 
 ```
 Mainnet: https://api.koinos.io
-Testnet: https://harbinger-api.koinos.io
+Testnet: https://testnet.koinosfoundation.org/jsonrpc
 ```
+
+The mainnet host exposes both REST routes and JSON-RPC. The current public
+testnet endpoint is JSON-RPC.
 
 ## Common Endpoints
 
@@ -56,34 +59,13 @@ Content-Type: application/json
 
 ### JavaScript/Node.js
 
+<!-- example: interacting-rest-head-info -->
 ```javascript
-const axios = require('axios');
-
-const API_BASE = 'https://api.koinos.io';
-
-async function getHeadInfo() {
-  try {
-    const response = await axios.get(`${API_BASE}/v1/chain/head_info`);
-    console.log('Head block:', response.data);
-  } catch (error) {
-    console.error('API Error:', error.response.data);
-  }
-}
-
-async function getAccountBalance(address) {
-  try {
-    const response = await axios.post(`${API_BASE}/v1/chain/read_contract`, {
-      contract_id: '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK',
-      entry_point: 0x82a3537ff, // balanceOf function
-      args: btoa(address) // base64 encode address
-    });
-    
-    console.log('Balance:', response.data);
-  } catch (error) {
-    console.error('Balance query failed:', error);
-  }
-}
+--8<-- "examples/javascript/interacting/read-only-queries/index.js:head-info"
 ```
+
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/interacting/read-only-queries/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries)
 
 ### Python
 
@@ -126,26 +108,16 @@ curl -X POST "https://api.koinos.io/v1/chain/read_contract" \
 
 ## Error Handling
 
+<!-- example: interacting-rest-retry -->
 ```javascript
-async function handleAPICall() {
-  try {
-    const response = await axios.get(`${API_BASE}/v1/chain/head_info`);
-    return response.data;
-  } catch (error) {
-    if (error.response) {
-      // Server responded with error status
-      console.error('API Error:', error.response.status, error.response.data);
-    } else if (error.request) {
-      // Request was made but no response
-      console.error('Network Error:', error.message);
-    } else {
-      // Something else happened
-      console.error('Error:', error.message);
-    }
-    throw error;
-  }
-}
+--8<-- "examples/javascript/interacting/read-only-queries/index.js:error-handling"
 ```
+
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/interacting/read-only-queries/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries)
+
+The bounded retry handles short network interruptions. Persistent API errors
+still fail with their original message.
 
 ## Rate Limiting
 
@@ -172,4 +144,3 @@ Most public endpoints have rate limits:
 
 - [Work with Kondor wallet](kondor-wallet.md)
 - [Explore testnet](testnet.md)
-

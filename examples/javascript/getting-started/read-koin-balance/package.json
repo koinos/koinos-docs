@@ -1,0 +1,14 @@
+{
+  "name": "@koinos-docs/getting-started-read-koin-balance",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node --test",
+    "smoke": "node index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

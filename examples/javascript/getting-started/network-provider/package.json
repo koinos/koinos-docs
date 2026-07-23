@@ -1,0 +1,18 @@
+{
+  "name": "@koinos-docs/getting-started-network-provider",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.js mainnet",
+    "testnet": "node index.js testnet",
+    "test": "node --test",
+    "smoke": "node index.js mainnet && node index.js testnet"
+  },
+  "dependencies": {
+    "koilib": "9.2.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

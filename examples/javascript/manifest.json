@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "auditedRef": "origin/dev@00a8ef863e2eefa07b540d772725a5c372f1c92d",
+  "auditedAt": "2026-07-23",
+  "initialFenceCount": 51,
+  "publishedBranch": "master",
+  "entries": [
+    {
+      "id": "getting-started-read-koin-balance",
+      "status": "active",
+      "doc": "docs/getting-started/index.md",
+      "line": 29,
+      "purpose": "Read a mainnet KOIN balance for a public address",
+      "runtime": "node",
+      "dependencies": [],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/getting-started/read-koin-balance",
+      "source": "examples/javascript/getting-started/read-koin-balance/index.js",
+      "snippet": "program",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/read-koin-balance?startScript=start"
+      }
+    },
+    {
+      "id": "getting-started-connect-mainnet",
+      "status": "active",
+      "doc": "docs/getting-started/mainnet-vs-testnet.md",
+      "line": 32,
+      "purpose": "Connect to Koinos mainnet and print live chain information",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/getting-started/network-provider",
+      "source": "examples/javascript/getting-started/network-provider/index.js",
+      "snippet": "mainnet",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/network-provider?startScript=start"
+      }
+    },
+    {
+      "id": "getting-started-connect-testnet",
+      "status": "active",
+      "doc": "docs/getting-started/mainnet-vs-testnet.md",
+      "line": 42,
+      "purpose": "Connect to the public Koinos testnet and print live chain information",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/getting-started/network-provider",
+      "source": "examples/javascript/getting-started/network-provider/index.js",
+      "snippet": "testnet",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/network-provider?startScript=testnet"
+      }
+    }
+  ],
+  "removed": [
+    {
+      "id": "getting-started-sovrano-integration",
+      "doc": "docs/getting-started/sovrano-wallet.md",
+      "originalLine": 94,
+      "reason": "The user explicitly requested removal of every Sovrano reference; the page and navigation entry are removed rather than packaging obsolete SDK code."
+    }
+  ]
+}

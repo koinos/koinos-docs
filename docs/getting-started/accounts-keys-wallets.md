@@ -122,30 +122,17 @@ transfer <from> <to> <amount>
 
 📖 **[Complete CLI Wallet Guide →](cli-wallet.md)**
 
-### Sovrano Wallet (Smart Wallet / dApp)
-
-Sovrano is a next-generation smart wallet and identity system for Koinos, currently in beta development. It focuses on mainstream usability with no seed phrases (passwordless, passkey-based login), social recovery and modular plugin system, and fiat on/off ramps for easier adoption. Designed to give a Web2-like user experience while still being non-custodial.
-
-<figure markdown="span">
-  ![Sovrano Wallet Interface](../assets/sovrano-wallet.png)
-  <figcaption><small>Sovrano smart wallet with passwordless authentication</small></figcaption>
-</figure>
-
-**Best choice for:** The future of mass adoption and new users unfamiliar with crypto complexity.
-
-📖 **[Complete Sovrano Wallet Guide →](sovrano-wallet.md)**
-
 ## 🎯 Wallet Comparison
 
 | Wallet | Interface | Best For | Status | Key Feature |
 |--------|-----------|----------|--------|-------------|
 | **Kondor** | Browser Extension | Everyday users | ✅ Available | Easy dApp integration |
 | **CLI** | Command Line | Developers | ✅ Available | Full automation control |
-| **Sovrano** | Web dApp | Mainstream users | 🚧 Beta | No seed phrases |
 
 ## Next Steps
 
-Ready to dive deeper? Check out the complete guides for [Kondor Wallet](kondor-wallet.md), [CLI Wallet](cli-wallet.md), or [Sovrano Wallet](sovrano-wallet.md). 
+Ready to dive deeper? Check out the complete guides for
+[Kondor Wallet](kondor-wallet.md) or the [CLI Wallet](cli-wallet.md).
 
 Continue learning about [Mainnet vs Testnet](mainnet-vs-testnet.md) to understand different networks, or explore the [Tooling Overview](tooling-overview.md) for essential development resources.
 

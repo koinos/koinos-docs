@@ -1,0 +1,18 @@
+{
+  "name": "koinos-docs-examples",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Executable examples published with the Koinos documentation",
+  "workspaces": [
+    "examples/javascript/*/*"
+  ],
+  "scripts": {
+    "examples:lines": "node scripts/sync-javascript-example-lines.mjs",
+    "examples:verify": "node scripts/verify-javascript-examples.mjs",
+    "examples:test": "npm test --workspaces --if-present",
+    "examples:smoke": "npm run smoke --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

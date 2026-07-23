@@ -21,23 +21,18 @@ Koinos stands out in the blockchain landscape with groundbreaking features desig
 
 !!! tip "Ready to jump in?"
     **Goal**: Read your first KOIN balance from the blockchain in under 5 minutes.
-    
-    ```javascript
-    import { Provider, Contract } from 'koilib';
-    
-    const provider = new Provider('https://api.koinos.io');
-    const koinContract = new Contract({
-      id: '15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL',
-      provider,
-    });
-    
-    const { result } = await koinContract.functions.balanceOf({
-      owner: 'YOUR_ADDRESS_HERE'
-    });
-    
-    console.log(`Balance: ${result.value} KOIN`);
+
+    Runtime: Node.js 20+. Network: mainnet. Behavior: read-only. The optional
+    input is a public Koinos address; a private key is never required.
+
+    <!-- example: getting-started-read-koin-balance -->
+    ```javascript title="index.js"
+    --8<-- "examples/javascript/getting-started/read-koin-balance/index.js:program"
     ```
-    
+
+    [View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/getting-started/read-koin-balance/index.js) ·
+    [Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/read-koin-balance?startScript=start)
+
     **Next**: Follow the complete [Quick Start Guide](../interacting/quick-start.md) to understand this code.
 
 ## What Should I Read First?

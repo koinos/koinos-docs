@@ -2,70 +2,83 @@
 icon: fontawesome/solid/network-wired
 ---
 
-# Testnet
-A blockchain testnet serves as a sandbox environment for developers and users to experiment, test, and deploy smart contracts, decentralized applications (DApps), and other blockchain-related functionalities without using real cryptocurrency or affecting the main blockchain network. Testnets mimic the behavior of the main blockchain but operate with fake or test tokens, allowing users to simulate real-world scenarios and interactions in a risk-free environment. They provide a platform for developers to debug code, identify potential vulnerabilities, and gauge the performance and scalability of their applications before deploying them on the mainnet. Testnets also facilitate collaboration among developers and enable the community to contribute to the improvement and evolution of blockchain protocols and applications through feedback and testing.
+# Public Testnet
 
----
-## Harbinger
-While anyone has the ability to spin up a testnet, Koinos Group provides a testnet for general use called Harbinger. To target a particular testnet one must retrieve the chain ID. The chain ID prevents your transaction from being valid on any other blockchain other than the one you are targeting.
+The Koinos Foundation maintains a public testnet for application and contract
+development. Its tokens have no monetary value, and its chain state, deployed
+contracts, and chain ID can change after a reset.
 
-It is important to retrieve a fresh chain ID from Harbinger when doing work on testnet as it is not uncommon for the testnet to be restarted with a new chain ID. In other words, do not just copy this chain ID, retrieve it yourself before you use it.
+!!! warning "Do not treat testnet state as permanent"
 
-!!! example
-    An example of retrieving the Chain ID through JSON-RPC.
-    ```sh
-    curl -d '{"jsonrpc":"2.0", "id":0, "method":"chain.get_chain_id", "params":{}}' 'https://api.harbinger.koinos.pro/jsonrpc?apikey=<APIKEY>'
-    ```
-    ```json
-    {
-      "jsonrpc": "2.0",
-      "result": {
-        "chain_id": "EiBncD4pKRIQWco_WRqo5Q-xnXR7JuO3PtZv983mKdKHSQ=="
-      },
-      "id": 0
-    }
-    ```
+    Keep mainnet funds and production state away from the public testnet.
+    Retrieve the current chain ID before constructing or signing a transaction.
 
-Using the chain ID retrieved and your preferred Harbinger endpoint, you can use the testnet to deploy contracts and test your dApp. As you know, every action on Koinos requires Mana so we will need to acquire KOIN for testing. On testnet we call it tKOIN.
+## Current connection details
 
----
-## tKOIN and the faucet
-tKOIN is the Koinos blockchain testnet token symbol.
+| Service | URL |
+| --- | --- |
+| JSON-RPC | `https://testnet.koinosfoundation.org/jsonrpc` |
+| JSON-RPC compatibility root | `https://testnet.koinosfoundation.org/` |
+| REST | `https://testnet.koinosfoundation.org/v1/...` |
+| REST compatibility path | `https://testnet.koinosfoundation.org/rest/...` |
+| Health | `https://testnet.koinosfoundation.org/health` |
+| Faucet | [KoinosTestnetFaucetBot](https://t.me/KoinosTestnetFaucetBot) |
 
-Once you have your public address you can join our [Discord](https://discord.koinos.io) server and request some tKOIN in the `#faucet` channel under the Developer section by sending the following message to the faucet bot:
+The operational source of truth is
+[koinos/koinos-testnet](https://github.com/koinos/koinos-testnet).
 
-### Example of acquiring tKOIN
-The command to receive tKOIN from the faucet is as follows:
-```
-!faucet <public address>
+## Check availability
+
+```bash
+curl -sS https://testnet.koinosfoundation.org/health
 ```
 
-!!! example
-    Given that your public address is `1ENxxuH81kytBdYe81fD9tBdYe81fD9Qxe`, within the `#faucet` channel write the following text command.
-    ```sh
-    !faucet 1ENxxuH81kytBdYe81fD9tBdYe81fD9Qxe
-    ```
+The expected healthy response is:
 
-!!! success
-    Upon success, you were see the following response from the Harbinger Faucet.
-    ```{ .txt, .no-copy }
-    Transferring 100.000000 tKOIN to address 1ENxxuH81kytBdYe81fD9tBdYe81fD9Qxe.
-    ```
-
-### Example of checking your tKOIN balance
-The command to check your balance from the faucet is as follows:
-```
-!balance <public address>
+```text
+ok
 ```
 
-!!! example
-    Given that your public address is `1ENxxuH81kytBdYe81fD9tBdYe81fD9Qxe`, within the `#faucet` channel write the following text command.
-    ```sh
-    !balance 1ENxxuH81kytBdYe81fD9BdYe81fD9Qxe
-    ```
+## Retrieve the current chain ID
 
-!!! success
-    Upon success, you were see the following response from the Harbinger Faucet.
-    ```{ .txt, .no-copy }
-    Balance at address 1ENxxuH81kytBdYe81fD9tBdYe81fD9Qxe is 100.000000 tKOIN.
-    ```
+```bash
+curl -sS https://testnet.koinosfoundation.org/jsonrpc \
+  -H 'content-type: application/json' \
+  --data '{"jsonrpc":"2.0","id":1,"method":"chain.get_chain_id","params":{}}'
+```
+
+Use the value returned in `result.chain_id`. Do not copy a testnet chain ID into
+a long-lived configuration because it can change after a reset.
+
+## Get test tokens
+
+Open the [Telegram faucet](https://t.me/KoinosTestnetFaucetBot) and send:
+
+```text
+/faucet YOUR_KOINOS_ADDRESS
+```
+
+Check the faucet's available balance with:
+
+```text
+/balance
+```
+
+The faucet currently distributes valueless **vKOIN**. Allocation sizes,
+cooldowns, and daily limits can change, so follow the bot response and the
+public testnet repository instead of relying on values copied into an
+application.
+
+## Recommended development workflow
+
+1. Use a wallet reserved for testnet development.
+2. Confirm the health endpoint responds.
+3. Retrieve the current chain ID.
+4. Request vKOIN for the wallet's public address.
+5. Connect clients to the explicit `/jsonrpc` endpoint.
+6. Expect balances and contracts to change after a reset.
+
+For runnable examples, continue with
+[Testnet Development](../interacting/testnet.md). For the network comparison
+and safety checklist, see
+[Mainnet vs Testnet](../getting-started/mainnet-vs-testnet.md).

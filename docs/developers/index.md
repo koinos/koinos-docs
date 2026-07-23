@@ -55,7 +55,9 @@ This comprehensive resource hub is designed to empower developers to leverage th
     ---
 
     
-    Introducing the Harbinger testnet for the Koinos blockchain, a dedicated environment where developers can experiment with Koinos features, test smart contracts, and simulate real-world scenarios before deploying on the mainnet. The Harbinger testnet provides a safe and sandboxed environment for developers to validate their applications and gain insights into the capabilities and performance of the Koinos blockchain platform.
+    The Koinos Foundation public testnet gives developers a resettable
+    environment for testing applications and contracts with valueless tokens
+    before deploying to mainnet.
 
     [:octicons-arrow-right-24: Let's prototype](testnet.md)
 

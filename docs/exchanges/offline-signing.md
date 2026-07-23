@@ -1,15 +1,21 @@
 # Offline signing
 Regardless of your method of signing a transaction offline, you will need to manually set the Chain ID, nonce, and RC limit for the transaction.
 
+!!! warning "Never broadcast copied transaction data"
+
+    Serialized transactions and signatures shown on this page are historical
+    examples. Nonces, chain IDs, signatures, and resource limits must be
+    retrieved or recreated for the intended network and transaction.
+
 ---
 ## Chain ID
 
 The Chain ID is a unique identifier for the specific chain you are transacting on. This prevents transactions from one chain from being valid on another. The Chain ID is derived from the genesis data, including the genesis key, which ensures uniqueness between Koinos based blockchains. It is encoded as a base64 string.
 
-| Blockchain        | Chain ID                                           |
-|-------------------|----------------------------------------------------|
-| Koinos Mainnet    | `EiBZK_GGVP0H_fXVAM3j6EAuz3-B-l3ejxRSewi7qIBfSA==` |
-| Harbinger Testnet | `EiBncD4pKRIQWco_WRqo5Q-xnXR7JuO3PtZv983mKdKHSQ==` |
+| Blockchain | Chain ID |
+| --- | --- |
+| Koinos Mainnet | `EiBZK_GGVP0H_fXVAM3j6EAuz3-B-l3ejxRSewi7qIBfSA==` |
+| Koinos Foundation public testnet | [Retrieve the current chain ID](../getting-started/mainnet-vs-testnet.md#retrieve-the-current-chain-id) |
 
 ---
 ## Nonce

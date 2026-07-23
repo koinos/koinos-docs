@@ -7,6 +7,13 @@ The most common use case for multisig on Koinos is paying for another address' t
 
 Below you can find examples of how to perform multisig using a variety of supported tools.
 
+!!! warning "Recreate historical transaction data"
+
+    The serialized CLI transcript below was produced on an earlier testnet.
+    Its chain ID, nonce, signatures, and encoded transaction are historical and
+    cannot be submitted to the current public testnet. Retrieve the current
+    chain ID and rebuild every transaction before signing.
+
 === "Koinos CLI"
 
     Multisig using the Koinos CLI can be done using the `sign_transaction` command. The `sign_transaction` command accepts a transaction encoded in base64, signs it with the open wallet, and then outputs the transaction in base64 with the additional signature added. You can then use `submit_transaction` to submit the new transaction to the blockchain.
@@ -67,8 +74,8 @@ Below you can find examples of how to perform multisig using a variety of suppor
     Base64:
     CiISIBi1R__zgY16nsHh5_Fb4c5vcZ2RNmLbdK8S14n8Xrh6EocBCiISIGdwPikpEhBZyj9ZGqjlD7GddHsm47c-1m_3zeYp0odJEIDC1y8aAigBIiISIKOpklf8aTYyWEznjTSfcsxYAeij5YlyGD5rew7hxKHvKhkAld7Gt6Kcrgx74cp4Bu_njyA2IGaZDR5YMhkAYdZB07coryO66Iuhp1Eu5_fj30VjGeuYGmESXwoZAJ_lH9WcjJMQmBCDCX0CXh1NdTgPLp-Z_BDK7dW_Aho8ChkAYdZB07coryO66Iuhp1Eu5_fj30VjGeuYEhkAld7Gt6Kcrgx74cp4Bu_njyA2IGaZDR5YGICU69wDIkEfyNwas3pxwjEYVubcI6En9e91L1fl-R7q-Gj4Y5fVfZE074Nqf0ZUbkJkcYfAuuVnJi604i-yOG90Jm2hHlYgiw==
 
-    🚫 🔓 > connect https://api.harbinger.koinos.pro/jsonrpc?apikey=APIKEY
-    Connected to endpoint https://api.harbinger.koinos.pro/jsonrpc?apikey=APIKEY
+    🚫 🔓 > connect https://testnet.koinosfoundation.org/jsonrpc
+    Connected to endpoint https://testnet.koinosfoundation.org/jsonrpc
 
     🔓 > open wallets/test.wallet password
     Opened wallet: wallets/test.wallet

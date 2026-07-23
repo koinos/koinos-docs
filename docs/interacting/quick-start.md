@@ -25,41 +25,16 @@ npm install koilib
 
 Create `index.js`:
 
+<!-- example: interacting-quick-start-balance -->
 ```javascript
-const { Provider, Contract, utils } = require('koilib');
-
-async function readBalance() {
-  // Connect to Koinos mainnet
-  const provider = new Provider('https://api.koinos.io');
-  
-  // KOIN contract address
-  const koinAddress = '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK';
-  
-  // Create contract instance
-  const koin = new Contract({
-    id: koinAddress,
-    provider,
-    abi: utils.tokenAbi, // Built-in token ABI
-  });
-  
-  try {
-    // Read the balance
-    const { result } = await koin.functions.balanceOf({
-      // Address to check (replace with any Koinos address)
-      owner: '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'
-    });
-    
-    // Convert from smallest unit to KOIN
-    const balance = utils.formatUnits(result.value, 8);
-    
-    console.log(`Balance: ${balance} KOIN`);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-readBalance();
+--8<-- "examples/javascript/getting-started/read-koin-balance/index.js:program"
 ```
+
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/getting-started/read-koin-balance/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/read-koin-balance)
+
+The script is a read-only Node.js example. It defaults to a public address and
+accepts another Koinos address as its first command-line argument.
 
 3. **Run the script:**
 ```bash
@@ -74,10 +49,10 @@ Balance: 1234.56789012 KOIN
 
 ## What's Happening?
 
-1. **Provider**: Connects to the Koinos blockchain API
-2. **Contract**: Creates an interface to the KOIN token contract
-3. **balanceOf**: Calls the contract's balance function
-4. **formatUnits**: Converts from the smallest unit (8 decimals) to human-readable KOIN
+1. The script calls the current Koinos REST API.
+2. The account and KOIN contract IDs form the balance endpoint.
+3. The response contains the human-readable KOIN balance.
+4. Errors are reported with the HTTP status instead of being silently ignored.
 
 ## Next Steps
 

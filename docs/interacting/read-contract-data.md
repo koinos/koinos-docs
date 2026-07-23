@@ -15,74 +15,31 @@ Reading contract data is a fundamental operation when building applications on K
 
 ### Basic Contract Read
 
+<!-- example: interacting-read-head-info -->
 ```javascript
-async function readContractData() {
-  // Connect to Koinos
-  const provider = new Provider('https://api.koinos.io');
-  
-  // Contract address and ABI
-  const contractAddress = '1KD9Es7LBBjA1FY3ViCgQJ7e6WH1ipKbhz';
-  
-  // Create contract instance
-  const contract = new Contract({
-    id: contractAddress,
-    provider,
-    abi: utils.nicknamesAbi // contract's ABI
-  });
-  
-  try {
-    // Call a read function
-    const { result } = await contract.functions.get_address({
-      // function parameters
-      value: "jgapool"
-    });
-    
-    console.log('Contract data:', result);
-  } catch (error) {
-    console.error('Error reading contract:', error);
-  }
-}
+--8<-- "examples/javascript/interacting/read-only-queries/index.js:head-info"
 ```
+
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/interacting/read-only-queries/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries)
+
+This first read verifies the connection by retrieving the current mainnet head.
+It is read-only and requires no account.
 
 ## Working Without a Local ABI
 
 ### Fetching ABI from the Blockchain
 
-If you don't have the ABI of the contract locally, you can fetch it dynamically from the blockchain:
+If you don't have the ABI locally, query the contract metadata service through
+the provider and parse the returned JSON:
 
+<!-- example: interacting-fetch-contract-abi -->
 ```javascript
-const { Provider, Contract } = require('koilib');
-
-async function readContractWithoutLocalAbi() {
-  // Connect to Koinos
-  const provider = new Provider('https://api.koinos.io');
-  
-  // Contract address (no ABI needed initially)
-  const contractAddress = '1KD9Es7LBBjA1FY3ViCgQJ7e6WH1ipKbhz';
-  
-  // Create contract instance without ABI
-  const contract = new Contract({
-    id: contractAddress,
-    provider
-    // Note: no abi parameter here
-  });
-  
-  try {
-    // Fetch ABI from the blockchain
-    await contract.fetchAbi();
-    
-    // Now you can call contract functions
-    const { result } = await contract.functions.get_address({
-      // function parameters
-      value: "jgapool"
-    });
-    
-    console.log('Contract data:', result);
-  } catch (error) {
-    console.error('Error reading contract:', error);
-  }
-}
+--8<-- "examples/javascript/interacting/read-only-queries/index.js:contract-abi"
 ```
+
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/interacting/read-only-queries/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries)
 
 ### ABI Fetching Explained
 
@@ -109,20 +66,31 @@ The `fetchAbi()` function:
 ## Common Read Operations
 
 ### Token Balance
+
+The public REST layer exposes contract-backed token reads in a convenient form:
+
+<!-- example: interacting-read-token-balance -->
 ```javascript
-// Read token balance
-const { result } = await tokenContract.functions.balanceOf({
-  owner: '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'
-});
+--8<-- "examples/javascript/interacting/read-only-queries/index.js:balance"
 ```
+
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/interacting/read-only-queries/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries)
 
 ### Contract Metadata
+
+The same API can read the KOIN token's name, symbol, decimals, and supply:
+
+<!-- example: interacting-read-token-metadata -->
 ```javascript
-// Read contract metadata
-const { result } = await contract.functions.name();
-const name = result.value;
+--8<-- "examples/javascript/interacting/read-only-queries/index.js:token-metadata"
 ```
 
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/interacting/read-only-queries/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries)
+
+All four examples are read-only. A live run needs network access to the public
+mainnet API but no key or wallet.
 ## Best Practices
 
 1. **Cache results** when appropriate to reduce API calls
@@ -134,4 +102,3 @@ const name = result.value;
 
 - [Submit a transaction](submit-transaction.md)
 - [Work with multiple operations](multiple-operations.md)
-

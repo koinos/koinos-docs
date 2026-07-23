@@ -1,202 +1,112 @@
-# Kondor Wallet Guide
+# Kondor Wallet
 
-Kondor Wallet is the leading browser extension wallet for the Koinos blockchain, designed to optimize your crypto transactions and provide seamless blockchain interaction.
+Kondor 2 is a self-custody wallet for Koinos distributed as a Chrome extension.
+It can create or import wallets, display Koinos assets and Mana, request
+transaction approval, connect selected accounts to dApps, and create encrypted
+backups.
 
-## Overview
+Use the [official Kondor documentation](https://kondorwallet.com/docs/) as the
+source of truth for the current interface.
 
-Kondor Wallet is designed to optimize your crypto transactions by accurately estimating mana and setting optimal limits automatically. If you lack sufficient mana, Kondor seamlessly switches to the free mana option, ensuring your transactions proceed without interruption. With Kondor Wallet, you can effortlessly store, manage, and transact, enjoying a smooth and reliable crypto experience every time.
+## Install Kondor
 
-## Key Features
+1. Open the
+   [Kondor Wallet listing](https://chromewebstore.google.com/detail/kondor-wallet/hfcdnighclikmdfkdcecohgnfdglpdmp)
+   in the Chrome Web Store.
+2. Check that the extension ID is
+   `hfcdnighclikmdfkdcecohgnfdglpdmp`.
+3. Install the extension and optionally pin it to the Chrome toolbar.
+4. Open Kondor from the toolbar or Chrome side panel.
 
-### 🔋 Mana Optimization
-- **Automatic Mana Estimation**: Intelligently calculates the optimal mana requirements for your transactions
-- **Smart Limit Setting**: Automatically sets appropriate limits to ensure transaction success
-- **Free Mana Fallback**: Seamlessly switches to free mana when your account lacks sufficient mana
-- **Zero Transaction Failures**: Advanced algorithms prevent failed transactions due to mana issues
+!!! warning "Avoid outdated listings"
 
-### 🔐 Security & Key Management
-- **Non-Custodial**: You maintain full control of your private keys
-- **Local Storage**: Keys are stored securely in your browser
-- **Secure Transaction Signing**: Sign transactions locally without exposing private keys
-- **Seed Phrase Backup**: Standard BIP39 mnemonic phrase backup system
+    Older documentation pointed to the original Kondor extension and to a
+    Firefox add-on. The current Kondor 2 documentation describes a Chrome
+    extension. Install only from the current official site or the listing above.
 
-### 🌐 dApp Integration
-- **Universal dApp Support**: Connect with any Koinos-based decentralized application
-- **Easy Connection**: One-click connection to supported dApps
-- **Permission Management**: Granular control over dApp permissions
-- **Transaction Review**: Review and approve all transactions before signing
+## Create a new wallet
 
-### 👥 Multi-Account Management
-- **Multiple Accounts**: Manage multiple Koinos accounts from a single interface
-- **Account Switching**: Easy switching between different accounts
-- **Custom Account Names**: Label accounts for easy identification
-- **Import/Export**: Import existing accounts or export for backup
+On first run, choose the option to create a new wallet:
 
-## Installation
+1. let Kondor generate a recovery phrase;
+2. write the phrase down and store it offline;
+3. complete Kondor's recovery-phrase confirmation; and
+4. create a PIN for this installation.
 
-### Chrome Extension
-1. Visit the [Chrome Web Store](https://chromewebstore.google.com/detail/kondor/ghipkefkpgkladckmlmdnadmcchefhjl)
-2. Click "Add to Chrome"
-3. Confirm the installation
-4. Pin the extension to your toolbar for easy access
+The PIN protects and confirms actions on the current device. It is not a
+replacement for the recovery phrase.
 
-### Firefox Add-on
-1. Visit the Firefox Add-ons store
-2. Search for "Kondor Wallet"
-3. Click "Add to Firefox"
-4. Follow the installation prompts
+## Import or restore
 
-## Getting Started
+Kondor documents three import paths:
 
-### Creating a New Wallet
+- a recovery phrase;
+- an encrypted Kondor JSON backup; or
+- a private key for an individual account.
 
-1. **Launch Kondor**: Click the Kondor icon in your browser toolbar
-2. **Create Wallet**: Select "Create New Wallet"
-3. **Set Password**: Choose a strong password for your wallet
-4. **Backup Seed Phrase**: 
-   - Write down your 12-word seed phrase
-   - Store it in a secure, offline location
-   - Never share it with anyone
-5. **Confirm Seed**: Confirm your seed phrase by selecting words in order
-6. **Wallet Ready**: Your wallet is now ready to use
+Enter secret material only in the verified Kondor extension. A website or dApp
+does not need your recovery phrase or private key to connect to the wallet.
 
-### Importing an Existing Wallet
+## Send and receive
 
-1. **Launch Kondor**: Click the Kondor icon in your browser toolbar
-2. **Import Wallet**: Select "Import Existing Wallet"
-3. **Enter Seed Phrase**: Input your 12-word seed phrase
-4. **Set Password**: Choose a password for this browser installation
-5. **Import Complete**: Your existing wallet is now accessible
+To receive assets, share the address or QR code shown by Kondor. Send only
+Koinos-network assets to a Koinos address.
 
-## Using Kondor Wallet
+Before sending:
 
-### Managing Accounts
+1. choose the intended network;
+2. select the token and enter the recipient;
+3. review the amount, recipient, network, and displayed operations; and
+4. approve with the PIN only when every detail is correct.
 
-#### Adding New Accounts
-1. Click the account dropdown in Kondor
-2. Select "Add Account"
-3. Choose "Create New Account" or "Import Account"
-4. Follow the prompts to set up the new account
+Kondor can display Koinos Mana. Mana regenerates, but a transaction can still
+fail if the account or payer lacks sufficient resources or if a contract
+rejects the operation.
 
-#### Switching Between Accounts
-1. Click the account dropdown
-2. Select the account you want to use
-3. The interface will update to show the selected account
+## Mainnet and testnet
 
-### Sending Transactions
+Kondor displays the active network. Mainnet operations can affect assets with
+real value; testnet operations use resettable state and valueless test tokens.
 
-1. **Select Account**: Ensure you're using the correct account
-2. **Enter Details**:
-   - Recipient address
-   - Amount to send
-   - Optional memo
-3. **Review Transaction**: Check all details carefully
-4. **Mana Check**: Kondor automatically estimates mana requirements
-5. **Send**: Click "Send" to broadcast the transaction
+Use the current [public testnet details](mainnet-vs-testnet.md) when checking a
+testnet endpoint or faucet. Never assume that a saved testnet chain ID is still
+current after a reset.
 
-### Connecting to dApps
+## Connect to a dApp
 
-1. **Visit dApp**: Navigate to a Koinos-based dApp
-2. **Connect Wallet**: Click "Connect Wallet" on the dApp
-3. **Select Kondor**: Choose Kondor from the wallet options
-4. **Approve Connection**: Review and approve the connection request
-5. **Start Using**: You can now interact with the dApp
+Connecting a dApp and signing a transaction are separate approvals:
 
-## Advanced Features
+- share only the accounts you intend to expose to the site;
+- confirm the requesting origin;
+- inspect each signing or transaction request; and
+- revoke remembered connections that you no longer use.
 
-### Custom Networks
-- Connect to different Koinos networks (mainnet, testnet, local)
-- Add custom RPC endpoints
-- Switch between networks easily
+For application integration, follow the current
+[Kondor documentation](https://kondorwallet.com/docs/#connecting-to-dapps) and
+the maintained [Kondor source repository](https://github.com/joticajulian/kondor)
+instead of copying legacy `window.kondor` examples without verification.
 
-### Transaction History
-- View complete transaction history
-- Filter by account, date, or transaction type
-- Export transaction data for record-keeping
+## Backup and recovery
 
-### Settings & Preferences
-- Customize mana settings
-- Set default transaction limits
-- Configure security preferences
-- Manage connected dApps
+Kondor can export an encrypted JSON backup. Keep the backup and its PIN in
+appropriately protected locations. Also keep the recovery phrase offline.
+
+Kondor is non-custodial and does not provide server-side recovery. If every
+usable recovery method is lost, the wallet developer cannot restore the funds.
 
 ## Troubleshooting
 
-### Common Issues
+- **The extension looks different from this page:** consult the official
+  documentation, which is updated independently of this site.
+- **The dApp does not connect:** confirm that Kondor is unlocked, review the
+  site's connection request, and reload the dApp after approval.
+- **A transaction fails:** verify the network, recipient, contract, balance, and
+  available Mana. A wallet cannot guarantee contract execution.
+- **The displayed network is unexpected:** reject the request and switch to the
+  intended network before trying again.
 
-#### Transaction Failed
-- **Check Mana**: Ensure sufficient mana or rely on free mana fallback
-- **Verify Address**: Double-check the recipient address
-- **Network Issues**: Check your internet connection and try again
+## Next steps
 
-#### Connection Problems
-- **Refresh Page**: Reload the dApp page
-- **Clear Cache**: Clear browser cache and cookies
-- **Update Extension**: Ensure you're using the latest version
-
-#### Can't Access Wallet
-- **Correct Password**: Verify you're using the correct password
-- **Browser Issues**: Try disabling other extensions temporarily
-- **Restore from Seed**: Use your seed phrase to restore the wallet
-
-## Security Best Practices
-
-### Seed Phrase Security
-- **Write It Down**: Never store your seed phrase digitally
-- **Multiple Copies**: Keep multiple copies in secure, separate locations
-- **Never Share**: Never share your seed phrase with anyone
-- **Test Recovery**: Periodically test your seed phrase recovery process
-
-### General Security
-- **Strong Passwords**: Use a unique, strong password for your wallet
-- **Keep Updated**: Always use the latest version of Kondor
-- **Verify URLs**: Always verify you're on the correct website before connecting
-- **Review Transactions**: Carefully review all transaction details before signing
-
-### Browser Security
-- **Secure Browser**: Keep your browser updated
-- **Avoid Public Wi-Fi**: Don't access your wallet on public networks
-- **Lock Extension**: Use Kondor's auto-lock feature
-- **Regular Backups**: Regularly backup your wallet data
-
-## Development & Technical
-
-### For Developers
-
-#### Integration
-- Kondor follows standard Web3 wallet integration patterns
-- Use the Koinos wallet adapter for easy integration
-- Support for all standard Koinos transaction types
-
-#### API Access
-- Standard wallet interface methods
-- Event listeners for account changes
-- Transaction status callbacks
-
-## Resources & Support
-
-### Official Resources
-- **Website**: [kondorwallet.com](https://kondorwallet.com/)
-- **Features Page**: [Kondor Features](https://kondorwallet.com/old-home#features)
-- **GitHub Repository**: [joticajulian/kondor](https://github.com/joticajulian/kondor)
-
-### Community & Updates
-- **Hive Blog**: [Kondor v1 Launch](https://hive.blog/koinos/@jga/kondor-v1-is-live)
-- **Development Updates**: [Kondor 0.4](https://hive.blog/koinos/@jga/kondor04)
-- **Community Support**: Join Koinos Discord for wallet support
-
-### Version History
-- **v1.0**: Full production release with mana optimization
-- **v0.4**: Beta release with core functionality
-- **Ongoing**: Regular updates and improvements
-
-## Next Steps
-
-After setting up Kondor Wallet:
-- Learn about [Mainnet vs Testnet](mainnet-vs-testnet.md) to understand network selection
-- Explore [Tooling Overview](tooling-overview.md) for development resources
-- Try connecting to Koinos dApps to test your wallet setup
-
----
-
-*Kondor Wallet provides the smoothest experience for interacting with the Koinos blockchain. Its intelligent mana management ensures your transactions always succeed while maintaining the highest security standards.*
+- [Accounts, Keys, and Wallets](accounts-keys-wallets.md)
+- [Mainnet vs Testnet](mainnet-vs-testnet.md)
+- [Tooling Overview](tooling-overview.md)

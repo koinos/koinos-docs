@@ -35,33 +35,17 @@ Below you can find examples of how to transfer your KOIN using a variety of supp
 
 === "Koilib"
 
-    The example below demonstrates transferring KOIN using Koilib. This is an excerpt from the [Koilib documentation](https://joticajulian.github.io/koilib/#usage).
+    The example below safely prepares a testnet transfer to an exchange deposit
+    address. Verify that the exchange supports the same network before sending.
 
+    <!-- example: exchange-transfer-preview -->
     ```js
-    (async () => {
-        // define signer, provider, and contract
-        const provider = new Provider(["http://api.koinos.io"]);
-        const signer = Signer.fromWif("KwkAq...");
-        signer.provider = provider;
-        const koinContract = new Contract({
-            id: "19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK",
-            abi: utils.tokenAbi,
-            provider,
-            signer,
-        });
-        const koin = koinContract.functions;
-
-        // Transfer
-        const { transaction, receipt } = await koin.transfer({
-            from: signer.getAddress(),
-            to: "172AB1FgCsYrRAW5cwQ8KjadgxofvgPFd6",
-            value: "1012345678", // 10.12345678 koin
-        });
-        console.log(`Transaction id ${transaction.id} submitted. Receipt:`);
-        console.log(receipt);
-
-        // wait to be mined
-        const { blockNumber } = await transaction.wait();
-        console.log(`Transaction mined. Block number: ${blockNumber}`);
-    })();
+    --8<-- "examples/javascript/testnet/transaction-workflows/index.js:exchange-transfer"
     ```
+
+    [View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+    [Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
+
+    The online runner is dry-run only. Do not enter a WIF in an online
+    environment. The complete source requires explicit local configuration
+    before any testnet broadcast.

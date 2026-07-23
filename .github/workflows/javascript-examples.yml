@@ -1,0 +1,41 @@
+name: JavaScript examples
+
+on:
+  pull_request:
+    paths:
+      - "docs/**"
+      - "examples/javascript/**"
+      - "scripts/**"
+      - "mkdocs.yml"
+      - "package.json"
+      - "package-lock.json"
+      - "requirements.txt"
+      - ".github/workflows/javascript-examples.yml"
+  push:
+    branches:
+      - dev
+      - master
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: npm ci --ignore-scripts
+      - run: npm run examples:verify
+      - run: npm run examples:syntax
+      - run: npm run examples:test
+      - run: npm run examples:start
+      - run: npm run examples:smoke
+      - run: npm run docs:links
+      - run: mkdocs build

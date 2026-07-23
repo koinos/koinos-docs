@@ -1,0 +1,13 @@
+{
+  "name": "@koinos-docs/references-koilib-api-tour",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "koilib": "9.2.0"
+  }
+}

@@ -1,27 +1,17 @@
-# contract class.Value.ToUpper()ontract contract class.Value.ToUpper()lass
+# Contract class
 
-Koilib contract class API reference.
+`Contract` represents a deployed contract and provides generated functions when
+an ABI is supplied. You can also use it without an ABI for identity and
+metadata workflows.
 
-## Overview
-
-Documentation for the contract class in the Koilib JavaScript/TypeScript SDK.
-
-## Usage
-
+<!-- example: reference-koilib-contract -->
 ```javascript
-const { contractClass } = require('koilib');
-
-// Usage examples here
+--8<-- "examples/javascript/references/koilib-api-tour/index.js:contract"
 ```
 
-## Methods
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/references/koilib-api-tour/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour)
 
-Detailed method documentation will be added here.
-
-## Examples
-
-Practical examples of using this class/utility.
-
-## Next Steps
-
-See the main [References](../index.md) overview for more information.
+This example only constructs the client-side object and does not broadcast.
+See the [Koilib package API](https://www.npmjs.com/package/koilib) for the
+complete current surface.

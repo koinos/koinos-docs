@@ -1,27 +1,15 @@
-# util functions.Value.ToUpper()til util functions.Value.ToUpper()unctions
+# Utility functions
 
-Koilib util functions API reference.
+Koilib exports helpers for units, encodings, hashes, addresses, and bundled
+standard ABIs.
 
-## Overview
-
-Documentation for the util functions in the Koilib JavaScript/TypeScript SDK.
-
-## Usage
-
+<!-- example: reference-koilib-utils -->
 ```javascript
-const { utilFunctions } = require('koilib');
-
-// Usage examples here
+--8<-- "examples/javascript/references/koilib-api-tour/index.js:utils"
 ```
 
-## Methods
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/references/koilib-api-tour/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour)
 
-Detailed method documentation will be added here.
-
-## Examples
-
-Practical examples of using this class/utility.
-
-## Next Steps
-
-See the main [References](../index.md) overview for more information.
+`formatUnits` converts an integer amount in the token's smallest unit into a
+human-readable decimal string without changing blockchain state.

@@ -1,27 +1,16 @@
-# transaction class.Value.ToUpper()ransaction transaction class.Value.ToUpper()lass
+# Transaction class
 
-Koilib transaction class API reference.
+`Transaction` collects operations and handles preparation, signing, and
+optional broadcast.
 
-## Overview
-
-Documentation for the transaction class in the Koilib JavaScript/TypeScript SDK.
-
-## Usage
-
+<!-- example: reference-koilib-transaction -->
 ```javascript
-const { transactionClass } = require('koilib');
-
-// Usage examples here
+--8<-- "examples/javascript/references/koilib-api-tour/index.js:transaction"
 ```
 
-## Methods
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/references/koilib-api-tour/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour)
 
-Detailed method documentation will be added here.
-
-## Examples
-
-Practical examples of using this class/utility.
-
-## Next Steps
-
-See the main [References](../index.md) overview for more information.
+This example creates an empty unsigned transaction only. State-changing
+examples elsewhere in these docs default to testnet and require an explicit
+broadcast flag.

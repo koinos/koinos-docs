@@ -1,0 +1,1012 @@
+{
+  "schemaVersion": 1,
+  "auditedRef": "origin/dev@00a8ef863e2eefa07b540d772725a5c372f1c92d",
+  "auditedAt": "2026-07-23",
+  "initialFenceCount": 51,
+  "publishedBranch": "master",
+  "entries": [
+    {
+      "id": "getting-started-read-koin-balance",
+      "status": "active",
+      "doc": "docs/getting-started/index.md",
+      "line": 48,
+      "purpose": "Read a mainnet KOIN balance for a public address",
+      "runtime": "node",
+      "dependencies": [],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/getting-started/read-koin-balance",
+      "source": "examples/javascript/getting-started/read-koin-balance/index.js",
+      "snippet": "program",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/read-koin-balance?startScript=start"
+      }
+    },
+    {
+      "id": "getting-started-connect-mainnet",
+      "status": "active",
+      "doc": "docs/getting-started/mainnet-vs-testnet.md",
+      "line": 32,
+      "purpose": "Connect to Koinos mainnet and print live chain information",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/getting-started/network-provider",
+      "source": "examples/javascript/getting-started/network-provider/index.js",
+      "snippet": "mainnet",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/network-provider?startScript=start"
+      }
+    },
+    {
+      "id": "getting-started-connect-testnet",
+      "status": "active",
+      "doc": "docs/getting-started/mainnet-vs-testnet.md",
+      "line": 42,
+      "purpose": "Connect to the public Koinos testnet and print live chain information",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/getting-started/network-provider",
+      "source": "examples/javascript/getting-started/network-provider/index.js",
+      "snippet": "testnet",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/network-provider?startScript=testnet"
+      }
+    },
+    {
+      "id": "tooling-koilib-client",
+      "status": "active",
+      "doc": "docs/getting-started/tooling-overview.md",
+      "line": 29,
+      "purpose": "Create a Koilib provider and disposable local signer",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "local-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "tooling",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "interacting-quick-start-balance",
+      "status": "active",
+      "doc": "docs/interacting/quick-start.md",
+      "line": 29,
+      "purpose": "Read a public mainnet KOIN balance",
+      "runtime": "node",
+      "dependencies": [],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/getting-started/read-koin-balance",
+      "source": "examples/javascript/getting-started/read-koin-balance/index.js",
+      "snippet": "program",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/read-koin-balance"
+      }
+    },
+    {
+      "id": "interacting-read-head-info",
+      "status": "active",
+      "doc": "docs/interacting/read-contract-data.md",
+      "line": 19,
+      "purpose": "Read the current mainnet head",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/interacting/read-only-queries",
+      "source": "examples/javascript/interacting/read-only-queries/index.js",
+      "snippet": "head-info",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries"
+      }
+    },
+    {
+      "id": "interacting-fetch-contract-abi",
+      "status": "active",
+      "doc": "docs/interacting/read-contract-data.md",
+      "line": 37,
+      "purpose": "Fetch a deployed contract ABI from metadata",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/interacting/read-only-queries",
+      "source": "examples/javascript/interacting/read-only-queries/index.js",
+      "snippet": "contract-abi",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries"
+      }
+    },
+    {
+      "id": "interacting-read-token-balance",
+      "status": "active",
+      "doc": "docs/interacting/read-contract-data.md",
+      "line": 73,
+      "purpose": "Read a public KOIN token balance",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/interacting/read-only-queries",
+      "source": "examples/javascript/interacting/read-only-queries/index.js",
+      "snippet": "balance",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries"
+      }
+    },
+    {
+      "id": "interacting-read-token-metadata",
+      "status": "active",
+      "doc": "docs/interacting/read-contract-data.md",
+      "line": 85,
+      "purpose": "Read KOIN token metadata",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/interacting/read-only-queries",
+      "source": "examples/javascript/interacting/read-only-queries/index.js",
+      "snippet": "token-metadata",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries"
+      }
+    },
+    {
+      "id": "interacting-rest-head-info",
+      "status": "active",
+      "doc": "docs/interacting/rest-api.md",
+      "line": 63,
+      "purpose": "Read mainnet head information over REST",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/interacting/read-only-queries",
+      "source": "examples/javascript/interacting/read-only-queries/index.js",
+      "snippet": "head-info",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries"
+      }
+    },
+    {
+      "id": "interacting-rest-retry",
+      "status": "active",
+      "doc": "docs/interacting/rest-api.md",
+      "line": 112,
+      "purpose": "Retry transient read failures with a bound",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/interacting/read-only-queries",
+      "source": "examples/javascript/interacting/read-only-queries/index.js",
+      "snippet": "error-handling",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/interacting/read-only-queries"
+      }
+    },
+    {
+      "id": "reference-koilib-contract",
+      "status": "active",
+      "doc": "docs/references/koilib/contract-class.md",
+      "line": 8,
+      "purpose": "Construct and identify a Koilib Contract",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "none",
+      "safety": "local-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "contract",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "reference-koilib-provider",
+      "status": "active",
+      "doc": "docs/references/koilib/provider-class.md",
+      "line": 7,
+      "purpose": "Read head topology through a Koilib Provider",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "mainnet",
+      "safety": "read-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "provider",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "reference-koilib-serializer",
+      "status": "active",
+      "doc": "docs/references/koilib/serializer-class.md",
+      "line": 6,
+      "purpose": "Serialize and deserialize a protobuf message",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "none",
+      "safety": "local-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "serializer",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "reference-koilib-signer",
+      "status": "active",
+      "doc": "docs/references/koilib/signer-class.md",
+      "line": 8,
+      "purpose": "Sign a local message using a disposable key",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "none",
+      "safety": "local-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "signer",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "reference-koilib-transaction",
+      "status": "active",
+      "doc": "docs/references/koilib/transaction-class.md",
+      "line": 7,
+      "purpose": "Create an empty unsigned Koilib Transaction",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "none",
+      "safety": "local-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "transaction",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "reference-koilib-utils",
+      "status": "active",
+      "doc": "docs/references/koilib/util-functions.md",
+      "line": 7,
+      "purpose": "Format integer token units as KOIN",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "none",
+      "safety": "local-only",
+      "project": "examples/javascript/references/koilib-api-tour",
+      "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "snippet": "utils",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+      }
+    },
+    {
+      "id": "transaction-setup-signer",
+      "status": "active",
+      "doc": "docs/interacting/submit-transaction.md",
+      "line": 12,
+      "purpose": "Load a dedicated testnet signer from the environment",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "credential-required",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "setup-signer",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "transaction-create-transfer",
+      "status": "active",
+      "doc": "docs/interacting/submit-transaction.md",
+      "line": 25,
+      "purpose": "Encode a testnet KOIN transfer operation",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "transfer",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "transaction-safe-options",
+      "status": "active",
+      "doc": "docs/interacting/submit-transaction.md",
+      "line": 35,
+      "purpose": "Keep testnet broadcast disabled by default",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "transaction-options",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "transaction-dry-run",
+      "status": "active",
+      "doc": "docs/interacting/submit-transaction.md",
+      "line": 47,
+      "purpose": "Preview a testnet transfer without broadcasting",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "dry-run",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "transaction-receipt-errors",
+      "status": "active",
+      "doc": "docs/interacting/submit-transaction.md",
+      "line": 59,
+      "purpose": "Reject reverted transaction receipts",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "error-handling",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "multi-build-batch",
+      "status": "active",
+      "doc": "docs/interacting/multiple-operations.md",
+      "line": 10,
+      "purpose": "Build a batch of testnet transfer operations",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "multi-operations",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "multi-atomic-pair",
+      "status": "active",
+      "doc": "docs/interacting/multiple-operations.md",
+      "line": 20,
+      "purpose": "Group two testnet transfers atomically",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "atomic-swap",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "multi-describe-updates",
+      "status": "active",
+      "doc": "docs/interacting/multiple-operations.md",
+      "line": 33,
+      "purpose": "Describe related atomic contract updates",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "complex-update",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "multi-batch-recipients",
+      "status": "active",
+      "doc": "docs/interacting/multiple-operations.md",
+      "line": 45,
+      "purpose": "Encode transfers for multiple recipients",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "batch-transfers",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "multi-operation-options",
+      "status": "active",
+      "doc": "docs/interacting/multiple-operations.md",
+      "line": 55,
+      "purpose": "Calculate conservative multi-operation options",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "multi-options",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-connect",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 18,
+      "purpose": "Connect to the current testnet and read live chain data",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "testnet-connect",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-faucet-instructions",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 30,
+      "purpose": "Build the official Telegram faucet command",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "faucet",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-client",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 43,
+      "purpose": "Create a provider for the current testnet",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "testnet-setup",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-environment-guard",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 53,
+      "purpose": "Reject accidental mainnet configuration",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "local-only",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "environment",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-unit-test-strategy",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 63,
+      "purpose": "Verify transfer encoding without broadcasting",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "unit-test-strategy",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-health-check",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 75,
+      "purpose": "Check current public testnet health",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "integration-test",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-deployment-plan",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 85,
+      "purpose": "Validate a dry-run testnet deployment plan",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "deploy-plan",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-debug-transaction",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 99,
+      "purpose": "Read a testnet transaction receipt",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "debug-transaction",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "exchange-transfer-preview",
+      "status": "active",
+      "doc": "docs/exchanges/transfer.md",
+      "line": 42,
+      "purpose": "Preview a testnet exchange deposit transfer",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "exchange-transfer",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "governance-proposal-plan",
+      "status": "active",
+      "doc": "docs/governance/submit-proposal.md",
+      "line": 8,
+      "purpose": "Validate a testnet governance proposal plan",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "governance-proposal",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "tooling-kondor-detection",
+      "status": "active",
+      "doc": "docs/getting-started/tooling-overview.md",
+      "line": 59,
+      "purpose": "Detect Kondor in the current browser",
+      "runtime": "browser",
+      "dependencies": [
+        "kondor-js@1.2.0",
+        "vite@8.1.5"
+      ],
+      "network": "wallet-selected",
+      "safety": "read-only",
+      "project": "examples/javascript/browser/kondor-dapp",
+      "source": "examples/javascript/browser/kondor-dapp/src/wallet.js",
+      "snippet": "detect",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp"
+      }
+    },
+    {
+      "id": "kondor-detect",
+      "status": "active",
+      "doc": "docs/interacting/kondor-wallet.md",
+      "line": 10,
+      "purpose": "Detect the injected Kondor wallet",
+      "runtime": "browser",
+      "dependencies": [
+        "kondor-js@1.2.0",
+        "vite@8.1.5"
+      ],
+      "network": "wallet-selected",
+      "safety": "read-only",
+      "project": "examples/javascript/browser/kondor-dapp",
+      "source": "examples/javascript/browser/kondor-dapp/src/wallet.js",
+      "snippet": "detect",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp"
+      }
+    },
+    {
+      "id": "kondor-connect",
+      "status": "active",
+      "doc": "docs/interacting/kondor-wallet.md",
+      "line": 23,
+      "purpose": "Request Kondor account access",
+      "runtime": "browser",
+      "dependencies": [
+        "kondor-js@1.2.0",
+        "vite@8.1.5"
+      ],
+      "network": "wallet-selected",
+      "safety": "user-approval",
+      "project": "examples/javascript/browser/kondor-dapp",
+      "source": "examples/javascript/browser/kondor-dapp/src/wallet.js",
+      "snippet": "connect",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp"
+      }
+    },
+    {
+      "id": "kondor-setup-signer",
+      "status": "active",
+      "doc": "docs/interacting/kondor-wallet.md",
+      "line": 35,
+      "purpose": "Obtain Kondor signer and provider",
+      "runtime": "browser",
+      "dependencies": [
+        "kondor-js@1.2.0",
+        "vite@8.1.5"
+      ],
+      "network": "wallet-selected",
+      "safety": "user-approval",
+      "project": "examples/javascript/browser/kondor-dapp",
+      "source": "examples/javascript/browser/kondor-dapp/src/wallet.js",
+      "snippet": "setup-signer",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp"
+      }
+    },
+    {
+      "id": "kondor-sign-message",
+      "status": "active",
+      "doc": "docs/interacting/kondor-wallet.md",
+      "line": 48,
+      "purpose": "Request a wallet-approved local message signature",
+      "runtime": "browser",
+      "dependencies": [
+        "kondor-js@1.2.0",
+        "vite@8.1.5"
+      ],
+      "network": "wallet-selected",
+      "safety": "user-approval",
+      "project": "examples/javascript/browser/kondor-dapp",
+      "source": "examples/javascript/browser/kondor-dapp/src/wallet.js",
+      "snippet": "request-signature",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp"
+      }
+    },
+    {
+      "id": "kondor-refresh-account",
+      "status": "active",
+      "doc": "docs/interacting/kondor-wallet.md",
+      "line": 61,
+      "purpose": "Refresh the selected Kondor account",
+      "runtime": "browser",
+      "dependencies": [
+        "kondor-js@1.2.0",
+        "vite@8.1.5"
+      ],
+      "network": "wallet-selected",
+      "safety": "read-only",
+      "project": "examples/javascript/browser/kondor-dapp",
+      "source": "examples/javascript/browser/kondor-dapp/src/wallet.js",
+      "snippet": "account-refresh",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp"
+      }
+    },
+    {
+      "id": "kondor-refresh-network",
+      "status": "active",
+      "doc": "docs/interacting/kondor-wallet.md",
+      "line": 74,
+      "purpose": "Refresh the wallet-selected chain ID",
+      "runtime": "browser",
+      "dependencies": [
+        "kondor-js@1.2.0",
+        "vite@8.1.5"
+      ],
+      "network": "wallet-selected",
+      "safety": "read-only",
+      "project": "examples/javascript/browser/kondor-dapp",
+      "source": "examples/javascript/browser/kondor-dapp/src/wallet.js",
+      "snippet": "network-refresh",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp"
+      }
+    },
+    {
+      "id": "kondor-client",
+      "status": "active",
+      "doc": "docs/interacting/kondor-wallet.md",
+      "line": 87,
+      "purpose": "Provide a complete Kondor client wrapper",
+      "runtime": "browser",
+      "dependencies": [
+        "kondor-js@1.2.0",
+        "vite@8.1.5"
+      ],
+      "network": "wallet-selected",
+      "safety": "user-approval",
+      "project": "examples/javascript/browser/kondor-dapp",
+      "source": "examples/javascript/browser/kondor-dapp/src/wallet.js",
+      "snippet": "client",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp"
+      }
+    },
+    {
+      "id": "frontend-wallet-client",
+      "status": "active",
+      "doc": "docs/interacting/tutorials/frontend-guide.md",
+      "line": 20,
+      "purpose": "Initialize a wallet-aware browser page",
+      "runtime": "browser",
+      "dependencies": [
+        "kondor-js@1.2.0",
+        "vite@8.1.5"
+      ],
+      "network": "wallet-selected",
+      "safety": "read-only",
+      "project": "examples/javascript/browser/kondor-dapp",
+      "source": "examples/javascript/browser/kondor-dapp/src/main.js",
+      "snippet": "wallet-client",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp"
+      }
+    },
+    {
+      "id": "frontend-app-controller",
+      "status": "active",
+      "doc": "docs/interacting/tutorials/frontend-guide.md",
+      "line": 32,
+      "purpose": "Wire wallet actions to explicit UI gestures",
+      "runtime": "browser",
+      "dependencies": [
+        "kondor-js@1.2.0",
+        "vite@8.1.5"
+      ],
+      "network": "wallet-selected",
+      "safety": "user-approval",
+      "project": "examples/javascript/browser/kondor-dapp",
+      "source": "examples/javascript/browser/kondor-dapp/src/main.js",
+      "snippet": "app-controller",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp"
+      }
+    },
+    {
+      "id": "frontend-vite-config",
+      "status": "active",
+      "doc": "docs/interacting/tutorials/frontend-guide.md",
+      "line": 45,
+      "purpose": "Configure the Vite development and preview servers",
+      "runtime": "browser",
+      "dependencies": [
+        "kondor-js@1.2.0",
+        "vite@8.1.5"
+      ],
+      "network": "none",
+      "safety": "local-only",
+      "project": "examples/javascript/browser/kondor-dapp",
+      "source": "examples/javascript/browser/kondor-dapp/vite.config.js",
+      "snippet": "vite-config",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp"
+      }
+    },
+    {
+      "id": "contract-testnet-deployment-config",
+      "status": "active",
+      "doc": "docs/contracts/quick-start.md",
+      "line": 21,
+      "purpose": "Create safe testnet deployment configuration",
+      "runtime": "node",
+      "dependencies": [],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/contracts/testnet-contract-client",
+      "source": "examples/javascript/contracts/testnet-contract-client/index.js",
+      "snippet": "deployment-config",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/contracts/testnet-contract-client"
+      }
+    },
+    {
+      "id": "contract-read-testnet-token",
+      "status": "active",
+      "doc": "docs/contracts/quick-start.md",
+      "line": 36,
+      "purpose": "Read deployed testnet token metadata",
+      "runtime": "node",
+      "dependencies": [],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/contracts/testnet-contract-client",
+      "source": "examples/javascript/contracts/testnet-contract-client/index.js",
+      "snippet": "read-contract",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/contracts/testnet-contract-client"
+      }
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 docs-venv
 site
+node_modules
+dist
 
 # Mac files
 .DS_Store

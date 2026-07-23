@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kondor integration example</title>
+  </head>
+  <body>
+    <main>
+      <h1>Kondor integration example</h1>
+      <p id="status">Loading…</p>
+      <button id="connect" type="button">Connect Kondor</button>
+      <p>Account: <code id="account">not connected</code></p>
+      <p>Chain ID: <code id="network">unknown</code></p>
+      <label>Message <input id="message" value="Koinos documentation example"></label>
+      <button id="sign" type="button">Sign message</button>
+      <p>Signature: <code id="signature">none</code></p>
+      <p>This demo signs a message only. It never broadcasts a transaction.</p>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

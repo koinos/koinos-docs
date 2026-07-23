@@ -1,27 +1,16 @@
-# signer class.Value.ToUpper()igner signer class.Value.ToUpper()lass
+# Signer class
 
-Koilib signer class API reference.
+`Signer` owns key material and can sign messages, transactions, and blocks.
+Production applications must load keys from secure storage or use a wallet
+extension; never put a real private key in source code.
 
-## Overview
-
-Documentation for the signer class in the Koilib JavaScript/TypeScript SDK.
-
-## Usage
-
+<!-- example: reference-koilib-signer -->
 ```javascript
-const { signerClass } = require('koilib');
-
-// Usage examples here
+--8<-- "examples/javascript/references/koilib-api-tour/index.js:signer"
 ```
 
-## Methods
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/references/koilib-api-tour/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour)
 
-Detailed method documentation will be added here.
-
-## Examples
-
-Practical examples of using this class/utility.
-
-## Next Steps
-
-See the main [References](../index.md) overview for more information.
+The example signs a local message with an explicitly disposable deterministic
+key. It never sends the key or a transaction.

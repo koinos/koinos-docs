@@ -1,47 +1,26 @@
 # How to Submit a Proposal
 
-Learn how to create and submit governance proposals on Koinos.
+Koinos governance proposals require careful community review and the correct
+on-chain governance contract for the target network. Start by preparing and
+testing the proposal on the current public testnet.
 
-## Overview
-
-Koinos governance allows the community to propose changes to the blockchain through on-chain voting mechanisms.
-
-## Proposal Process
-
-1. **Draft Proposal**: Create detailed proposal document
-2. **Community Discussion**: Engage with community for feedback
-3. **Submit Proposal**: Submit on-chain proposal
-4. **Voting Period**: Community votes on proposal
-5. **Implementation**: Approved proposals are executed
-
-## Submitting a Proposal
-
+<!-- example: governance-proposal-plan -->
 ```javascript
-// Example proposal submission
-const proposal = {
-  title: \
-Upgrade
-System
-Contract\,
-  description: \Detailed
-description
-of
-changes\,
-  operations: [
-    // Operations to execute if approved
-  ]
-};
-
-await governanceContract.functions.submitProposal(proposal);
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:governance-proposal"
 ```
 
-## Best Practices
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
-- Provide clear rationale and specifications
-- Engage community before formal submission  
-- Test changes thoroughly on testnet
-- Consider backward compatibility
+The executable example validates and prints a testnet-only proposal plan. It
+does not claim to submit to a particular governance contract and never
+broadcasts. Before an actual submission:
 
-## Next Steps
+1. Publish a detailed specification and rationale.
+2. Discuss it with the community.
+3. Identify the current governance contract and ABI.
+4. Encode and simulate every operation on testnet.
+5. Review authorization, compatibility, and failure behavior.
+6. Explicitly sign and broadcast only after approval.
 
-- [History of updates](history/vhp-bug.md)
+See the [history of updates](history/vhp-bug.md) for prior governance context.

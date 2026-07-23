@@ -1,120 +1,77 @@
 # Submit a Transaction
 
-Learn how to create and submit transactions to the Koinos blockchain.
+Transactions change blockchain state. The examples on this page target only the
+current Koinos Foundation public testnet, use test tokens with no monetary
+value, and do not broadcast unless you explicitly opt in.
 
-## Overview
+## Configure a signer
 
-Submitting transactions allows you to modify blockchain state, transfer tokens, and interact with smart contracts. Transactions on Koinos use mana instead of gas fees.
+Keep a dedicated testnet WIF outside source control:
 
-## Prerequisites
-
-- Basic understanding of [Quick Start](quick-start.md)
-- A wallet with KOIN tokens for mana
-- Node.js and Koilib installed
-
-## Basic Transaction
-
-### Setup Signer
-
+<!-- example: transaction-setup-signer -->
 ```javascript
-const { Provider, Signer, Contract, utils } = require('koilib');
-
-// Create provider and signer
-const provider = new Provider('https://api.koinos.io');
-const signer = Signer.fromWif('your-private-key');
-
-// Set provider for signer
-signer.provider = provider;
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:setup-signer"
 ```
 
-### Submit Transaction
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
+## Encode a transfer
+
+This function creates a real testnet KOIN contract operation but does not sign
+or send it:
+
+<!-- example: transaction-create-transfer -->
 ```javascript
-async function submitTransaction() {
-  try {
-    // Create contract instance
-    const koin = new Contract({
-      id: '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK',
-      provider: provider,
-      signer: signer,
-      abi: utils.tokenAbi
-    });
-    
-    // Submit transaction
-    const { transaction, receipt } = await koin.functions.transfer({
-      from: signer.address,
-      to: '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe',
-      value: utils.parseUnits('1', 8) // 1 KOIN
-    });
-    
-    console.log('Transaction ID:', transaction.id);
-    console.log('Receipt:', receipt);
-    
-    // Wait for confirmation
-    await transaction.wait();
-    console.log('Transaction confirmed!');
-    
-  } catch (error) {
-    console.error('Transaction failed:', error);
-  }
-}
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:transfer"
 ```
 
-## Transaction Options
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
-### Custom Resource Limits
+## Resource and broadcast options
 
+<!-- example: transaction-safe-options -->
 ```javascript
-const { transaction, receipt } = await contract.functions.myFunction(
-  { /* parameters */ },
-  {
-    rcLimit: 1000000000, // Custom RC limit
-    sendTransaction: true
-  }
-);
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:transaction-options"
 ```
 
-### Dry Run (Simulation)
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
+`BROADCAST` is false unless its value is exactly `true`.
+
+## Dry-run preview
+
+<!-- example: transaction-dry-run -->
 ```javascript
-// Test transaction without broadcasting
-const { transaction, receipt } = await contract.functions.transfer(
-  { /* parameters */ },
-  {
-    broadcast: false // Only simulate
-  }
-);
-
-console.log('Estimated RC usage:', receipt.rc_used);
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:dry-run"
 ```
 
-## Error Handling
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
+`npm start` executes this safe path and prints the encoded operation.
+
+## Receipt handling
+
+<!-- example: transaction-receipt-errors -->
 ```javascript
-try {
-  const { transaction, receipt } = await contract.functions.transfer(params);
-  
-  if (receipt.reverted) {
-    console.error('Transaction reverted:', receipt.logs);
-    return;
-  }
-  
-  await transaction.wait();
-} catch (error) {
-  console.error('Transaction error:', error);
-}
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:error-handling"
 ```
 
-## Best Practices
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
-1. **Always handle errors** and check for reverted transactions
-2. **Use dry runs** to estimate costs before submitting
-3. **Wait for confirmation** for important transactions
-4. **Set appropriate RC limits** to avoid failures
-5. **Keep private keys secure** and never expose them
+The complete source exports `broadcastTransfer`. It refuses to run without both
+`BROADCAST=true` and `TESTNET_WIF`. Verify the destination and amount before
+enabling it.
 
-## Next Steps
+## Best practices
 
-- [Submit multiple operations](multiple-operations.md)
-- [Work with Kondor wallet](kondor-wallet.md)
+- Use separate testnet and mainnet wallets.
+- Never paste a WIF into code, documentation, or an online runner.
+- Preview and test the operation before broadcasting.
+- Check `receipt.reverted` and wait for confirmation where needed.
 
+Continue with [multiple operations](multiple-operations.md).

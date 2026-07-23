@@ -1,27 +1,14 @@
-# provider class.Value.ToUpper()rovider provider class.Value.ToUpper()lass
+# Provider class
 
-Koilib provider class API reference.
+`Provider` connects Koilib to a Koinos JSON-RPC endpoint. Read calls such as
+`getHeadInfo()` do not require an account or mana.
 
-## Overview
-
-Documentation for the provider class in the Koilib JavaScript/TypeScript SDK.
-
-## Usage
-
+<!-- example: reference-koilib-provider -->
 ```javascript
-const { providerClass } = require('koilib');
-
-// Usage examples here
+--8<-- "examples/javascript/references/koilib-api-tour/index.js:provider"
 ```
 
-## Methods
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/references/koilib-api-tour/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour)
 
-Detailed method documentation will be added here.
-
-## Examples
-
-Practical examples of using this class/utility.
-
-## Next Steps
-
-See the main [References](../index.md) overview for more information.
+The complete example reads the current mainnet height.

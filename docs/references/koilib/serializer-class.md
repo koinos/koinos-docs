@@ -1,27 +1,14 @@
-# serializer class.Value.ToUpper()erializer serializer class.Value.ToUpper()lass
+# Serializer class
 
-Koilib serializer class API reference.
+`Serializer` encodes and decodes Protocol Buffer messages from a descriptor.
 
-## Overview
-
-Documentation for the serializer class in the Koilib JavaScript/TypeScript SDK.
-
-## Usage
-
+<!-- example: reference-koilib-serializer -->
 ```javascript
-const { serializerClass } = require('koilib');
-
-// Usage examples here
+--8<-- "examples/javascript/references/koilib-api-tour/index.js:serializer"
 ```
 
-## Methods
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/references/koilib-api-tour/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour)
 
-Detailed method documentation will be added here.
-
-## Examples
-
-Practical examples of using this class/utility.
-
-## Next Steps
-
-See the main [References](../index.md) overview for more information.
+This local round trip needs no network connection and checks that the decoded
+message matches the input.

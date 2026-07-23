@@ -9,7 +9,7 @@
       "id": "getting-started-read-koin-balance",
       "status": "active",
       "doc": "docs/getting-started/index.md",
-      "line": 29,
+      "line": 48,
       "purpose": "Read a mainnet KOIN balance for a public address",
       "runtime": "node",
       "dependencies": [],
@@ -745,7 +745,7 @@
       "id": "tooling-kondor-detection",
       "status": "active",
       "doc": "docs/getting-started/tooling-overview.md",
-      "line": 56,
+      "line": 59,
       "purpose": "Detect Kondor in the current browser",
       "runtime": "browser",
       "dependencies": [

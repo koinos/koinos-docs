@@ -9,8 +9,11 @@
   "scripts": {
     "examples:lines": "node scripts/sync-javascript-example-lines.mjs",
     "examples:verify": "node scripts/verify-javascript-examples.mjs",
+    "examples:syntax": "node scripts/check-javascript-syntax.mjs",
+    "examples:start": "node scripts/run-example-projects.mjs start",
     "examples:test": "npm test --workspaces --if-present",
-    "examples:smoke": "npm run smoke --workspaces --if-present"
+    "examples:smoke": "node scripts/run-example-projects.mjs smoke",
+    "docs:links": "node scripts/check-documentation-links.mjs"
   },
   "engines": {
     "node": ">=20"

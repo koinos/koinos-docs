@@ -1,155 +1,55 @@
-# Quick Start: Launch a Token with Arkinos
+# Smart Contract Quick Start
 
-Create and deploy your first token contract using the Arkinos framework.
+Compile and test a contract locally before considering deployment. The public
+testnet can reset, and test keys must remain separate from mainnet keys.
 
 ## Prerequisites
 
-- Node.js 16+ installed
-- Basic TypeScript/AssemblyScript knowledge
-- Testnet KOIN for deployment (get from [faucet](https://faucet.koinos.io))
+- Node.js for the executable client example
+- Your contract toolchain and a compiled `.wasm` file for deployment
+- A dedicated funded testnet account
 
-## Installation
+The canonical public endpoint is:
 
-Install Arkinos CLI globally:
-
-```bash
-npm install -g @arkinos/cli
+```text
+https://testnet.koinosfoundation.org/jsonrpc
 ```
 
-## Create a Token Project
+## Safe deployment configuration
 
-1. **Initialize a new token project:**
-```bash
-arkinos init my-token --template token
-cd my-token
+<!-- example: contract-testnet-deployment-config -->
+```javascript
+--8<-- "examples/javascript/contracts/testnet-contract-client/index.js:deployment-config"
 ```
 
-2. **Install dependencies:**
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/contracts/testnet-contract-client/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/contracts/testnet-contract-client)
+
+The example records the key's environment-variable name, never the key itself,
+and defaults to `broadcast: false`. A deployment tool must additionally load
+the compiled bytecode and ABI, validate the current chain ID, and obtain
+explicit approval before broadcast.
+
+## Read a deployed token contract
+
+<!-- example: contract-read-testnet-token -->
+```javascript
+--8<-- "examples/javascript/contracts/testnet-contract-client/index.js:read-contract"
+```
+
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/contracts/testnet-contract-client/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/contracts/testnet-contract-client)
+
+The complete Node.js program reads the current testnet KOIN metadata and prints
+the dry-run deployment defaults. It requires no key and changes no state.
+
+## Verify
+
 ```bash
 npm install
+npm test
+npm start
 ```
 
-## Project Structure
-
-```
-my-token/
-├── assembly/
-│   ├── MyToken.ts      # Main contract
-│   └── proto/          # Protocol buffers
-├── tests/
-│   └── MyToken.spec.ts # Contract tests
-├── arkinos.config.js   # Configuration
-└── package.json
-```
-
-## Customize Your Token
-
-Edit `assembly/MyToken.ts`:
-
-```typescript
-import { System, Protobuf, authority } from "@koinos/sdk-as";
-import { mytoken } from "./proto/mytoken";
-
-export class MyToken {
-  callArgs: System.getArgumentsReturn | null;
-
-  constructor() {
-    this.callArgs = System.getArguments();
-  }
-
-  /**
-   * Get token name
-   */
-  name(args: mytoken.name_arguments): mytoken.name_result {
-    return new mytoken.name_result("My Awesome Token");
-  }
-
-  /**
-   * Get token symbol
-   */
-  symbol(args: mytoken.symbol_arguments): mytoken.symbol_result {
-    return new mytoken.symbol_result("MAT");
-  }
-
-  /**
-   * Get token decimals
-   */
-  decimals(args: mytoken.decimals_arguments): mytoken.decimals_result {
-    return new mytoken.decimals_result(8);
-  }
-
-  // ... more token functions
-}
-```
-
-## Build and Test
-
-1. **Build the contract:**
-```bash
-arkinos build
-```
-
-2. **Run tests:**
-```bash
-arkinos test
-```
-
-3. **Generate TypeScript bindings:**
-```bash
-arkinos generate
-```
-
-## Deploy to Testnet
-
-1. **Configure deployment in `arkinos.config.js`:**
-```javascript
-module.exports = {
-  networks: {
-    harbinger: {
-      rpcUrl: "https://harbinger-api.koinos.io",
-      accounts: {
-        manaSharer: {
-          privateKey: "YOUR_PRIVATE_KEY" // Use environment variable
-        }
-      }
-    }
-  }
-};
-```
-
-2. **Deploy:**
-```bash
-arkinos deploy --network harbinger
-```
-
-## Interact with Your Token
-
-After deployment, you'll get a contract address. Test it:
-
-```javascript
-const { Provider, Contract } = require('koilib');
-const abi = require('./abi/mytoken-abi.json');
-
-const provider = new Provider('https://harbinger-api.koinos.io');
-const contract = new Contract({
-  id: 'YOUR_CONTRACT_ADDRESS',
-  provider,
-  abi
-});
-
-// Get token name
-const { result } = await contract.functions.name();
-console.log('Token name:', result.value);
-```
-
-## What's Next?
-
-- [Learn about storage](storage.md) to understand contract data
-- [Explore external functions](external-functions.md) for contract interfaces
-- [Call other contracts](call-other-contracts.md) for advanced interactions
-
-## Troubleshooting
-
-**Build Errors**: Check TypeScript syntax and imports
-**Test Failures**: Verify test logic and contract functions
-**Deployment Issues**: Ensure sufficient testnet KOIN and correct network configuration
+For your own contract, replace the default contract ID only after deployment
+and update the read logic to match the deployed ABI.

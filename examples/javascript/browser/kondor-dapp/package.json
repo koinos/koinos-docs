@@ -1,0 +1,17 @@
+{
+  "name": "@koinos-docs/browser-kondor-dapp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "kondor-js": "1.2.0"
+  },
+  "devDependencies": {
+    "vite": "8.1.5"
+  }
+}

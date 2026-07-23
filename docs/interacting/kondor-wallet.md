@@ -1,300 +1,96 @@
-# Working with Kondor Wallet
+# Kondor Wallet Integration
 
-Learn how to integrate Kondor wallet into your dApps for seamless user interaction.
+Kondor is a browser-extension wallet. A website can request account access and
+signatures, but it cannot read private keys. Every sensitive action must remain
+visible to and approved by the user.
 
-## Overview
+## Detect Kondor
 
-Kondor is the primary browser wallet for Koinos, providing secure key management and dApp integration. It allows users to sign transactions without exposing their private keys to applications.
-
-## Installation
-
-Users need to install Kondor from:
-- [Chrome Web Store](https://chrome.google.com/webstore)
-- [Firefox Add-ons](https://addons.mozilla.org/firefox)
-
-## Detection and Connection
-
-### Check if Kondor is Available
-
+<!-- example: kondor-detect -->
 ```javascript
-async function checkKondor() {
-  if (typeof window.kondor !== 'undefined') {
-    console.log('Kondor is installed!');
-    return true;
-  } else {
-    console.log('Kondor not found. Please install Kondor wallet.');
-    return false;
-  }
-}
+--8<-- "examples/javascript/browser/kondor-dapp/src/wallet.js:detect"
 ```
 
-### Request Connection
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/browser/kondor-dapp/src/wallet.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp)
 
+An online runner cannot access an extension installed in another browser or
+profile. It will truthfully show that Kondor is unavailable.
+
+## Request account access
+
+<!-- example: kondor-connect -->
 ```javascript
-async function connectKondor() {
-  try {
-    // Request account access
-    const accounts = await window.kondor.getAccounts();
-    
-    if (accounts.length > 0) {
-      console.log('Connected account:', accounts[0]);
-      return accounts[0];
-    } else {
-      console.log('No accounts available');
-      return null;
-    }
-  } catch (error) {
-    console.error('Connection failed:', error);
-    return null;
-  }
-}
+--8<-- "examples/javascript/browser/kondor-dapp/src/wallet.js:connect"
 ```
 
-## Using Kondor with Koilib
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/browser/kondor-dapp/src/wallet.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp)
 
-### Setup Signer
+Call this from a user gesture such as a Connect button and handle rejection.
 
+## Set up signer and provider
+
+<!-- example: kondor-setup-signer -->
 ```javascript
-const { Provider, Contract, utils } = require('koilib');
-
-async function setupKondorSigner() {
-  if (!window.kondor) {
-    throw new Error('Kondor wallet not found');
-  }
-  
-  // Get Kondor signer
-  const signer = window.kondor.getSigner();
-  
-  // Setup provider
-  const provider = new Provider('https://api.koinos.io');
-  signer.provider = provider;
-  
-  return signer;
-}
+--8<-- "examples/javascript/browser/kondor-dapp/src/wallet.js:setup-signer"
 ```
 
-### Sign Transactions
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/browser/kondor-dapp/src/wallet.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp)
 
+The provider comes from the wallet, so the application observes the network the
+user selected instead of silently forcing a stale endpoint.
+
+## Request a signature
+
+<!-- example: kondor-sign-message -->
 ```javascript
-async function sendTokens() {
-  try {
-    const signer = await setupKondorSigner();
-    
-    // Create contract instance with Kondor signer
-    const koin = new Contract({
-      id: '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK',
-      provider: signer.provider,
-      signer: signer,
-      abi: utils.tokenAbi
-    });
-    
-    // Send transaction (Kondor will prompt user)
-    const { transaction, receipt } = await koin.functions.transfer({
-      from: signer.address,
-      to: '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe',
-      value: utils.parseUnits('1', 8) // 1 KOIN
-    });
-    
-    console.log('Transaction submitted:', transaction.id);
-    
-    // Wait for confirmation
-    await transaction.wait();
-    console.log('Transaction confirmed!');
-    
-  } catch (error) {
-    if (error.message.includes('User rejected')) {
-      console.log('User cancelled transaction');
-    } else {
-      console.error('Transaction failed:', error);
-    }
-  }
-}
+--8<-- "examples/javascript/browser/kondor-dapp/src/wallet.js:request-signature"
 ```
 
-## Handling User Events
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/browser/kondor-dapp/src/wallet.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp)
 
-### Account Changes
+The demo signs a plain message only and never broadcasts a transaction. The
+wallet still prompts the user to approve the signature.
 
+## Refresh account state
+
+<!-- example: kondor-refresh-account -->
 ```javascript
-// Listen for account changes
-window.kondor.on('accountsChanged', (accounts) => {
-  console.log('Accounts changed:', accounts);
-  if (accounts.length === 0) {
-    // User disconnected
-    handleDisconnection();
-  } else {
-    // User switched accounts
-    handleAccountChange(accounts[0]);
-  }
-});
-
-function handleAccountChange(newAccount) {
-  console.log('Switched to account:', newAccount);
-  // Update your app state
-  updateUI(newAccount);
-}
-
-function handleDisconnection() {
-  console.log('User disconnected');
-  // Clear app state
-  clearUserData();
-}
+--8<-- "examples/javascript/browser/kondor-dapp/src/wallet.js:account-refresh"
 ```
 
-### Network Changes
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/browser/kondor-dapp/src/wallet.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp)
 
+Refresh after focus or before an action so a changed or disconnected account is
+not mistaken for the previous one.
+
+## Refresh network state
+
+<!-- example: kondor-refresh-network -->
 ```javascript
-// Listen for network changes
-window.kondor.on('networkChanged', (network) => {
-  console.log('Network changed to:', network);
-  
-  if (network === 'mainnet') {
-    // Switch to mainnet endpoints
-    updateProvider('https://api.koinos.io');
-  } else if (network === 'testnet') {
-    // Switch to testnet endpoints
-    updateProvider('https://harbinger-api.koinos.io');
-  }
-});
+--8<-- "examples/javascript/browser/kondor-dapp/src/wallet.js:network-refresh"
 ```
 
-## Complete Integration Example
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/browser/kondor-dapp/src/wallet.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp)
 
+Compare chain IDs, not friendly labels, before preparing a state-changing
+operation.
+
+## Complete client
+
+<!-- example: kondor-client -->
 ```javascript
-class KondorIntegration {
-  constructor() {
-    this.signer = null;
-    this.provider = null;
-    this.connected = false;
-  }
-  
-  async init() {
-    if (!this.checkKondorAvailable()) {
-      return false;
-    }
-    
-    await this.setupEventListeners();
-    return true;
-  }
-  
-  checkKondorAvailable() {
-    return typeof window.kondor !== 'undefined';
-  }
-  
-  async connect() {
-    try {
-      const accounts = await window.kondor.getAccounts();
-      
-      if (accounts.length > 0) {
-        this.signer = window.kondor.getSigner();
-        this.provider = new Provider('https://api.koinos.io');
-        this.signer.provider = this.provider;
-        this.connected = true;
-        
-        console.log('Connected to Kondor:', accounts[0]);
-        return accounts[0];
-      }
-    } catch (error) {
-      console.error('Connection failed:', error);
-    }
-    
-    return null;
-  }
-  
-  async setupEventListeners() {
-    window.kondor.on('accountsChanged', (accounts) => {
-      if (accounts.length === 0) {
-        this.disconnect();
-      } else {
-        this.handleAccountChange(accounts[0]);
-      }
-    });
-    
-    window.kondor.on('networkChanged', (network) => {
-      this.handleNetworkChange(network);
-    });
-  }
-  
-  disconnect() {
-    this.signer = null;
-    this.provider = null;
-    this.connected = false;
-    console.log('Disconnected from Kondor');
-  }
-  
-  handleAccountChange(account) {
-    console.log('Account changed:', account);
-    // Reinitialize signer with new account
-    this.connect();
-  }
-  
-  handleNetworkChange(network) {
-    console.log('Network changed:', network);
-    const endpoint = network === 'mainnet' 
-      ? 'https://api.koinos.io' 
-      : 'https://harbinger-api.koinos.io';
-    
-    this.provider = new Provider(endpoint);
-    if (this.signer) {
-      this.signer.provider = this.provider;
-    }
-  }
-  
-  async sendTransaction(contractAddress, functionName, args) {
-    if (!this.connected) {
-      throw new Error('Not connected to Kondor');
-    }
-    
-    const contract = new Contract({
-      id: contractAddress,
-      provider: this.provider,
-      signer: this.signer,
-      abi: contractAbi // Your contract ABI
-    });
-    
-    return await contract.functions[functionName](args);
-  }
-}
-
-// Usage
-const kondor = new KondorIntegration();
-
-async function initApp() {
-  const available = await kondor.init();
-  
-  if (!available) {
-    showInstallPrompt();
-    return;
-  }
-  
-  // Add connect button
-  document.getElementById('connect-btn').addEventListener('click', async () => {
-    const account = await kondor.connect();
-    if (account) {
-      showConnectedState(account);
-    }
-  });
-}
+--8<-- "examples/javascript/browser/kondor-dapp/src/wallet.js:client"
 ```
 
-## Best Practices
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/browser/kondor-dapp/src/wallet.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp)
 
-1. **Always check if Kondor is available** before using
-2. **Handle user rejection gracefully** - users may cancel transactions
-3. **Listen for account/network changes** and update your app accordingly
-4. **Provide clear feedback** to users about transaction status
-5. **Test on both mainnet and testnet** networks
-6. **Handle errors appropriately** with user-friendly messages
-
-## Troubleshooting
-
-**Kondor not detected**: User needs to install the extension
-**Connection failed**: User may have denied permission
-**Transaction failed**: Check network, balance, and contract parameters
-**Wrong network**: Ensure user is on the correct network (mainnet/testnet)
-
-## Next Steps
-
-- [Explore testnet](testnet.md)
-- [Learn about common tasks](../exchanges/head-block.md)
-
+The linked Vite project includes UI wiring, automated mocks, and a production
+build. Run it in the browser profile where Kondor is installed to exercise
+wallet approval.

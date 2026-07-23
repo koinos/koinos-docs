@@ -32,10 +32,22 @@ Run the enforcement checks with:
 
 ```bash
 npm run examples:verify
+npm run examples:syntax
 npm run examples:test
+npm run examples:start
+npm run examples:smoke
+npm run docs:links
 ```
 
 Use `npm run examples:lines` after moving an example within a Markdown page.
+The permanent source and runner links use `master`, the repository's default
+and publication branch. During pull-request review, exercise an equivalent URL
+with the feature branch substituted; never commit a disposable branch in a
+permanent documentation link.
+
+The CI workflow installs all workspaces from the lockfile, runs every project
+start command with a bound, executes tests and safe live smoke reads, builds
+the browser tutorial, checks links, and builds MkDocs.
 
 ## Safety classes
 
@@ -45,6 +57,10 @@ Use `npm run examples:lines` after moving an example within a Markdown page.
   before broadcasting.
 - `browser-wallet`: requires a user-controlled wallet approval and must explain
   hosted-runner limitations.
+- `user-approval`: requires an explicit wallet action but does not broadcast in
+  the documented project.
+- `credential-required`: loads a dedicated testnet credential locally and must
+  never ask for it in a hosted runner.
 
 Never put a WIF, recovery phrase, wallet password, or production secret in an
 example or public browser runner.

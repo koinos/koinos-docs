@@ -52,12 +52,16 @@ It does not broadcast a transaction.
 - Multi-account support
 
 #### Integration:
+<!-- example: tooling-kondor-detection -->
 ```javascript
-// Check if Kondor is available
-if (window.kondor) {
-  const signer = window.kondor.getSigner();
-}
+--8<-- "examples/javascript/browser/kondor-dapp/src/wallet.js:detect"
 ```
+
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/browser/kondor-dapp/src/wallet.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp)
+
+The runner shows the unavailable-wallet state when Kondor is not installed in
+that browser. Account and signature requests always require user approval.
 
 ### Arkinos
 **Smart Contract Development Framework**

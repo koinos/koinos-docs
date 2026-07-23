@@ -1,274 +1,107 @@
 # Testnet Development
 
-Learn how to use the Koinos testnet (Harbinger) for development and testing.
+The current public testnet is operated by the Koinos Foundation. It can reset,
+and its vKOIN has no monetary value. Do not reuse mainnet keys or assume old
+testnet addresses and chain IDs are still valid.
 
-## Overview
+| Setting | Current value |
+| --- | --- |
+| JSON-RPC | `https://testnet.koinosfoundation.org/jsonrpc` |
+| Health | `https://testnet.koinosfoundation.org/health` |
+| KOIN contract | `1FaSvLjQJsCJKq5ybmGsMMQs8RQYyVv8ju` |
+| Faucet | [KoinosTestnetFaucetBot](https://t.me/KoinosTestnetFaucetBot) |
+| Operations source | [koinos/koinos-testnet](https://github.com/koinos/koinos-testnet) |
 
-The Koinos testnet, called "Harbinger," is a testing environment that mirrors mainnet functionality but uses test tokens with no real value. It's perfect for development, testing, and experimentation.
+## Connect and retrieve live chain data
 
-## Network Configuration
-
-### Testnet Details
-
-| Setting | Value |
-|---------|-------|
-| Network Name | Harbinger (Testnet) |
-| Chain ID | `EiBncD4pKRIQWco_WRqo5Q-xnXR7JuO3PtZv983mKdKHSQ` |
-| API Endpoint | `https://harbinger-api.koinos.io` |
-| RPC Endpoint | `https://harbinger-api.koinos.io` |
-| Explorer | [Harbinger Explorer](https://harbinger.koinosblocks.com) |
-
-### Connecting to Testnet
-
-#### Using Koilib
-
+<!-- example: testnet-connect -->
 ```javascript
-const { Provider } = require('koilib');
-
-// Connect to testnet
-const provider = new Provider('https://harbinger-api.koinos.io');
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:testnet-connect"
 ```
 
-#### Using Kondor Wallet
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
-1. Open Kondor wallet
-2. Click on network selector (usually shows "Mainnet")
-3. Select "Harbinger" or "Testnet"
-4. Confirm network switch
+Retrieve the chain ID at runtime because a testnet reset can change it.
 
-## Getting Test Tokens
+## Request vKOIN
 
-### Testnet Faucet
-
-Get free test KOIN from the faucet:
-
-1. **Visit the faucet**: [https://faucet.koinos.io](https://faucet.koinos.io)
-2. **Enter your testnet address**
-3. **Complete the captcha**
-4. **Receive test KOIN** (usually 100 KOIN)
-
-### Using the Faucet Programmatically
-
+<!-- example: testnet-faucet-instructions -->
 ```javascript
-const axios = require('axios');
-
-async function requestTestTokens(address) {
-  try {
-    const response = await axios.post('https://faucet.koinos.io/api/faucet', {
-      address: address,
-      captcha_token: 'your-captcha-token' // If required
-    });
-    
-    console.log('Faucet response:', response.data);
-  } catch (error) {
-    console.error('Faucet request failed:', error);
-  }
-}
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:faucet"
 ```
 
-## Development Setup
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
-### Basic Testnet Setup
+Send the returned `/faucet ADDRESS` command to the Telegram bot. Never pay for
+testnet tokens and never send mainnet funds to a faucet address.
 
+## Create a testnet client
+
+<!-- example: testnet-client -->
 ```javascript
-const { Provider, Signer, Contract, utils } = require('koilib');
-
-// Testnet configuration
-const TESTNET_CONFIG = {
-  endpoint: 'https://harbinger-api.koinos.io',
-  chainId: 'EiBncD4pKRIQWco_WRqo5Q-xnXR7JuO3PtZv983mKdKHSQ',
-  koinContract: '19GYjDBVXU7keLbYvMLazsGQn3GTWHjHkK'
-};
-
-async function setupTestnet() {
-  // Create provider
-  const provider = new Provider(TESTNET_CONFIG.endpoint);
-  
-  // Create signer (use test private key)
-  const signer = Signer.fromPrivateKey('your-test-private-key');
-  signer.provider = provider;
-  
-  // Create KOIN contract instance
-  const koin = new Contract({
-    id: TESTNET_CONFIG.koinContract,
-    provider: provider,
-    signer: signer,
-    abi: utils.tokenAbi
-  });
-  
-  return { provider, signer, koin };
-}
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:testnet-setup"
 ```
 
-### Environment Configuration
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
+## Prevent accidental mainnet use
+
+<!-- example: testnet-environment-guard -->
 ```javascript
-// config.js
-const config = {
-  development: {
-    network: 'testnet',
-    endpoint: 'https://harbinger-api.koinos.io',
-    chainId: 'EiBncD4pKRIQWco_WRqo5Q-xnXR7JuO3PtZv983mKdKHSQ'
-  },
-  production: {
-    network: 'mainnet',
-    endpoint: 'https://api.koinos.io',
-    chainId: 'EiBZK_GGVP0H_fXVAM3j6EAuz3-B-l3ejxRSewi7qIBfSA'
-  }
-};
-
-const env = process.env.NODE_ENV || 'development';
-module.exports = config[env];
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:environment"
 ```
 
-## Testing Strategies
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
-### Unit Testing
+## Unit-test operation encoding
 
+<!-- example: testnet-unit-test-strategy -->
 ```javascript
-// test/contract.test.js
-const { Provider, Signer, Contract } = require('koilib');
-
-describe('Contract Tests', () => {
-  let provider, signer, contract;
-  
-  beforeAll(async () => {
-    // Use testnet for all tests
-    provider = new Provider('https://harbinger-api.koinos.io');
-    signer = Signer.fromPrivateKey(process.env.TEST_PRIVATE_KEY);
-    signer.provider = provider;
-    
-    contract = new Contract({
-      id: 'your-test-contract-address',
-      provider,
-      signer,
-      abi: contractAbi
-    });
-  });
-  
-  test('should read contract data', async () => {
-    const { result } = await contract.functions.getData();
-    expect(result).toBeDefined();
-  });
-  
-  test('should update contract state', async () => {
-    const { transaction, receipt } = await contract.functions.updateData({
-      newValue: 'test-value'
-    });
-    
-    expect(receipt.reverted).toBe(false);
-    await transaction.wait();
-  });
-});
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:unit-test-strategy"
 ```
 
-### Integration Testing
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
+This verifies the encoded entry point without signing or broadcasting.
+
+## Integration-test availability
+
+<!-- example: testnet-health-check -->
 ```javascript
-// test/integration.test.js
-describe('Integration Tests', () => {
-  test('complete user flow', async () => {
-    // 1. Get test tokens from faucet
-    await requestTestTokens(testAddress);
-    
-    // 2. Deploy test contract
-    const contract = await deployTestContract();
-    
-    // 3. Interact with contract
-    const result = await contract.functions.testFunction();
-    
-    // 4. Verify results
-    expect(result.success).toBe(true);
-  });
-});
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:integration-test"
 ```
 
-## Contract Deployment
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
-### Deploy to Testnet
+## Plan a deployment
 
+<!-- example: testnet-deployment-plan -->
 ```javascript
-async function deployToTestnet() {
-  const provider = new Provider('https://harbinger-api.koinos.io');
-  const signer = Signer.fromPrivateKey(process.env.TESTNET_PRIVATE_KEY);
-  signer.provider = provider;
-  
-  // Deploy contract
-  const contract = new Contract({
-    signer,
-    provider,
-    bytecode: contractBytecode,
-    abi: contractAbi
-  });
-  
-  const { transaction, receipt } = await contract.deploy();
-  
-  console.log('Contract deployed to testnet:', contract.getId());
-  await transaction.wait();
-  
-  return contract;
-}
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:deploy-plan"
 ```
 
-## Debugging and Monitoring
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
-### Transaction Debugging
+The runner validates and prints a plan. Actual deployment additionally requires
+compiled bytecode, its ABI, a dedicated funded testnet signer, and explicit
+broadcast.
 
+## Debug a transaction
+
+<!-- example: testnet-debug-transaction -->
 ```javascript
-async function debugTransaction(txId) {
-  const provider = new Provider('https://harbinger-api.koinos.io');
-  
-  try {
-    const transaction = await provider.getTransaction(txId);
-    const receipt = await provider.getTransactionReceipt(txId);
-    
-    console.log('Transaction:', transaction);
-    console.log('Receipt:', receipt);
-    
-    if (receipt.reverted) {
-      console.log('Transaction reverted:', receipt.logs);
-    }
-  } catch (error) {
-    console.error('Debug failed:', error);
-  }
-}
+--8<-- "examples/javascript/testnet/transaction-workflows/index.js:debug-transaction"
 ```
 
-### Monitoring Tools
+[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/testnet/transaction-workflows/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows)
 
-- **[Harbinger Explorer](https://harbinger.koinosblocks.com)**: View transactions and blocks
-- **[Koiner Testnet](https://harbinger.koiner.app)**: Advanced blockchain explorer
-- **Logs**: Monitor contract logs and events
-
-## Best Practices
-
-1. **Always test on testnet first** before mainnet deployment
-2. **Use separate wallets** for testnet and mainnet
-3. **Keep testnet private keys separate** from mainnet keys
-4. **Test edge cases** and error conditions
-5. **Verify contract behavior** thoroughly before mainnet deployment
-6. **Use version control** for contract deployments
-7. **Document test procedures** for reproducibility
-
-## Common Issues
-
-**Insufficient test tokens**: Use the faucet to get more KOIN
-**Network mismatch**: Ensure you're connected to Harbinger testnet
-**Contract not found**: Verify contract address on testnet
-**Transaction failures**: Check testnet block explorer for details
-
-## Testnet vs Mainnet Differences
-
-| Aspect | Testnet | Mainnet |
-|--------|---------|---------|
-| Tokens | No value | Real value |
-| Speed | Similar | Similar |
-| Fees | Free (test KOIN) | Real KOIN |
-| Stability | May reset | Permanent |
-| Data | Test data | Production data |
-
-## Next Steps
-
-- [Learn about common tasks](../exchanges/head-block.md)
-- [Explore frontend tutorials](tutorials/frontend-guide.md)
-
+Provide a real testnet transaction ID when calling this exported function.
+`npm run smoke` performs only health, head, and chain-ID reads.

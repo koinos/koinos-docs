@@ -1,0 +1,14 @@
+{
+  "name": "@koinos-docs/testnet-transaction-workflows",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node --test",
+    "smoke": "node index.js --live"
+  },
+  "dependencies": {
+    "koilib": "9.2.0"
+  }
+}

@@ -340,6 +340,406 @@
         "type": "stackblitz",
         "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
       }
+    },
+    {
+      "id": "transaction-setup-signer",
+      "status": "active",
+      "doc": "docs/interacting/submit-transaction.md",
+      "line": 12,
+      "purpose": "Load a dedicated testnet signer from the environment",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "credential-required",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "setup-signer",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "transaction-create-transfer",
+      "status": "active",
+      "doc": "docs/interacting/submit-transaction.md",
+      "line": 25,
+      "purpose": "Encode a testnet KOIN transfer operation",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "transfer",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "transaction-safe-options",
+      "status": "active",
+      "doc": "docs/interacting/submit-transaction.md",
+      "line": 35,
+      "purpose": "Keep testnet broadcast disabled by default",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "transaction-options",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "transaction-dry-run",
+      "status": "active",
+      "doc": "docs/interacting/submit-transaction.md",
+      "line": 47,
+      "purpose": "Preview a testnet transfer without broadcasting",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "dry-run",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "transaction-receipt-errors",
+      "status": "active",
+      "doc": "docs/interacting/submit-transaction.md",
+      "line": 59,
+      "purpose": "Reject reverted transaction receipts",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "error-handling",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "multi-build-batch",
+      "status": "active",
+      "doc": "docs/interacting/multiple-operations.md",
+      "line": 10,
+      "purpose": "Build a batch of testnet transfer operations",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "multi-operations",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "multi-atomic-pair",
+      "status": "active",
+      "doc": "docs/interacting/multiple-operations.md",
+      "line": 20,
+      "purpose": "Group two testnet transfers atomically",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "atomic-swap",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "multi-describe-updates",
+      "status": "active",
+      "doc": "docs/interacting/multiple-operations.md",
+      "line": 33,
+      "purpose": "Describe related atomic contract updates",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "complex-update",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "multi-batch-recipients",
+      "status": "active",
+      "doc": "docs/interacting/multiple-operations.md",
+      "line": 45,
+      "purpose": "Encode transfers for multiple recipients",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "batch-transfers",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "multi-operation-options",
+      "status": "active",
+      "doc": "docs/interacting/multiple-operations.md",
+      "line": 55,
+      "purpose": "Calculate conservative multi-operation options",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "multi-options",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-connect",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 18,
+      "purpose": "Connect to the current testnet and read live chain data",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "testnet-connect",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-faucet-instructions",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 30,
+      "purpose": "Build the official Telegram faucet command",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "faucet",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-client",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 43,
+      "purpose": "Create a provider for the current testnet",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "testnet-setup",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-environment-guard",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 53,
+      "purpose": "Reject accidental mainnet configuration",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "local-only",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "environment",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-unit-test-strategy",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 63,
+      "purpose": "Verify transfer encoding without broadcasting",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "unit-test-strategy",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-health-check",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 75,
+      "purpose": "Check current public testnet health",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "integration-test",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-deployment-plan",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 85,
+      "purpose": "Validate a dry-run testnet deployment plan",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "deploy-plan",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "testnet-debug-transaction",
+      "status": "active",
+      "doc": "docs/interacting/testnet.md",
+      "line": 99,
+      "purpose": "Read a testnet transaction receipt",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "read-only",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "debug-transaction",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "exchange-transfer-preview",
+      "status": "active",
+      "doc": "docs/exchanges/transfer.md",
+      "line": 42,
+      "purpose": "Preview a testnet exchange deposit transfer",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "exchange-transfer",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
+    },
+    {
+      "id": "governance-proposal-plan",
+      "status": "active",
+      "doc": "docs/governance/submit-proposal.md",
+      "line": 8,
+      "purpose": "Validate a testnet governance proposal plan",
+      "runtime": "node",
+      "dependencies": [
+        "koilib@9.2.0"
+      ],
+      "network": "testnet",
+      "safety": "dry-run",
+      "project": "examples/javascript/testnet/transaction-workflows",
+      "source": "examples/javascript/testnet/transaction-workflows/index.js",
+      "snippet": "governance-proposal",
+      "runner": {
+        "type": "stackblitz",
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/testnet/transaction-workflows"
+      }
     }
   ],
   "removed": [

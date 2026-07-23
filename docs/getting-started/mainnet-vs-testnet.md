@@ -33,8 +33,8 @@ and print the live chain ID and head height.
 --8<-- "examples/javascript/getting-started/network-provider/index.js:mainnet"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/getting-started/network-provider/index.js) ·
-[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/network-provider?startScript=start)
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/javascript/getting-started/network-provider/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/dev/examples/javascript/getting-started/network-provider?startScript=start)
 
 ### Public testnet
 
@@ -43,8 +43,8 @@ and print the live chain ID and head height.
 --8<-- "examples/javascript/getting-started/network-provider/index.js:testnet"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/getting-started/network-provider/index.js) ·
-[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/network-provider?startScript=testnet)
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/javascript/getting-started/network-provider/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/dev/examples/javascript/getting-started/network-provider?startScript=testnet)
 
 Koilib sends JSON-RPC requests directly to the URL supplied to `Provider`.
 The testnet root, `https://testnet.koinosfoundation.org/`, is retained as a

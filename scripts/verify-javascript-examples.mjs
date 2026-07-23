@@ -108,9 +108,10 @@ for (const docPath of walk(path.join(root, "docs"))) {
     }
 
     const links = findLinks(lines, closingFenceIndex);
+    const sourceRef = entry.sourceRef ?? manifest.publishedBranch;
     const expectedSourceUrl =
       `https://github.com/koinos/koinos-docs/blob/` +
-      `${manifest.publishedBranch}/${entry.source}`;
+      `${sourceRef}/${entry.source}`;
     if (links.source !== expectedSourceUrl) {
       errors.push(
         `${doc}:${line}: ${id} source link must be ${expectedSourceUrl}`

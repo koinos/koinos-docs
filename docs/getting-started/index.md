@@ -49,8 +49,8 @@ does not create a wallet, request a private key, or submit a transaction.
 --8<-- "examples/javascript/getting-started/read-koin-balance/index.js:program"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/getting-started/read-koin-balance/index.js) ·
-[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/read-koin-balance?startScript=start)
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/javascript/getting-started/read-koin-balance/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/dev/examples/javascript/getting-started/read-koin-balance?startScript=start)
 
 The hosted example uses a public address by default. When running the complete
 file locally, you can pass any valid **public address**:

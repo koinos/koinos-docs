@@ -30,8 +30,8 @@ The following setup creates a mainnet provider and a disposable local signer:
 --8<-- "examples/javascript/references/koilib-api-tour/index.js:tooling"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/references/koilib-api-tour/index.js) ·
-[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour)
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/javascript/references/koilib-api-tour/index.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/dev/examples/javascript/references/koilib-api-tour)
 
 The complete Node.js example reads live data and exercises additional Koilib
 APIs, but it does not broadcast a transaction. Its signer uses a deliberately
@@ -60,8 +60,8 @@ This feature check lets a dApp display an appropriate unavailable-wallet state:
 --8<-- "examples/javascript/browser/kondor-dapp/src/wallet.js:detect"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/master/examples/javascript/browser/kondor-dapp/src/wallet.js) ·
-[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp)
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/javascript/browser/kondor-dapp/src/wallet.js) ·
+[Run example](https://stackblitz.com/fork/github/koinos/koinos-docs/tree/dev/examples/javascript/browser/kondor-dapp)
 
 The hosted runner shows the unavailable-wallet state when Kondor is not
 installed in that browser. Account and signature requests always require user

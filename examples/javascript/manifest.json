@@ -17,10 +17,11 @@
       "safety": "read-only",
       "project": "examples/javascript/getting-started/read-koin-balance",
       "source": "examples/javascript/getting-started/read-koin-balance/index.js",
+      "sourceRef": "dev",
       "snippet": "program",
       "runner": {
         "type": "stackblitz",
-        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/read-koin-balance?startScript=start"
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/dev/examples/javascript/getting-started/read-koin-balance?startScript=start"
       }
     },
     {
@@ -37,10 +38,11 @@
       "safety": "read-only",
       "project": "examples/javascript/getting-started/network-provider",
       "source": "examples/javascript/getting-started/network-provider/index.js",
+      "sourceRef": "dev",
       "snippet": "mainnet",
       "runner": {
         "type": "stackblitz",
-        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/network-provider?startScript=start"
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/dev/examples/javascript/getting-started/network-provider?startScript=start"
       }
     },
     {
@@ -57,10 +59,11 @@
       "safety": "read-only",
       "project": "examples/javascript/getting-started/network-provider",
       "source": "examples/javascript/getting-started/network-provider/index.js",
+      "sourceRef": "dev",
       "snippet": "testnet",
       "runner": {
         "type": "stackblitz",
-        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/getting-started/network-provider?startScript=testnet"
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/dev/examples/javascript/getting-started/network-provider?startScript=testnet"
       }
     },
     {
@@ -77,10 +80,11 @@
       "safety": "local-only",
       "project": "examples/javascript/references/koilib-api-tour",
       "source": "examples/javascript/references/koilib-api-tour/index.js",
+      "sourceRef": "dev",
       "snippet": "tooling",
       "runner": {
         "type": "stackblitz",
-        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/references/koilib-api-tour"
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/dev/examples/javascript/references/koilib-api-tour"
       }
     },
     {
@@ -756,10 +760,11 @@
       "safety": "read-only",
       "project": "examples/javascript/browser/kondor-dapp",
       "source": "examples/javascript/browser/kondor-dapp/src/wallet.js",
+      "sourceRef": "dev",
       "snippet": "detect",
       "runner": {
         "type": "stackblitz",
-        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/master/examples/javascript/browser/kondor-dapp"
+        "url": "https://stackblitz.com/fork/github/koinos/koinos-docs/tree/dev/examples/javascript/browser/kondor-dapp"
       }
     },
     {

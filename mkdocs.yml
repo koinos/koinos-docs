@@ -126,7 +126,6 @@ nav:
       - Wallets:
           - getting-started/kondor-wallet.md
           - getting-started/cli-wallet.md
-          - getting-started/sovrano-wallet.md
       - getting-started/mainnet-vs-testnet.md
       - getting-started/tooling-overview.md
   # - Overview:

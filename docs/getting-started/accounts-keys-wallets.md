@@ -71,16 +71,6 @@ key management and blockchain operations.
 **Use it when:** you need a terminal workflow, contract registration, or
 scripted command execution and understand command-line security.
 
-### Sovrano
-
-[Sovrano](sovrano-wallet.md) is listed by Koinos as a browser-based wallet
-project and publishes a dApp authorization SDK. Public material does not
-currently provide enough maintained operational guidance to treat the old
-2024–2025 roadmap as current.
-
-**Use it when:** its current official site provides the workflow you need and
-you have verified its availability and recovery model.
-
 ## Choose a network before using a wallet
 
 Koinos mainnet and the public testnet use different chain IDs and contract

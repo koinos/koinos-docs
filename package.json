@@ -13,6 +13,9 @@
     "examples:start": "node scripts/run-example-projects.mjs start",
     "examples:test": "npm test --workspaces --if-present",
     "examples:smoke": "node scripts/run-example-projects.mjs smoke",
+    "node-examples:verify": "node scripts/verify-node-operator-examples.mjs",
+    "node-examples:test": "node scripts/test-node-operator-examples.mjs",
+    "node-examples:smoke": "node scripts/smoke-node-operator-examples.mjs",
     "docs:links": "node scripts/check-documentation-links.mjs"
   },
   "engines": {

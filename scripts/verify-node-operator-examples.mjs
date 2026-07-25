@@ -300,6 +300,29 @@ for (const envPath of walk(examplesRoot).filter((file) =>
   });
 }
 
+for (const markdownPath of walk(examplesRoot).filter((file) =>
+  file.endsWith(".md")
+)) {
+  const markdown = fs.readFileSync(markdownPath, "utf8");
+  for (const match of markdown.matchAll(/\[[^\]]+\]\(([^)]+)\)/g)) {
+    const target = match[1];
+    if (
+      /^(?:https?:|mailto:|#)/.test(target) ||
+      target.includes("://")
+    ) {
+      continue;
+    }
+    const pathOnly = decodeURIComponent(target.split("#", 1)[0]);
+    if (!pathOnly) continue;
+    const resolved = path.resolve(path.dirname(markdownPath), pathOnly);
+    if (!resolved.startsWith(`${root}${path.sep}`) || !fs.existsSync(resolved)) {
+      errors.push(
+        `${relative(markdownPath)}: missing local Markdown target ${target}`
+      );
+    }
+  }
+}
+
 const compose = fs.readFileSync(
   path.join(examplesRoot, "upstream/docker-compose.yml"),
   "utf8"

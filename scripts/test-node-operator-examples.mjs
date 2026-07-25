@@ -344,6 +344,42 @@ expectSuccess(
   /Canonical endpoint confirmed block/
 );
 
+const descriptorFixture = path.join(restoreFixture, "koinos_descriptors.pb");
+const grpcArgsFile = path.join(restoreFixture, "grpcurl.args");
+fs.writeFileSync(descriptorFixture, "fixture descriptor set\n");
+fs.writeFileSync(
+  path.join(fakeBin, "grpcurl"),
+  [
+    "#!/usr/bin/env bash",
+    "printf '%s\\n' \"$*\" >\"${GRPC_ARGS_FILE:?}\"",
+    "printf '%s\\n' '{\"headTopology\":{\"height\":\"1\",\"id\":\"0x1220aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}}'",
+    "",
+  ].join("\n"),
+  { mode: 0o755 }
+);
+expectSuccess(
+  "gRPC probe uses descriptor set without reflection",
+  run(
+    "rpc/test-grpc.sh",
+    ["127.0.0.1:50051", descriptorFixture],
+    {
+      ...restoreEnv,
+      GRPC_PLAINTEXT: "1",
+      GRPC_ARGS_FILE: grpcArgsFile,
+    }
+  ),
+  /gRPC OK: height=1/
+);
+assertions += 1;
+const grpcArgs = fs.readFileSync(grpcArgsFile, "utf8");
+if (
+  !grpcArgs.includes("-plaintext") ||
+  !grpcArgs.includes(`-protoset ${descriptorFixture}`) ||
+  !grpcArgs.includes("koinos.rpc.chain.chain_rpc/get_head_info")
+) {
+  failures.push(`gRPC probe did not use expected descriptor invocation: ${grpcArgs}`);
+}
+
 fs.rmSync(fixture, { recursive: true, force: true });
 fs.rmSync(restoreFixture, { recursive: true, force: true });
 

@@ -39,6 +39,6 @@ Run the dry run first:
 ```
 
 The apply command is documented on the
-[Backup and restore](../../docs/nodes/backup-restore.md) page. Never test apply
+[Backup and restore](../../../docs/nodes/backup-restore.md) page. Never test apply
 mode against a real basedir; automated tests use disposable fixture
 directories.

@@ -27,6 +27,7 @@
 | Tangem | Hardware-wallet system | Tangem | Third-party | [KOIN support page](https://tangem.com/en/cryptocurrencies/koinos/) | Not published for the Koinos integration | Current Tangem asset page explicitly lists Koinos support | Koinos | Include | Proprietary product; documentation does not assess firmware, custody design, or security |
 | Konio | Mobile wallet | Not verified | Third-party | `https://konio.io/` | Not verified | Domain redirected to an unrelated parked/insecure destination on 2026-07-25 | Not verified | Exclude | No current canonical source could be established |
 | My Koinos Wallet / Portal | Web wallet | Not verified | Community/third-party | No current canonical URL verified | Not verified | Only older secondary documentation found | Not verified | Exclude | Insufficient current primary evidence |
+| kcli | Command-line wallet and blockchain interaction tool | Pablo García | Community-maintained | [Repository](https://github.com/pgarciagon/kcli) | [pgarciagon/kcli](https://github.com/pgarciagon/kcli) | Source version `1.4.0`; commit [`c263df6`](https://github.com/pgarciagon/kcli/commit/c263df637eb632e275e77f807777aa64c3fd54ed); clean install, TypeScript build, help, changes output, and read-only mainnet/testnet connections verified 2026-07-25 | Mainnet and current public testnet are implemented; testnet constants matched `koinos/koinos-testnet` commit `0c37959` | Include with prominent limitations | No published release or registry package; some commands accept secrets as process arguments or print WIFs; `npm audit --omit=dev` reported 20 production dependency advisories, including one critical; a saved mainnet RPC overrode `--network testnet` during verification, causing a read command to query mainnet under a testnet label |
 | Koinos CLI | Command-line account and transaction tool | Koinos Group | Official | [Repository](https://github.com/koinos/koinos-cli) | [koinos/koinos-cli](https://github.com/koinos/koinos-cli) | [v2.0.0](https://github.com/koinos/koinos-cli/releases/tag/v2.0.0) | Network depends on the selected endpoint | Cross-reference | Developer/power-user tool, not presented as a consumer wallet |
 
 ## Explorers and network-tool candidates
@@ -100,8 +101,9 @@ The reviewed immutable revision is commit
 
 ## Public-page decisions
 
-- Public wallet entries: Kondor and Tangem. Koinos CLI is a developer-tool
-  cross-reference.
+- Public wallet entries: Kondor, Tangem, and the community-maintained `kcli`
+  command-line wallet with explicit source/dependency limitations. Koinos CLI
+  is a developer-tool cross-reference.
 - Public explorer entries: Koinosblocks and Koinscan for mainnet. The official
   current-public-testnet repository is linked as the network authority because
   no current public-testnet explorer was verified.

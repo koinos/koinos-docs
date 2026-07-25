@@ -41,7 +41,54 @@ not an endorsement or security audit.
 
 </div>
 
-## Command-line alternative
+## Command-line wallets
+
+Command-line wallets are intended for users who can inspect source,
+dependencies, terminal history, file permissions, networks, and transaction
+details. Test a tool with a separate low-value testnet account before deciding
+whether it is appropriate for other keys.
+
+### kcli
+
+[kcli](https://github.com/pgarciagon/kcli) is a community-maintained Node.js
+command-line wallet and blockchain interaction tool built with Koilib.
+
+- **Platform:** terminal application built from source with Node.js.
+- **Key model:** self-custody; an imported WIF is password-encrypted in a local
+  wallet file.
+- **dApp support:** no browser dApp connection; it reads chain data and submits
+  supported transactions directly.
+- **Networks:** mainnet and the current public testnet are implemented. In the
+  reviewed version, a saved RPC can override the selected network, so verify
+  both the displayed RPC and its chain ID before signing.
+- **Maintainer:** [Pablo García](https://github.com/pgarciagon).
+- **Ownership:** community-maintained.
+- **Source:** [pgarciagon/kcli](https://github.com/pgarciagon/kcli).
+- **Reviewed version:** `1.4.0` at commit
+  [`c263df6`](https://github.com/pgarciagon/kcli/commit/c263df637eb632e275e77f807777aa64c3fd54ed).
+
+!!! warning "Review kcli before using a funded account"
+
+    The reviewed version has no published release or package; install it from
+    source. Some commands accept a WIF or recovery phrase as a command-line
+    argument, and wallet generation prints the WIF in the terminal. Those
+    values can be exposed through terminal history, process inspection,
+    recordings, or logs.
+
+    A production-dependency audit of the reviewed commit also reported known
+    advisories, including
+    [a critical advisory in a transitive dependency](https://github.com/advisories/GHSA-xq3m-2v4x-88gg).
+    Review and update the dependency tree before relying on it, and prefer a
+    low-value testnet account while evaluating the tool.
+
+    During verification, a saved mainnet RPC overrode `--network testnet` for
+    a read command, which then displayed mainnet data under a testnet label.
+    Use the current endpoint from
+    [koinos/koinos-testnet](https://github.com/koinos/koinos-testnet)
+    explicitly and verify the returned chain ID. Do not rely on the network
+    label alone.
+
+### Koinos CLI
 
 The official [Koinos CLI](https://github.com/koinos/koinos-cli) can manage
 accounts and submit transactions from a terminal. It is listed primarily under

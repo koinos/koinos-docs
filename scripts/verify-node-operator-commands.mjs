@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { createGunzip } from "node:zlib";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const pinnedRevision = "821674672e699bf56e94d7c0e8bce122e83d1482";
+const officialBranch = "master";
 const docs = [
   "docs/nodes/requirements.md",
   "docs/nodes/networks.md",
@@ -76,8 +76,8 @@ function extractLanguageBlocks(relativePath, language) {
 
 const blocks = docs.flatMap(extractConsoleBlocks);
 assert(
-  blocks.length === 90,
-  `expected 90 reviewed console blocks, found ${blocks.length}; ` +
+  blocks.length === 92,
+  `expected 92 reviewed console blocks, found ${blocks.length}; ` +
     "classify and test any command-set change"
 );
 
@@ -111,6 +111,14 @@ function findBlock(doc, requiredText) {
 }
 
 const requiredProcedures = [
+  [
+    "docs/nodes/running-node.md",
+    ["git clone --branch master", "git pull --ff-only origin master"],
+  ],
+  [
+    "docs/nodes/running-node.md",
+    ["cp env.example .env", "cp -R config-example config"],
+  ],
   ["docs/nodes/running-node.md", ["docker compose config"]],
   ["docs/nodes/running-node.md", ["RestartCount", "block_producer"]],
   ["docs/nodes/running-node.md", ["local_age", "public_height"]],
@@ -189,7 +197,7 @@ async function downloadOfficialBundle(destination) {
   for (const relativePath of files) {
     const url =
       `https://raw.githubusercontent.com/koinos/koinos/` +
-      `${pinnedRevision}/${relativePath}`;
+      `${officialBranch}/${relativePath}`;
     const target = path.join(destination, relativePath);
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.writeFileSync(target, await fetchBytes(url));

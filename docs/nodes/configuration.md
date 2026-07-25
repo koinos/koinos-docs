@@ -4,9 +4,9 @@ icon: fontawesome/solid/gears
 
 # Configuration
 
-Koinos configuration must stay matched to the selected release or commit.
-Operate from the files supplied by that exact
-[`koinos/koinos`](https://github.com/koinos/koinos) revision instead of
+Koinos configuration must stay matched to the checked-out orchestrator.
+Operate from the files supplied by the current
+[`koinos/koinos`](https://github.com/koinos/koinos) `master` branch instead of
 copying replacement files from this documentation.
 
 | File | Purpose | Operator rule |
@@ -18,10 +18,8 @@ copying replacement files from this documentation.
 | `config/koinos_descriptors.pb` | Built-in protobuf descriptors | keep matched to JSON-RPC and gRPC binaries |
 | `config/rabbitmq.conf` | Internal message broker configuration | keep private and version-compatible |
 
-The documentation baseline is
-[`koinos/koinos@8216746`](https://github.com/koinos/koinos/commit/821674672e699bf56e94d7c0e8bce122e83d1482).
 For a new node, copy `env.example` to `.env` and `config-example` to `config`
-from the selected official checkout.
+from the current official checkout.
 
 ## How settings are applied
 
@@ -31,8 +29,8 @@ the common files into the containers; `.env` controls host paths, published
 bindings, profiles, and image tags.
 
 Review the complete official
-[`config-example/config.yml`](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/config-example/config.yml)
-from the same revision as the Compose file.
+[`config-example/config.yml`](https://github.com/koinos/koinos/blob/master/config-example/config.yml)
+from the same checkout as the Compose file.
 
 ## Find current options
 
@@ -41,9 +39,9 @@ documentation:
 
 | Information | Current source |
 | --- | --- |
-| host paths, ports, profiles, and image tags | versioned [`env.example`](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/env.example) |
-| services, dependencies, mounts, and profile membership | versioned [`docker-compose.yml`](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/docker-compose.yml) |
-| shared and service-specific values | versioned [`config.yml`](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/config-example/config.yml) |
+| host paths, ports, profiles, and image tags | current [`env.example`](https://github.com/koinos/koinos/blob/master/env.example) |
+| services, dependencies, mounts, and profile membership | current [`docker-compose.yml`](https://github.com/koinos/koinos/blob/master/docker-compose.yml) |
+| shared and service-specific values | current [`config.yml`](https://github.com/koinos/koinos/blob/master/config-example/config.yml) |
 | every option accepted by one service image | that selected image's `--help` output |
 
 Inspect what Compose will use without starting the node:

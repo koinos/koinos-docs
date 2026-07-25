@@ -6,12 +6,10 @@ the node must do before enabling optional services. The standard starting point
 is a node without block production, with private local JSON-RPC for health
 checks.
 
-The operating procedures were verified on **2026-07-25** against
-`koinos/koinos` commit
-[`8216746`](https://github.com/koinos/koinos/commit/821674672e699bf56e94d7c0e8bce122e83d1482).
-That revision is a recorded commit, not a new immutable release.
-See [Configuration](configuration.md)
-before installing or upgrading.
+The initial installation procedure follows the current official
+`koinos/koinos` default branch, which is `master`. It downloads the latest
+Docker Compose orchestrator and the image tags selected there. See
+[Configuration](configuration.md) before installing or upgrading.
 
 ## Choose what the node will do
 
@@ -31,8 +29,9 @@ before installing or upgrading.
 
     ---
 
-    Prepare an Ubuntu LTS host, select a release or commit, start only the
-    required services, and verify synchronization and P2P activity.
+    Prepare an Ubuntu LTS host, download the current official orchestrator,
+    start only the required services, and verify synchronization and P2P
+    activity.
 
     [:octicons-arrow-right-24: Run a Koinos node](running-node.md)
 

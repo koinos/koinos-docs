@@ -10,7 +10,8 @@ production, REST, gRPC, or historical indexes.
 
 The commands below use:
 
-- `/opt/koinos` for the selected release or commit and its configuration files;
+- `/opt/koinos` for the current official Docker Compose orchestrator and its
+  configuration files;
 - `/var/lib/koinos` for persistent node data;
 - a dedicated Linux user that operates Docker.
 
@@ -19,8 +20,26 @@ host, then use the same paths throughout the procedure.
 
 ## Quick path for a new node
 
-After Docker is installed and the selected `koinos/koinos` release or commit
-is checked out at `/opt/koinos`, the complete first-start path is:
+After Docker is installed, a basic Koinos node takes three steps. Run these
+commands as the dedicated operator account. Replace `koinos` in the ownership
+command if that account has a different name.
+
+### 1. Download the current orchestrator
+
+The official repository uses `master` as its default branch:
+
+```console
+sudo git clone --branch master --single-branch \
+  https://github.com/koinos/koinos.git /opt/koinos
+sudo chown -R koinos:koinos /opt/koinos
+cd /opt/koinos
+git checkout master
+git pull --ff-only origin master
+```
+
+### 2. Activate the default configuration
+
+Copy the supplied examples without changing their default values:
 
 ```console
 cd /opt/koinos
@@ -28,17 +47,29 @@ test ! -e .env
 test ! -e config
 cp env.example .env
 cp -R config-example config
-sudoedit .env
-docker compose config
+```
+
+### 3. Start the basic node
+
+Required services do not need a Compose profile:
+
+```console
+cd /opt/koinos
 docker compose up -d
 docker compose ps
 docker compose logs --tail 50 chain p2p block_store
 ```
 
-In `.env`, set `BASEDIR=/var/lib/koinos`,
-`JSONRPC_INTERFACE=127.0.0.1`, `JSONRPC_PORT=8080`, and
-`COMPOSE_PROFILES=jsonrpc`. Do not use this new-node shortcut over an existing
-`.env` or `config/`; follow the update procedure instead.
+This starts `amqp`, `chain`, `mempool`, `block_store`, and `p2p` with the
+defaults supplied by the current orchestrator. Do not use this new-node
+shortcut over an existing `.env` or `config/`; follow the update procedure
+instead.
+
+The command `docker compose --profile all up -d` is not the basic-node command.
+In the current orchestrator, `all` also starts `block_producer` plus every API
+and index service. Use the `api` profile when you intentionally need all API
+services without block production, or follow [Block production](block-production.md)
+before enabling the producer.
 
 When you intend to stop the node:
 
@@ -48,8 +79,9 @@ docker compose stop
 docker compose ps
 ```
 
-Read the numbered procedure before the first production installation. The
-quick path does not replace the detailed synchronization and health checks.
+The default `BASEDIR` is `~/.koinos`. Read the numbered procedure below before
+a production installation if you want a dedicated data path, private health
+API, explicit validation, synchronization checks, or production hardening.
 
 ## 1. Prepare the host
 
@@ -95,26 +127,26 @@ sudo install -d -m 750 -o koinos -g koinos /var/lib/koinos
 Do not continue until time synchronization is active and the data filesystem
 has the planned capacity.
 
-## 2. Select the deployment version
+## 2. Download the current orchestrator
 
-The documentation was verified against commit
-[`8216746`](https://github.com/koinos/koinos/commit/821674672e699bf56e94d7c0e8bce122e83d1482).
-The latest immutable repository release at verification time was
-[`v2.2.1`](https://github.com/koinos/koinos/releases/tag/v2.2.1), while the
-newer verified commit referenced more recent microservice image tags.
-
-Clone the official repository and check out the exact release or commit you
-have selected:
+The [`koinos/koinos`](https://github.com/koinos/koinos) repository is the
+official Docker Compose orchestrator. Its default branch is currently
+`master`, not `main`. Clone that branch, check it out explicitly, and update it
+with a fast-forward-only pull:
 
 ```console
-sudo git clone https://github.com/koinos/koinos.git /opt/koinos
+sudo git clone --branch master --single-branch \
+  https://github.com/koinos/koinos.git /opt/koinos
 sudo chown -R koinos:koinos /opt/koinos
 cd /opt/koinos
-git checkout 821674672e699bf56e94d7c0e8bce122e83d1482
+git checkout master
+git pull --ff-only origin master
+git status --short --branch
 ```
 
-Record the output of `git rev-parse HEAD`. Do not operate a production node
-from an unrecorded moving `master` checkout or floating `latest` images.
+`git status` must show `master` synchronized with `origin/master` and no local
+changes. Stop if the pull cannot fast-forward or the checkout contains
+unexpected modifications; review those differences before starting the node.
 
 ## 3. Prepare the official configuration
 
@@ -138,7 +170,7 @@ Open `.env` in your usual text editor and review these values:
 | `COMPOSE_PROFILES` | `jsonrpc` | add private JSON-RPC only |
 
 Leave RabbitMQ, its administration port, REST, and gRPC on loopback. Keep the
-image tags supplied by the selected revision.
+image tags supplied by the checked-out orchestrator.
 
 !!! danger "Do not use the `all` profile"
     `all` also starts `block_producer`. Block production has separate key and

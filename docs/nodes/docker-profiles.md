@@ -7,9 +7,8 @@ icon: fontawesome/brands/docker
 Required services run without a profile. Optional services are enabled through
 the upstream Compose profiles below.
 
-Verified against `koinos/koinos` commit
-[`8216746`](https://github.com/koinos/koinos/commit/821674672e699bf56e94d7c0e8bce122e83d1482)
-on 2026-07-25.
+These profiles follow the current `koinos/koinos` `master` branch. Confirm the
+rendered services locally because the upstream orchestrator can change.
 
 | Profile | Services enabled |
 | --- | --- |

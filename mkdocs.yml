@@ -269,9 +269,12 @@ nav:
           - references/as-sdk/encoding-functions.md
           - references/as-sdk/koinosbox-functions.md
   - Resources:
-      - resources/index.md
-      - resources/wallets.md
-      - resources/explorers.md
-      - resources/ecosystem-platforms.md
-      - resources/contract-standards.md
-      - resources/software-libraries.md
+      - Resources overview: resources/index.md
+      - For users:
+          - Wallets: resources/wallets.md
+          - Explorers and network tools: resources/explorers.md
+          - Ecosystem applications and services: resources/ecosystem-platforms.md
+      - For developers:
+          - SDKs, libraries, and developer tools: resources/software-libraries.md
+          - Contract standards: resources/contract-standards.md
+      - Community and learning: resources/community-and-learning.md

@@ -1,53 +1,60 @@
-# Contract Standards
+# Contract standards
 
-Standard interfaces and patterns for Koinos smart contracts.
+Koinos Contract Standards (KCSs) describe interfaces intended to improve
+interoperability between contracts and applications. They are separate from
+governance proposals.
 
-## Overview
+The titles and statuses below were checked on **2026-07-25** against commit
+[`ef6f3d8`](https://github.com/koinos/koinos-contract-standards/commit/ef6f3d8edc75673842e927edba1232fe47df51e4)
+of the canonical
+[koinos/koinos-contract-standards](https://github.com/koinos/koinos-contract-standards)
+repository.
 
-Contract standards ensure interoperability between different applications and provide consistent interfaces for common functionality.
+## Published standards
 
-## Token Standards
+### KCS-1 — Token Standard
 
-### KCS-1: Fungible Tokens
-- **Purpose**: Standard interface for fungible tokens
-- **Functions**: transfer, balanceOf, totalSupply, approve, allowance
-- **Usage**: Most tokens follow this standard for compatibility
+- **Status:** Final.
+- **Purpose:** defines a base interface for tokens on Koinos.
+- **Sources:** [reviewed commit](https://github.com/koinos/koinos-contract-standards/blob/ef6f3d8edc75673842e927edba1232fe47df51e4/KCSs/kcs-1.md)
+  and [latest KCS-1](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-1.md).
 
-### KCS-2: Non-Fungible Tokens (NFTs)
-- **Purpose**: Standard interface for unique digital assets
-- **Functions**: ownerOf, transferFrom, approve, tokenURI
-- **Usage**: NFT collections and marketplaces
+### KCS-2 — NFT Collection Standard
 
-## DeFi Standards
+- **Status:** Final.
+- **Purpose:** defines a base interface for NFT collections.
+- **Sources:** [reviewed commit](https://github.com/koinos/koinos-contract-standards/blob/ef6f3d8edc75673842e927edba1232fe47df51e4/KCSs/kcs-2.md)
+  and [latest KCS-2](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-2.md).
 
-### KCS-3: Decentralized Exchange
-- **Purpose**: Standard interface for DEX contracts
-- **Functions**: addLiquidity, removeLiquidity, swap
-- **Usage**: Trading platforms and aggregators
+### KCS-3 — Token Standard that mimics ERC-20
 
-### KCS-4: Staking Contracts
-- **Purpose**: Standard interface for staking mechanisms
-- **Functions**: stake, unstake, claimRewards, getStakeInfo
-- **Usage**: Yield farming and staking platforms
+- **Status:** Final.
+- **Purpose:** defines an ERC-20-like token interface for Koinos.
+- **Sources:** [reviewed commit](https://github.com/koinos/koinos-contract-standards/blob/ef6f3d8edc75673842e927edba1232fe47df51e4/KCSs/kcs-3.md)
+  and [latest KCS-3](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-3.md).
 
-## Governance Standards
+### KCS-4 — Token Standard that mimics ERC-20 and supports Koinos authority system
 
-### KCS-5: Governance Tokens
-- **Purpose**: Standard interface for governance participation
-- **Functions**: propose, vote, execute, getVotingPower
-- **Usage**: DAO and governance systems
+- **Status:** Pending.
+- **Purpose:** extends an ERC-20-like token interface with the Koinos authority
+  system.
+- **Sources:** [reviewed commit](https://github.com/koinos/koinos-contract-standards/blob/ef6f3d8edc75673842e927edba1232fe47df51e4/KCSs/kcs-4.md)
+  and [latest KCS-4](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-4.md).
 
-## Best Practices
+### KCS-5 — NFT Standard that mimics ERC-721 and supports Koinos authority system
 
-1. **Follow established standards** for interoperability
-2. **Implement proper interfaces** for contract interactions
-3. **Use consistent naming** conventions
-4. **Provide comprehensive documentation**
-5. **Test compatibility** with existing tools
+- **Status:** Pending.
+- **Purpose:** defines an ERC-721-like NFT interface with the Koinos authority
+  system.
+- **Sources:** [reviewed commit](https://github.com/koinos/koinos-contract-standards/blob/ef6f3d8edc75673842e927edba1232fe47df51e4/KCSs/kcs-5.md)
+  and [latest KCS-5](https://github.com/koinos/koinos-contract-standards/blob/master/KCSs/kcs-5.md).
 
-## Next Steps
+Use the immutable links above when reviewing the version summarized here. Check
+the [latest KCS directory](https://github.com/koinos/koinos-contract-standards/tree/master/KCSs)
+before implementing a standard because titles, statuses, and specifications can
+change.
 
-See the main [Resources](index.md) overview for more development resources.
-
-
-
+These summaries are only a directory. Read the complete standard, its status,
+and its linked definitions before implementation. For contract development,
+continue with [Smart Contracts](../contracts/index.md); for API details, see
+[References](../references/index.md).

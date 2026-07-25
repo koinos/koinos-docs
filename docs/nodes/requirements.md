@@ -55,8 +55,8 @@ capacity plus data usage by service.
 --8<-- "examples/node-operators/observer/measure-storage.sh:measure-storage"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer/measure-storage.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer#run-locally)
+[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer/measure-storage.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer#run-locally)
 
 Record measurements with the date, block height, enabled profiles, and retained
 log policy. Recalculate headroom after enabling `transaction_store`,

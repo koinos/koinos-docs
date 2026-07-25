@@ -17,8 +17,8 @@ current listeners without installing packages or starting services.
 --8<-- "examples/node-operators/observer/preflight.sh:observer-preflight"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer/preflight.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer#run-locally)
+[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer/preflight.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer#run-locally)
 
 Install Docker Engine and the Compose plugin using the
 [official Ubuntu instructions](https://docs.docker.com/engine/install/ubuntu/).
@@ -56,8 +56,8 @@ the verified deployment-bundle revision and keeps every API on loopback.
 --8<-- "examples/node-operators/observer/env.example:observer-env"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer/env.example) ·
-[Use locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer#prepare-the-official-repository)
+[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer/env.example) ·
+[Use locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer#prepare-the-official-repository)
 
 `COMPOSE_PROFILES=jsonrpc` enables only private JSON-RPC in addition to the
 required services. Remove the value for a core-only node, but then RPC-based
@@ -80,8 +80,8 @@ The start helper validates the project, reads `COMPOSE_PROFILES`, and refuses
 --8<-- "examples/node-operators/observer/start-observer.sh:start-observer"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer/start-observer.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer#run-locally)
+[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer/start-observer.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer#run-locally)
 
 Required services are `amqp`, `chain`, `mempool`, `block_store`, and `p2p`.
 This path additionally expects `jsonrpc`.
@@ -103,8 +103,8 @@ A running container is not sufficient evidence of a healthy node. Check:
 --8<-- "examples/node-operators/observer/health-check.sh:observer-health"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer/health-check.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer#run-locally)
+[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer/health-check.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer#run-locally)
 
 During initial synchronization, older head time is expected and the health
 check can fail until the node catches up. Follow focused logs with

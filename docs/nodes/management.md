@@ -43,8 +43,8 @@ The update planner is read-only.
 --8<-- "examples/node-operators/operations/plan-update.sh:plan-update"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/operations/plan-update.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/operations)
+[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/operations/plan-update.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/operations)
 
 Before downtime:
 

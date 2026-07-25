@@ -38,8 +38,8 @@ key creation, and apply owner-only permissions. The helper defaults to dry-run.
 --8<-- "examples/node-operators/block-producer/harden-producer-key.sh:harden-producer-key"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/block-producer/harden-producer-key.sh) ·
-[Use locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/block-producer)
+[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/block-producer/harden-producer-key.sh) ·
+[Use locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/block-producer)
 
 Verify Unix ownership as well as mode. Encrypt the producer key before storing
 an off-host recovery copy, keep decryption material separately, and test
@@ -98,8 +98,8 @@ official configuration from the selected bundle.
 --8<-- "examples/node-operators/block-producer/config.yml:producer-config"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/block-producer/config.yml) ·
-[Use locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/block-producer)
+[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/block-producer/config.yml) ·
+[Use locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/block-producer)
 
 Preserve the existing config, validate YAML and `docker compose config`, and
 keep JSON-RPC private. Set `COMPOSE_PROFILES=block_producer,jsonrpc` or invoke
@@ -121,8 +121,8 @@ canonical endpoint.
 --8<-- "examples/node-operators/block-producer/verify-production.sh:verify-production"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/block-producer/verify-production.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/block-producer)
+[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/block-producer/verify-production.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/block-producer)
 
 Alert on key-read errors, lost gossip/peers, stale head, repeated rejected
 blocks, resource exhaustion, or produced blocks that never appear on the

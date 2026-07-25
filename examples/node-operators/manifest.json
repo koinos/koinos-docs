@@ -1,5 +1,5 @@
 {
-  "publishedRevision": "a607646343d910bab33eb8f19a6fdad763e8c5ff",
+  "publishedRevision": "f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2",
   "baseline": "examples/node-operators/upstream/metadata.json",
   "safetyClasses": [
     "read-only",
@@ -24,7 +24,7 @@
       "safety": "service-changing",
       "source": "examples/node-operators/observer/env.example",
       "snippet": "observer-env",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer#prepare-the-official-repository",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer#prepare-the-official-repository",
       "liveAccess": false,
       "modifies": ["local configuration when copied by the operator"],
       "automated": false
@@ -45,7 +45,7 @@
       "safety": "read-only",
       "source": "examples/node-operators/observer/preflight.sh",
       "snippet": "observer-preflight",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer#run-locally",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer#run-locally",
       "liveAccess": false,
       "modifies": [],
       "automated": true
@@ -66,7 +66,7 @@
       "safety": "service-changing",
       "source": "examples/node-operators/observer/start-observer.sh",
       "snippet": "start-observer",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer#run-locally",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer#run-locally",
       "liveAccess": false,
       "modifies": ["Docker service state"],
       "automated": false
@@ -87,7 +87,7 @@
       "safety": "read-only",
       "source": "examples/node-operators/observer/health-check.sh",
       "snippet": "observer-health",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer#run-locally",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer#run-locally",
       "liveAccess": true,
       "modifies": [],
       "automated": false
@@ -108,7 +108,7 @@
       "safety": "read-only",
       "source": "examples/node-operators/observer/measure-storage.sh",
       "snippet": "measure-storage",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/observer#run-locally",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer#run-locally",
       "liveAccess": false,
       "modifies": [],
       "automated": true
@@ -129,7 +129,7 @@
       "safety": "read-only",
       "source": "examples/node-operators/networks/query-network.sh",
       "snippet": "query-network",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/networks",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/networks",
       "liveAccess": true,
       "modifies": [],
       "automated": true
@@ -150,7 +150,7 @@
       "safety": "service-changing",
       "source": "examples/node-operators/rpc/env.example",
       "snippet": "rpc-env",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc",
       "liveAccess": false,
       "modifies": ["local configuration when copied by the operator"],
       "automated": false
@@ -171,7 +171,7 @@
       "safety": "read-only",
       "source": "examples/node-operators/rpc/test-jsonrpc.sh",
       "snippet": "test-jsonrpc",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc",
       "liveAccess": true,
       "modifies": [],
       "automated": true
@@ -192,7 +192,7 @@
       "safety": "read-only",
       "source": "examples/node-operators/rpc/test-rest.sh",
       "snippet": "test-rest",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc",
       "liveAccess": true,
       "modifies": [],
       "automated": true
@@ -213,7 +213,7 @@
       "safety": "read-only",
       "source": "examples/node-operators/rpc/test-grpc.sh",
       "snippet": "test-grpc",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc",
       "liveAccess": true,
       "modifies": [],
       "automated": false
@@ -234,7 +234,7 @@
       "safety": "service-changing",
       "source": "examples/node-operators/rpc/Caddyfile",
       "snippet": "rpc-caddy",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc",
       "liveAccess": false,
       "modifies": ["reverse-proxy configuration and service state when installed"],
       "automated": false
@@ -255,7 +255,7 @@
       "safety": "service-changing",
       "source": "examples/node-operators/rpc/nginx.conf",
       "snippet": "rpc-nginx",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc",
       "liveAccess": false,
       "modifies": ["reverse-proxy configuration and service state when installed"],
       "automated": false
@@ -276,7 +276,7 @@
       "safety": "read-only",
       "source": "examples/node-operators/rpc/audit-exposure.sh",
       "snippet": "audit-exposure",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc",
       "liveAccess": true,
       "modifies": [],
       "automated": true
@@ -297,7 +297,7 @@
       "safety": "service-changing",
       "source": "examples/node-operators/configuration/config.yml",
       "snippet": "common-config",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/configuration",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/configuration",
       "liveAccess": false,
       "modifies": ["service configuration when installed"],
       "automated": false
@@ -318,7 +318,7 @@
       "safety": "service-changing",
       "source": "examples/node-operators/backup-restore/fetch-public-backup.sh",
       "snippet": "fetch-public-backup",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/backup-restore",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/backup-restore",
       "liveAccess": true,
       "modifies": ["explicit staging directory"],
       "automated": false
@@ -339,7 +339,7 @@
       "safety": "read-only",
       "source": "examples/node-operators/backup-restore/inspect-backup.sh",
       "snippet": "inspect-backup",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/backup-restore",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/backup-restore",
       "liveAccess": false,
       "modifies": [],
       "automated": true
@@ -360,7 +360,7 @@
       "safety": "state-destructive",
       "source": "examples/node-operators/backup-restore/restore-backup.sh",
       "snippet": "restore-backup",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/backup-restore",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/backup-restore",
       "liveAccess": false,
       "modifies": ["selected basedir only after explicit apply confirmation"],
       "automated": false
@@ -381,7 +381,7 @@
       "safety": "read-only",
       "source": "examples/node-operators/operations/plan-update.sh",
       "snippet": "plan-update",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/operations",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/operations",
       "liveAccess": false,
       "modifies": [],
       "automated": true
@@ -402,7 +402,7 @@
       "safety": "service-changing",
       "source": "examples/node-operators/block-producer/harden-producer-key.sh",
       "snippet": "harden-producer-key",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/block-producer",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/block-producer",
       "liveAccess": false,
       "modifies": ["producer key permissions only after --apply"],
       "automated": false
@@ -423,7 +423,7 @@
       "safety": "service-changing",
       "source": "examples/node-operators/block-producer/config.yml",
       "snippet": "producer-config",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/block-producer",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/block-producer",
       "liveAccess": false,
       "modifies": ["block-producer configuration when installed"],
       "automated": false
@@ -444,7 +444,7 @@
       "safety": "read-only",
       "source": "examples/node-operators/block-producer/verify-production.sh",
       "snippet": "verify-production",
-      "runUrl": "https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/block-producer",
+      "runUrl": "https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/block-producer",
       "liveAccess": true,
       "modifies": [],
       "automated": false

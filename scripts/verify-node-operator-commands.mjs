@@ -62,10 +62,22 @@ function extractConsoleBlocks(relativePath) {
   return blocks;
 }
 
+function extractLanguageBlocks(relativePath, language) {
+  const source = fs.readFileSync(path.join(root, relativePath), "utf8");
+  const matches = [];
+  const pattern = new RegExp(
+    `^\`\`\`${language}\\n([\\s\\S]*?)\\n\`\`\`$`,
+    "gm"
+  );
+  let match;
+  while ((match = pattern.exec(source)) !== null) matches.push(match[1]);
+  return matches;
+}
+
 const blocks = docs.flatMap(extractConsoleBlocks);
 assert(
-  blocks.length === 53,
-  `expected 53 reviewed console blocks, found ${blocks.length}; ` +
+  blocks.length === 84,
+  `expected 84 reviewed console blocks, found ${blocks.length}; ` +
     "classify and test any command-set change"
 );
 
@@ -100,16 +112,36 @@ function findBlock(doc, requiredText) {
 
 const requiredProcedures = [
   ["docs/nodes/running-node.md", ["docker compose config"]],
-  ["docs/nodes/running-node.md", ["chain.get_head_info"]],
-  ["docs/nodes/running-node.md", ["p2p.get_gossip_status"]],
+  ["docs/nodes/running-node.md", ["RestartCount", "block_producer"]],
+  ["docs/nodes/running-node.md", ["local_age", "public_height"]],
+  ["docs/nodes/running-node.md", ["height_before", "height_after"]],
+  ["docs/nodes/running-node.md", ["p2p.get_gossip_status", "peer_lines"]],
   ["docs/nodes/rpc-node.md", ["grpcurl", "-protoset"]],
   ["docs/nodes/rpc-node.md", ["sudo ss -lntp"]],
+  ["docs/nodes/rpc-node.md", ["for port in", "8888", "15672"]],
+  ["docs/nodes/rpc-node.md", ["certbot renew --dry-run", "nginx -t"]],
   ["docs/nodes/block-production.md", ["chmod 600", "private.key"]],
+  ["docs/nodes/block-production.md", ["cat", "public.key"]],
+  [
+    "docs/nodes/block-production.md",
+    ["block_store.get_blocks_by_id", "produced_block_id"],
+  ],
   ["docs/nodes/configuration.md", ["diff -u", ".env.before-change"]],
   ["docs/nodes/management.md", ["docker compose pull"]],
-  ["docs/nodes/backup-restore.md", ["sha256sum koinos-backup.tar.gz"]],
+  ["docs/nodes/management.md", ["reindex_backup", "chain"]],
+  ["docs/nodes/management.md", ["failed_reindex", "reindex_backup"]],
+  ["docs/nodes/management.md", ["resync_backup", "for state_dir"]],
+  ["docs/nodes/management.md", ["failed_resync", "resync_backup"]],
+  ["docs/nodes/backup-restore.md", ["sha256sum --check -", "published_sha"]],
+  [
+    "docs/nodes/backup-restore.md",
+    ["unsafe archive member path", "archive-members.txt"],
+  ],
+  ["docs/nodes/backup-restore.md", ["local_chain_id", "mainnet_chain_id"]],
+  ["docs/nodes/backup-restore.md", ["rollback_dir", "for state_dir"]],
   ["docs/nodes/backup-restore.md", ["tar -xzf", ".koinos/chain"]],
   ["docs/nodes/backup-restore.md", ["cp -a", "block_store"]],
+  ["docs/nodes/backup-restore.md", ["failed_restore", "rollback_dir"]],
 ];
 for (const [doc, fragments] of requiredProcedures) findBlock(doc, fragments);
 
@@ -284,18 +316,24 @@ async function verifyPublicBackupMetadata() {
 
 function transformedFixtureCommand(command, fixture) {
   let transformed = command
-    .replaceAll(
-      "/var/lib/koinos-before-restore-2026-07-25",
-      path.join(fixture, "before")
-    )
+    .replaceAll("/opt/koinos", path.join(fixture, "project"))
     .replaceAll("/var/lib/koinos", path.join(fixture, "active"))
     .replaceAll("/srv/koinos-restore", path.join(fixture, "stage"))
+    .replaceAll("sudo -u koinos ", "")
+    .replaceAll(
+      "-o koinos -g koinos",
+      `-o ${process.getuid()} -g ${process.getgid()}`
+    )
+    .replaceAll(
+      "chown -R koinos:koinos",
+      `chown -R ${process.getuid()}:${process.getgid()}`
+    )
     .replaceAll("sudo ", "");
 
   if (process.platform !== "linux" && transformed.includes("chown -R --reference=")) {
     const lines = transformed.split("\n");
     const index = lines.findIndex((line) =>
-      line.startsWith("chown -R --reference=")
+      line.trimStart().startsWith("chown -R --reference=")
     );
     if (index >= 0) {
       lines.splice(
@@ -311,13 +349,13 @@ function transformedFixtureCommand(command, fixture) {
   return transformed;
 }
 
-function runFixtureBlock(name, command, fixture, cwd = root) {
+function runFixtureBlock(name, command, fixture, cwd = root, env = {}) {
   return expectSuccess(
     name,
     run(
       "bash",
       ["-euo", "pipefail", "-c", transformedFixtureCommand(command, fixture)],
-      { cwd, timeout: 30_000 }
+      { cwd, env, timeout: 30_000 }
     )
   );
 }
@@ -326,17 +364,45 @@ function verifyBackupProcedure(fixture) {
   const stage = path.join(fixture, "stage");
   const source = path.join(fixture, "archive-source/.koinos");
   const active = path.join(fixture, "active");
+  const project = path.join(fixture, "project");
+  const fakeBin = path.join(fixture, "backup-fake-bin");
   fs.mkdirSync(path.join(source, "chain"), { recursive: true });
   fs.mkdirSync(path.join(source, "block_store"), { recursive: true });
   fs.mkdirSync(path.join(active, "chain"), { recursive: true });
   fs.mkdirSync(path.join(active, "block_store"), { recursive: true });
   fs.mkdirSync(path.join(active, "p2p"), { recursive: true });
+  for (const state of [
+    "mempool",
+    "transaction_store",
+    "account_history",
+    "contract_meta_store",
+  ]) {
+    fs.mkdirSync(path.join(active, state), { recursive: true });
+    fs.writeFileSync(path.join(active, state, "old"), `${state}\n`);
+  }
+  fs.mkdirSync(path.join(project, "config"), { recursive: true });
+  fs.writeFileSync(path.join(project, ".env"), "BASEDIR=/fixture\n");
+  fs.writeFileSync(
+    path.join(project, "config/config.yml"),
+    "chain:\n  verify-blocks: true\n\np2p:\n  listen: fixture\n"
+  );
   fs.mkdirSync(stage, { recursive: true });
+  fs.mkdirSync(fakeBin, { recursive: true });
   fs.writeFileSync(path.join(source, "chain/new"), "new chain\n");
   fs.writeFileSync(path.join(source, "block_store/new"), "new block store\n");
   fs.writeFileSync(path.join(active, "chain/old"), "old chain\n");
   fs.writeFileSync(path.join(active, "block_store/old"), "old block store\n");
   fs.writeFileSync(path.join(active, "p2p/identity"), "local identity\n");
+  fs.writeFileSync(
+    path.join(fakeBin, "curl"),
+    "#!/usr/bin/env bash\n" +
+      "printf '{\"jsonrpc\":\"2.0\",\"result\":{\"chain_id\":\"fixture-chain\"}}\\n'\n",
+    { mode: 0o755 }
+  );
+  fs.writeFileSync(path.join(fakeBin, "docker"), "#!/usr/bin/env bash\nexit 0\n", {
+    mode: 0o755,
+  });
+  const fixtureEnv = { PATH: `${fakeBin}:${process.env.PATH}` };
 
   const archive = path.join(stage, "koinos-backup.tar.gz");
   expectSuccess(
@@ -363,7 +429,8 @@ function verifyBackupProcedure(fixture) {
   );
 
   const checksumBlock = findBlock("docs/nodes/backup-restore.md", [
-    "sha256sum koinos-backup.tar.gz",
+    "sha256sum --check -",
+    "published_sha",
   ]);
   const checksumResult = expectSuccess(
     "documented backup checksum command",
@@ -372,22 +439,72 @@ function verifyBackupProcedure(fixture) {
     })
   );
   assert(
-    checksumResult.stdout.startsWith(digest),
-    "documented checksum command returned the wrong digest"
+    checksumResult.stdout.includes("koinos-backup.tar.gz: OK"),
+    "documented checksum command did not verify the archive"
+  );
+
+  const archiveListing = findBlock("docs/nodes/backup-restore.md", [
+    "tar -tzf koinos-backup.tar.gz",
+    "archive-members.txt",
+  ]);
+  const archiveGuards = findBlock("docs/nodes/backup-restore.md", [
+    "unsafe archive member path",
+    "archive-members.txt",
+  ]);
+  const archiveCheck = `${archiveListing}\n${archiveGuards}`;
+  expectSuccess(
+    "documented archive path and link checks",
+    run("bash", ["-euo", "pipefail", "-c", archiveCheck], {
+      cwd: stage,
+    })
+  );
+  const maliciousCheck = archiveCheck.replace(
+    "tar -tzf koinos-backup.tar.gz > archive-members.txt",
+    "printf '../escape\\n' > archive-members.txt"
+  );
+  const maliciousResult = run(
+    "bash",
+    ["-euo", "pipefail", "-c", maliciousCheck],
+    { cwd: stage }
+  );
+  assert(
+    maliciousResult.status !== 0,
+    "documented archive check accepted a parent-traversal member"
   );
 
   runFixtureBlock(
+    "documented restore target and network gates",
+    findBlock("docs/nodes/backup-restore.md", [
+      "local_chain_id",
+      "mainnet_chain_id",
+    ]),
+    fixture,
+    root,
+    fixtureEnv
+  );
+  runFixtureBlock(
     "documented rollback-directory command",
     findBlock("docs/nodes/backup-restore.md", [
-      "mkdir /var/lib/koinos-before-restore-2026-07-25",
+      "rollback_dir=",
+      "rollback-directory.txt",
+      "install -d",
+    ]),
+    fixture
+  );
+  runFixtureBlock(
+    "documented rollback target display and gates",
+    findBlock("docs/nodes/backup-restore.md", [
+      "active data:",
+      "rollback-directory.txt",
     ]),
     fixture
   );
   runFixtureBlock(
     "documented state-preservation commands",
     findBlock("docs/nodes/backup-restore.md", [
-      "mv /var/lib/koinos/chain",
-      "mv /var/lib/koinos/block_store",
+      "for state_dir in",
+      "rollback-directory.txt",
+      "sudo mv",
     ]),
     fixture
   );
@@ -415,7 +532,18 @@ function verifyBackupProcedure(fixture) {
     fixture,
     stage
   );
+  runFixtureBlock(
+    "documented verify-blocks configuration gate",
+    findBlock("docs/nodes/backup-restore.md", [
+      "chain_section=",
+      "verify-blocks:",
+    ]),
+    fixture
+  );
 
+  const rollbackDirectory = fs
+    .readFileSync(path.join(stage, "rollback-directory.txt"), "utf8")
+    .trim();
   assert(
     fs.existsSync(path.join(active, "chain/new")),
     "restore fixture did not install new chain data"
@@ -425,17 +553,401 @@ function verifyBackupProcedure(fixture) {
     "restore fixture did not install new block-store data"
   );
   assert(
-    fs.existsSync(path.join(fixture, "before/chain/old")),
+    fs.existsSync(path.join(rollbackDirectory, "chain/old")),
     "restore fixture did not preserve old chain data"
   );
   assert(
-    fs.existsSync(path.join(fixture, "before/block_store/old")),
+    fs.existsSync(path.join(rollbackDirectory, "block_store/old")),
     "restore fixture did not preserve old block-store data"
   );
   assert(
     fs.readFileSync(path.join(active, "p2p/identity"), "utf8") ===
       "local identity\n",
     "restore fixture changed the local P2P identity"
+  );
+
+  runFixtureBlock(
+    "documented restore rollback commands",
+    findBlock("docs/nodes/backup-restore.md", [
+      "failed_restore=",
+      "rollback-directory.txt",
+      "docker compose up -d",
+    ]),
+    fixture,
+    root,
+    fixtureEnv
+  );
+  assert(
+    fs.existsSync(path.join(active, "chain/old")) &&
+      fs.existsSync(path.join(active, "block_store/old")),
+    "restore rollback did not return the previous core data"
+  );
+  assert(
+    fs.readFileSync(path.join(active, "p2p/identity"), "utf8") ===
+      "local identity\n",
+    "restore rollback changed the local P2P identity"
+  );
+  const failedRestores = fs
+    .readdirSync(fixture)
+    .filter((name) => name.startsWith("active-failed-restore-"));
+  assert(
+    failedRestores.some((name) =>
+      fs.existsSync(path.join(fixture, name, "chain/new"))
+    ),
+    "restore rollback did not preserve the failed restored generation"
+  );
+}
+
+function verifyHealthCommands(fixture) {
+  const fakeBin = path.join(fixture, "health-fake-bin");
+  const counter = path.join(fixture, "health-counter");
+  fs.mkdirSync(fakeBin, { recursive: true });
+  fs.writeFileSync(counter, "100\n");
+  fs.writeFileSync(
+    path.join(fakeBin, "docker"),
+    `#!/usr/bin/env bash
+if [[ "$1" == "compose" && "$2" == "ps" && "$*" == *"--services"* ]]; then
+  printf '%s\\n' amqp chain mempool block_store p2p jsonrpc
+elif [[ "$1" == "compose" && "$2" == "ps" && "$*" == *"-q"* ]]; then
+  printf '%s\\n' fixture-amqp fixture-chain fixture-p2p
+elif [[ "$1" == "inspect" && "$3" == *"State.Status"* ]]; then
+  printf 'running\\n'
+elif [[ "$1" == "inspect" && "$3" == *"RestartCount"* ]]; then
+  printf '0\\n'
+elif [[ "$1" == "compose" && "$2" == "logs" ]]; then
+  printf 'p2p | Connected peers:\\n'
+  printf 'p2p |  - /ip4/127.0.0.1/tcp/8888/p2p/QmFixture\\n'
+else
+  exit 1
+fi
+`,
+    { mode: 0o755 }
+  );
+  fs.writeFileSync(
+    path.join(fakeBin, "curl"),
+    `#!/usr/bin/env bash
+if [[ "$*" == *"p2p.get_gossip_status"* ]]; then
+  printf '{"jsonrpc":"2.0","result":{"enabled":true}}\\n'
+else
+  value="$(cat "$FAKE_HEAD_COUNTER")"
+  value="$((value + 1))"
+  printf '%s\\n' "$value" > "$FAKE_HEAD_COUNTER"
+  now_ms="$(($(date +%s) * 1000 - 1000))"
+  printf '{"jsonrpc":"2.0","result":{"head_topology":{"height":"%s"},"head_block_time":"%s"}}\\n' "$value" "$now_ms"
+fi
+`,
+    { mode: 0o755 }
+  );
+  fs.writeFileSync(path.join(fakeBin, "sleep"), "#!/usr/bin/env bash\nexit 0\n", {
+    mode: 0o755,
+  });
+  const env = {
+    PATH: `${fakeBin}:${process.env.PATH}`,
+    FAKE_HEAD_COUNTER: counter,
+  };
+
+  for (const [name, fragments] of [
+    ["service and restart gates", ["RestartCount", "block_producer"]],
+    ["head freshness calculation", ["local_age", "public_height"]],
+    ["head advancement gate", ["height_before", "height_after"]],
+    ["gossip and peer gates", ["p2p.get_gossip_status", "peer_lines"]],
+  ]) {
+    expectSuccess(
+      `documented ${name}`,
+      run(
+        "bash",
+        [
+          "-euo",
+          "pipefail",
+          "-c",
+          findBlock("docs/nodes/running-node.md", fragments),
+        ],
+        { env, timeout: 30_000 }
+      )
+    );
+  }
+}
+
+function verifyNginxConfiguration(fixture) {
+  const nginxBlocks = extractLanguageBlocks("docs/nodes/rpc-node.md", "nginx");
+  assert(
+    nginxBlocks.length === 2,
+    `expected two reviewed nginx blocks, found ${nginxBlocks.length}`
+  );
+  if (nginxBlocks.length !== 2) return;
+
+  const [globalConfig, siteConfig] = nginxBlocks;
+  for (const required of [
+    "limit_req_zone",
+    "Access-Control-Allow-Origin",
+    "client_max_body_size",
+    "proxy_pass http://127.0.0.1:8080",
+    "proxy_pass http://127.0.0.1:3000",
+    "grpc_pass grpc://127.0.0.1:50051",
+    "ssl_certificate",
+  ]) {
+    assert(
+      `${globalConfig}\n${siteConfig}`.includes(required),
+      `nginx configuration is missing ${required}`
+    );
+  }
+
+  const nginxFixture = path.join(fixture, "nginx");
+  const certDirectory = path.join(nginxFixture, "certs");
+  fs.mkdirSync(certDirectory, { recursive: true });
+  expectSuccess(
+    "create disposable nginx certificate",
+    run(
+      "openssl",
+      [
+        "req",
+        "-x509",
+        "-nodes",
+        "-newkey",
+        "rsa:2048",
+        "-subj",
+        "/CN=rpc.example.com",
+        "-keyout",
+        path.join(certDirectory, "privkey.pem"),
+        "-out",
+        path.join(certDirectory, "fullchain.pem"),
+        "-days",
+        "1",
+      ],
+      { timeout: 30_000 }
+    )
+  );
+  const fixtureSite = siteConfig
+    .replaceAll(
+      "/etc/letsencrypt/live/rpc.example.com/fullchain.pem",
+      "/etc/nginx/certs/fullchain.pem"
+    )
+    .replaceAll(
+      "/etc/letsencrypt/live/rpc.example.com/privkey.pem",
+      "/etc/nginx/certs/privkey.pem"
+    );
+  fs.writeFileSync(
+    path.join(nginxFixture, "nginx.conf"),
+    `pid /tmp/nginx.pid;\nevents {}\nhttp {\n${globalConfig}\n${fixtureSite}\n}\n`
+  );
+  expectSuccess(
+    "documented nginx configuration",
+    run(
+      "docker",
+      [
+        "run",
+        "--rm",
+        "-v",
+        `${nginxFixture}:/etc/nginx:ro`,
+        "nginx:1.28.0-alpine",
+        "nginx",
+        "-t",
+        "-c",
+        "/etc/nginx/nginx.conf",
+      ],
+      { timeout: 120_000 }
+    )
+  );
+}
+
+function createFakeDocker(directory) {
+  fs.mkdirSync(directory, { recursive: true });
+  fs.writeFileSync(
+    path.join(directory, "docker"),
+    "#!/usr/bin/env bash\nexit 0\n",
+    { mode: 0o755 }
+  );
+  return { PATH: `${directory}:${process.env.PATH}` };
+}
+
+function verifyRecoveryMoves(fixture) {
+  const reindexFixture = path.join(fixture, "reindex");
+  const reindexActive = path.join(reindexFixture, "active");
+  const reindexProject = path.join(reindexFixture, "project");
+  const reindexEnv = createFakeDocker(path.join(reindexFixture, "fake-bin"));
+  fs.mkdirSync(path.join(reindexActive, "chain"), { recursive: true });
+  fs.mkdirSync(path.join(reindexProject, "config"), { recursive: true });
+  fs.writeFileSync(path.join(reindexActive, "chain/old"), "old chain\n");
+  fs.writeFileSync(path.join(reindexProject, ".env"), "fixture env\n");
+  fs.writeFileSync(
+    path.join(reindexProject, "config/config.yml"),
+    "chain:\n  verify-blocks: true\n"
+  );
+
+  runFixtureBlock(
+    "documented reindex preservation commands",
+    findBlock("docs/nodes/management.md", [
+      "reindex_backup=",
+      "reindex-rollback-directory.txt",
+      "sudo cp -a",
+    ]),
+    reindexFixture,
+    root,
+    reindexEnv
+  );
+  const reindexBackup = fs
+    .readFileSync(
+      path.join(reindexActive, "reindex-rollback-directory.txt"),
+      "utf8"
+    )
+    .trim();
+  assert(
+    fs.existsSync(path.join(reindexBackup, "chain/old")),
+    "reindex procedure did not preserve chain state"
+  );
+  fs.writeFileSync(path.join(reindexActive, "chain/new"), "failed reindex\n");
+  fs.writeFileSync(
+    path.join(reindexProject, "config/config.yml"),
+    "chain:\n  reset: true\n"
+  );
+  runFixtureBlock(
+    "documented reindex rollback commands",
+    findBlock("docs/nodes/management.md", [
+      "failed_reindex=",
+      "reindex_backup=",
+      "docker compose up -d",
+    ]),
+    reindexFixture,
+    root,
+    reindexEnv
+  );
+  assert(
+    fs.existsSync(path.join(reindexActive, "chain/old")) &&
+      !fs.existsSync(path.join(reindexActive, "chain/new")),
+    "reindex rollback did not restore the previous chain state"
+  );
+
+  const resyncFixture = path.join(fixture, "resync");
+  const resyncActive = path.join(resyncFixture, "active");
+  const resyncProject = path.join(resyncFixture, "project");
+  const resyncEnv = createFakeDocker(path.join(resyncFixture, "fake-bin"));
+  fs.mkdirSync(resyncActive, { recursive: true });
+  fs.mkdirSync(resyncProject, { recursive: true });
+  for (const state of [
+    "chain",
+    "block_store",
+    "mempool",
+    "transaction_store",
+    "contract_meta_store",
+    "account_history",
+  ]) {
+    fs.mkdirSync(path.join(resyncActive, state), { recursive: true });
+    fs.writeFileSync(path.join(resyncActive, state, "old"), `${state}\n`);
+  }
+  fs.mkdirSync(path.join(resyncActive, "p2p"), { recursive: true });
+  fs.writeFileSync(path.join(resyncActive, "p2p/identity"), "identity\n");
+
+  runFixtureBlock(
+    "documented resync target and preservation setup",
+    findBlock("docs/nodes/management.md", [
+      "koinos_basedir=",
+      "resync_backup=",
+      "resync-rollback-directory.txt",
+    ]),
+    resyncFixture,
+    root,
+    resyncEnv
+  );
+  runFixtureBlock(
+    "documented resync state moves",
+    findBlock("docs/nodes/management.md", [
+      "resync_backup=\"$(cat",
+      "for state_dir in",
+      "sudo mv",
+    ]),
+    resyncFixture
+  );
+  const resyncBackup = fs
+    .readFileSync(
+      path.join(resyncActive, "resync-rollback-directory.txt"),
+      "utf8"
+    )
+    .trim();
+  assert(
+    fs.existsSync(path.join(resyncBackup, "chain/old")) &&
+      fs.existsSync(path.join(resyncActive, "p2p/identity")),
+    "resync procedure did not preserve public state and local identity separately"
+  );
+  for (const state of ["chain", "block_store", "mempool"]) {
+    fs.mkdirSync(path.join(resyncActive, state), { recursive: true });
+    fs.writeFileSync(path.join(resyncActive, state, "new"), "new\n");
+  }
+  runFixtureBlock(
+    "documented resync rollback commands",
+    findBlock("docs/nodes/management.md", [
+      "failed_resync=",
+      "resync_backup=",
+      "docker compose up -d",
+    ]),
+    resyncFixture,
+    root,
+    resyncEnv
+  );
+  assert(
+    fs.existsSync(path.join(resyncActive, "chain/old")) &&
+      !fs.existsSync(path.join(resyncActive, "chain/new")) &&
+      fs.readFileSync(path.join(resyncActive, "p2p/identity"), "utf8") ===
+        "identity\n",
+    "resync rollback did not restore state while preserving P2P identity"
+  );
+}
+
+function verifyProducerCommands(fixture, blockId) {
+  const producerFixture = path.join(fixture, "producer");
+  const active = path.join(producerFixture, "active");
+  const fakeBin = path.join(producerFixture, "fake-bin");
+  fs.mkdirSync(path.join(active, "block_producer"), { recursive: true });
+  fs.mkdirSync(path.join(producerFixture, "project"), { recursive: true });
+  fs.mkdirSync(fakeBin, { recursive: true });
+  fs.writeFileSync(
+    path.join(active, "block_producer/public.key"),
+    "fixture-public-key\n"
+  );
+  const publicKeyResult = runFixtureBlock(
+    "documented producer public-key command",
+    findBlock("docs/nodes/block-production.md", ["cat", "public.key"]),
+    producerFixture
+  );
+  assert(
+    publicKeyResult.stdout.trim() === "fixture-public-key",
+    "producer public-key command did not return the public key"
+  );
+
+  fs.writeFileSync(
+    path.join(fakeBin, "docker"),
+    "#!/usr/bin/env bash\n" +
+      "printf 'block_producer | Produced block - Height: 1, ID: %s\\n' " +
+      "\"$FIXTURE_BLOCK_ID\"\n",
+    { mode: 0o755 }
+  );
+  const extraction = findBlock("docs/nodes/block-production.md", [
+    "produced_block_id=",
+    "sed -nE",
+  ]);
+  const confirmation = findBlock("docs/nodes/block-production.md", [
+    "block_store.get_blocks_by_id",
+    "returned_height",
+  ]).replaceAll(
+    "http://127.0.0.1:8080/",
+    "https://api.koinos.io/jsonrpc"
+  );
+  const combinedCommand = transformedFixtureCommand(
+    `${extraction}\n${confirmation}`,
+    producerFixture
+  );
+  const confirmationResult = expectSuccess(
+    "documented canonical produced-block confirmation",
+    run("bash", ["-euo", "pipefail", "-c", combinedCommand], {
+      env: {
+        PATH: `${fakeBin}:${process.env.PATH}`,
+        FIXTURE_BLOCK_ID: blockId,
+      },
+      timeout: 30_000,
+    })
+  );
+  assert(
+    confirmationResult.stdout.includes("confirmed height"),
+    "canonical produced-block command returned no confirmation"
   );
 }
 
@@ -545,26 +1057,6 @@ try {
     "mainnet head command returned no positive height"
   );
 
-  const localHead = executeLiveCommand(
-    "documented local JSON-RPC command against mainnet",
-    findBlock("docs/nodes/running-node.md", ["chain.get_head_info"]),
-    [["http://127.0.0.1:8080/", "https://api.koinos.io/jsonrpc"]]
-  );
-  assert(
-    Number(localHead.result?.head_topology?.height) > 0,
-    "local JSON-RPC command shape returned no positive public height"
-  );
-
-  const gossip = executeLiveCommand(
-    "documented gossip command against mainnet",
-    findBlock("docs/nodes/running-node.md", ["p2p.get_gossip_status"]),
-    [["http://127.0.0.1:8080/", "https://api.koinos.io/jsonrpc"]]
-  );
-  assert(
-    gossip.result?.enabled === true,
-    "gossip command did not report enabled"
-  );
-
   const rest = executeLiveCommand(
     "documented REST command against mainnet",
     findBlock("docs/nodes/rpc-node.md", [
@@ -612,9 +1104,21 @@ try {
       recordedGrpcArgs.includes("koinos.rpc.chain.chain_rpc/get_head_info"),
     "gRPC command does not pass transport, descriptors, and method"
   );
+  const publicGrpcCommand = findBlock("docs/nodes/rpc-node.md", [
+    "grpc.example.com:443",
+    "-protoset ./koinos_descriptors.pb",
+  ]);
+  assert(
+    !publicGrpcCommand.includes("-plaintext"),
+    "public gRPC command must not disable TLS"
+  );
 
+  verifyHealthCommands(fixture);
+  verifyNginxConfiguration(fixture);
   await verifyPublicBackupMetadata();
   verifyBackupProcedure(fixture);
+  verifyRecoveryMoves(fixture);
+  verifyProducerCommands(fixture, mainnetHead.result.head_topology.id);
   verifyKeyPermissions(fixture);
 } finally {
   if (
@@ -631,7 +1135,7 @@ if (failures.length) {
 } else {
   console.log(
     `Verified ${blocks.length} documented operator command blocks with ` +
-      `${assertions} syntax, upstream, profile, live-protocol, backup, and ` +
-      `permission assertions.`
+      `${assertions} syntax, upstream, profile, health, proxy, live-protocol, ` +
+      `backup, recovery, producer, and permission assertions.`
   );
 }

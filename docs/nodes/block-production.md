@@ -59,6 +59,12 @@ Verify the owner as well as the mode. Encrypt the private key before storing
 an off-host recovery copy, keep the decryption material separately, and test
 recovery without replacing the live key.
 
+Read the public key as the node operator. Never display or copy `private.key`:
+
+```console
+sudo -u koinos cat /var/lib/koinos/block_producer/public.key
+```
+
 ## Verify current mainnet inputs
 
 On **2026-07-25**, the current `koinos-cli` mainnet startup file at commit
@@ -69,7 +75,9 @@ write methods `register_public_key(producer, public_key)` and
 
 Those values are time-sensitive. Before signing:
 
-1. connect the current CLI to the intended local mainnet RPC;
+1. install the current release of
+   [Koinos CLI](../developers/cli.md) and connect it to the intended local
+   mainnet RPC;
 2. query and compare the chain ID;
 3. verify the current PoB address from an official versioned CLI startup file;
 4. use CLI `help` for both current PoB methods;
@@ -77,6 +85,17 @@ Those values are time-sensitive. Before signing:
 6. verify wallet, producer account, VHP recipient, producer public key,
    fees/mana, and remaining liquid KOIN;
 7. review the transaction summary through a second channel.
+
+Launch the CLI against the private local endpoint:
+
+```console
+koinos-cli --rpc http://127.0.0.1:8080/
+```
+
+Before opening the wallet, use the CLI to compare the connected chain ID with
+the value obtained in [Networks](networks.md#check-an-endpoint). Then use
+`help register`, `help pob.register_public_key`, and `help pob.burn` to confirm
+the syntax implemented by the installed CLI.
 
 The command shapes below are a non-executable checklist:
 
@@ -129,8 +148,43 @@ docker compose logs --tail 100 --follow block_producer chain p2p
 
 ## Confirm production
 
-A local “Produced block” log line is not enough. For each first-production or
-post-change check:
+A local “Produced block” log line is not enough. Extract the latest complete
+block ID from the producer logs:
+
+```console
+cd /opt/koinos
+produced_block_id="$(docker compose logs --no-color block_producer |
+  sed -nE 's/.*Produced block.*ID: (0x[[:xdigit:]]+).*/\1/p' |
+  tail -n 1)"
+printf 'produced block: %s\n' "$produced_block_id"
+[[ "$produced_block_id" =~ ^0x[[:xdigit:]]{68}$ ]]
+```
+
+Query that exact ID from the local block store and then from an independently
+operated mainnet endpoint:
+
+```console
+for rpc_url in \
+  http://127.0.0.1:8080/ \
+  https://api.koinos.io/jsonrpc
+do
+  response="$(curl --fail --silent --show-error "$rpc_url" \
+    -H 'Content-Type: application/json' \
+    --data "{\"jsonrpc\":\"2.0\",\"method\":\"block_store.get_blocks_by_id\",\"params\":{\"block_ids\":[\"$produced_block_id\"],\"return_block\":false,\"return_receipt\":false},\"id\":1}")"
+  returned_id="$(printf '%s' "$response" |
+    jq -er '.result.block_items[0].block_id')"
+  returned_height="$(printf '%s' "$response" |
+    jq -er '.result.block_items[0].block_height | tonumber')"
+  test "$returned_id" = "$produced_block_id"
+  printf '%s confirmed height %s\n' "$rpc_url" "$returned_height"
+done
+```
+
+The independent endpoint may need a few seconds to observe a newly produced
+block. Retry the second query after finality instead of treating an immediate
+miss as proof that the block was rejected.
+
+For each first-production or post-change check:
 
 1. record the produced block ID from the bounded producer logs;
 2. query that block ID from the local block store;

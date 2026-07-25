@@ -93,18 +93,23 @@ Commands with different safety classes are kept in separate procedures.
 
 ## How commands are verified
 
-Every copyable console block is checked for shell syntax in CI. Commands that
-can run safely without a real node receive an additional behavioral check:
+CI success does **not** mean that every command ran against a real production
+node. Verification is recorded at the strongest safe level available:
 
-- observer, API, and producer profiles are rendered from the pinned official
-  `koinos/koinos` bundle with Docker Compose;
-- read-only JSON-RPC and REST commands run against current public endpoints;
-- the gRPC command is checked for the required transport, descriptor set, and
-  method;
-- the public-backup metadata, checksum publication, HTTP range support, and
-  real archive prefix are checked remotely;
-- restore and key-permission commands run against disposable local data.
+| Level | What is proven | Examples |
+| --- | --- | --- |
+| Syntax | The complete console block parses as shell and invokes no documentation-owned helper | every reviewed console block |
+| Static configuration | The command or configuration parses against its pinned or declared runtime | Compose services and profiles, nginx configuration |
+| Disposable fixture | File-changing behavior succeeds without touching real node data | checksum rejection, archive-path rejection, restore, rollback, reindex/resync moves, key permissions |
+| Live read-only | The documented request succeeds without changing chain state | mainnet JSON-RPC/REST, public-backup metadata/range/layout |
+| Staging host | The result depends on a synchronized node, real listeners, DNS, firewall, TLS, or service lifecycle | local head advancement, peer logs, external ports, upgrades, reindex/resync, producer start/disable |
+| Manual irreversible | Automation is intentionally forbidden | producer registration and KOIN burn |
 
-Commands that require a real synchronized node, public firewall, TLS
-certificate, or irreversible transaction retain explicit expected results and
-must also be proven on the operator's staging host before production use.
+The internal verifier distinguishes these levels. Only selected commands with
+deterministic safe inputs receive fixture or live behavioral execution; all
+other copyable console blocks still receive syntax and prohibited-helper
+checks.
+
+Before production use, an operator must execute every staging-host command,
+observe the stated result, and retain evidence for the actual host, network,
+paths, profiles, and deployment revision.

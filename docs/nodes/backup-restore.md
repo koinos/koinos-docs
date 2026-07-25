@@ -99,39 +99,89 @@ provide the required free space.
 
 ## 3. Verify the download and archive paths
 
-Print the downloaded archive checksum:
+Extract the published digest and make `sha256sum` verify the local filename:
 
 ```console
-sha256sum koinos-backup.tar.gz
+published_sha="$(awk 'NR == 1 {print $1}' \
+  koinos-backup.tar.gz.sha256)"
+[[ "$published_sha" =~ ^[0-9a-fA-F]{64}$ ]]
+printf '%s  %s\n' "$published_sha" koinos-backup.tar.gz |
+  sha256sum --check -
 ```
 
-Then display the published checksum:
+Expect `koinos-backup.tar.gz: OK`. The conversion is necessary because the
+published checksum currently contains the seed host's absolute source path.
+
+Write the archive member names without extracting anything:
 
 ```console
-cat koinos-backup.tar.gz.sha256
+tar -tzf koinos-backup.tar.gz > archive-members.txt
+test -s archive-members.txt
 ```
 
-The two 64-character SHA-256 values must match exactly. The published file
-currently contains the seed host's absolute source path, so running
-`sha256sum -c` against it directly is not portable.
-
-Inspect the archive member names without extracting anything:
+Reject absolute paths, parent traversal, and link entries automatically, then
+require the two public state directories:
 
 ```console
-tar -tzf koinos-backup.tar.gz | less
+(
+set -euo pipefail
+if LC_ALL=C grep -Eq '(^/|(^|/)\.\.(/|$))' archive-members.txt; then
+  printf 'ERROR: unsafe archive member path\n' >&2
+  exit 1
+fi
+if tar -tvzf koinos-backup.tar.gz |
+  awk 'substr($1, 1, 1) == "l" || substr($1, 1, 1) == "h" { found=1 }
+       END { exit !found }'
+then
+  printf 'ERROR: archive contains link entries\n' >&2
+  exit 1
+fi
+grep -q '^\.koinos/chain/' archive-members.txt
+grep -q '^\.koinos/block_store/' archive-members.txt
+)
 ```
 
-Continue only when:
+Review the bounded beginning and end of the accepted listing:
 
-- no member begins with `/`;
-- no member contains `../`;
-- the listing contains `.koinos/chain/`;
-- the listing contains `.koinos/block_store/`.
+```console
+sed -n '1,40p' archive-members.txt
+tail -n 40 archive-members.txt
+```
 
 If the current archive uses a different layout, stop and review the procedure
 instead of guessing new extraction paths.
 
 ## 4. Stop the node and preserve local state
+
+Before stopping, reject an unexpected target and prove that the running node
+and the trusted public endpoint have the same chain ID:
+
+```console
+(
+set -euo pipefail
+koinos_basedir=/var/lib/koinos
+restore_stage=/srv/koinos-restore
+case "$koinos_basedir" in
+  ""|/|/home|/var|/var/lib) exit 1 ;;
+esac
+test -d "$koinos_basedir"
+test -d "$restore_stage"
+
+local_chain_id="$(curl --fail --silent --show-error \
+  http://127.0.0.1:8080/ \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_chain_id","params":{},"id":1}' |
+  jq -er '.result.chain_id')"
+mainnet_chain_id="$(curl --fail --silent --show-error \
+  https://api.koinos.io/jsonrpc \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_chain_id","params":{},"id":1}' |
+  jq -er '.result.chain_id')"
+printf 'local chain ID:   %s\n' "$local_chain_id"
+printf 'mainnet chain ID: %s\n' "$mainnet_chain_id"
+test "$local_chain_id" = "$mainnet_chain_id"
+)
+```
 
 From the official checkout, stop the node cleanly:
 
@@ -143,25 +193,39 @@ docker compose ps
 
 Wait until no Koinos service is running.
 
-Create a dated rollback directory. Replace the date in this example with the
-actual maintenance date:
+Create and record a unique rollback directory:
 
 ```console
-sudo mkdir /var/lib/koinos-before-restore-2026-07-25
+rollback_dir="/var/lib/koinos-before-restore-$(date -u +%Y%m%dT%H%M%SZ)"
+sudo install -d -m 750 -o koinos -g koinos "$rollback_dir"
+printf '%s\n' "$rollback_dir" \
+  > /srv/koinos-restore/rollback-directory.txt
 ```
 
-Move the current core data there:
+Display the target and stop if it is not exactly the new directory just
+created:
 
 ```console
-sudo mv /var/lib/koinos/chain \
-  /var/lib/koinos-before-restore-2026-07-25/
-sudo mv /var/lib/koinos/block_store \
-  /var/lib/koinos-before-restore-2026-07-25/
+rollback_dir="$(cat /srv/koinos-restore/rollback-directory.txt)"
+printf 'active data: %s\nrollback data: %s\n' \
+  /var/lib/koinos "$rollback_dir"
+test -d "$rollback_dir"
+test ! -e "$rollback_dir/chain"
+test ! -e "$rollback_dir/block_store"
 ```
 
-Also move any existing `mempool`, `transaction_store`, `account_history`, and
-`contract_meta_store` directories into the same rollback directory. Move only
-directories that exist.
+Move current public and rebuildable state there:
+
+```console
+rollback_dir="$(cat /srv/koinos-restore/rollback-directory.txt)"
+for state_dir in \
+  chain block_store mempool transaction_store account_history contract_meta_store
+do
+  if sudo test -e "/var/lib/koinos/$state_dir"; then
+    sudo mv "/var/lib/koinos/$state_dir" "$rollback_dir/"
+  fi
+done
+```
 
 Do **not** move or replace:
 
@@ -195,10 +259,19 @@ sudo chown -R --reference=/var/lib/koinos \
   /var/lib/koinos/chain /var/lib/koinos/block_store
 ```
 
-Before startup, confirm that `chain.verify-blocks` is `true` in the active
-`/opt/koinos/config/config.yml`. Keep the active mainnet genesis data,
-descriptors, peer identity, and image versions from your reviewed deployment
-bundle.
+Before startup, require `chain.verify-blocks: true` in the active configuration:
+
+```console
+chain_section="$(sed -n '/^chain:/,/^[^[:space:]#]/p' \
+  /opt/koinos/config/config.yml)"
+printf '%s\n' "$chain_section"
+printf '%s\n' "$chain_section" |
+  grep -Eq '^[[:space:]]+verify-blocks:[[:space:]]*true([[:space:]]|$)'
+```
+
+The command fails if the displayed `chain` section does not explicitly set
+`verify-blocks: true`. Keep the active mainnet genesis data, descriptors, peer
+identity, and image versions from your reviewed deployment bundle.
 
 ## 6. Start and validate
 
@@ -228,14 +301,31 @@ installs only `chain` and `block_store`.
 
 If validation fails:
 
-1. stop the node cleanly;
-2. move the newly installed `chain` and `block_store` into a separate failed
-   restore directory;
-3. move the previous directories from
-   `/var/lib/koinos-before-restore-2026-07-25/` back into
-   `/var/lib/koinos/`;
-4. restore any previous optional-index directories;
-5. start the previous reviewed deployment and run the same health checks.
+Stop the node and move both generations directly:
+
+```console
+cd /opt/koinos
+docker compose stop
+rollback_dir="$(cat /srv/koinos-restore/rollback-directory.txt)"
+failed_restore="/var/lib/koinos-failed-restore-$(date -u +%Y%m%dT%H%M%SZ)"
+sudo install -d -m 750 -o koinos -g koinos "$failed_restore"
+for state_dir in \
+  chain block_store mempool transaction_store account_history contract_meta_store
+do
+  if sudo test -e "/var/lib/koinos/$state_dir"; then
+    sudo mv "/var/lib/koinos/$state_dir" "$failed_restore/"
+  fi
+  if sudo test -e "$rollback_dir/$state_dir"; then
+    sudo mv "$rollback_dir/$state_dir" /var/lib/koinos/
+  fi
+done
+docker compose config
+docker compose up -d
+docker compose ps
+```
+
+Run the same chain-ID, head-freshness, advancement, gossip, peer, API, and disk
+checks used after the restore.
 
 Do not delete either generation until the recovered node has remained healthy.
 

@@ -29,8 +29,18 @@ Confirm the installed tools, time synchronization, and available disk space:
 ```console
 docker --version
 docker compose version
+curl --version
+jq --version
 timedatectl status
 df -h /var/lib
+```
+
+Install `curl` and `jq` from the Ubuntu repositories if either command is
+missing:
+
+```console
+sudo apt-get update
+sudo apt-get install -y curl jq
 ```
 
 Create the data directory and make the node operator its owner. Replace
@@ -115,7 +125,7 @@ docker compose ps
 The expected services are `amqp`, `chain`, `mempool`, `block_store`, `p2p`,
 and `jsonrpc`. The `block_producer` container must not be present.
 
-## 5. Follow synchronization
+## 5. Prove synchronization and health
 
 Watch the services responsible for receiving and applying blocks:
 
@@ -123,29 +133,107 @@ Watch the services responsible for receiving and applying blocks:
 docker compose logs --tail 100 --follow chain p2p block_store
 ```
 
-In another terminal, query the local head:
+In another terminal, first prove that every expected service is running, none
+has restarted, and the producer is absent:
 
 ```console
-curl --fail http://127.0.0.1:8080/ \
-  -H 'Content-Type: application/json' \
-  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}'
+running_services="$(docker compose ps --status running --services)"
+for service in amqp chain mempool block_store p2p jsonrpc; do
+  printf '%s\n' "$running_services" | grep -qx "$service"
+done
+! printf '%s\n' "$running_services" | grep -qx block_producer
+
+for container_id in $(docker compose ps -q); do
+  test "$(docker inspect --format '{{.State.Status}}' "$container_id")" = running
+  test "$(docker inspect --format '{{.RestartCount}}' "$container_id")" -eq 0
+done
 ```
 
-Also verify that P2P gossip is enabled:
+No output from the `test` commands means that all gates passed. If a gate
+fails, inspect `docker compose ps` and the bounded service logs before
+continuing.
+
+Fetch the local and independently operated mainnet heads, calculate their ages,
+and display their heights:
 
 ```console
-curl --fail http://127.0.0.1:8080/ \
+local_head="$(curl --fail --silent --show-error http://127.0.0.1:8080/ \
   -H 'Content-Type: application/json' \
-  --data '{"jsonrpc":"2.0","method":"p2p.get_gossip_status","params":{},"id":1}'
+  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}')"
+public_head="$(curl --fail --silent --show-error \
+  https://api.koinos.io/jsonrpc \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}')"
+
+now_ms="$(($(date +%s) * 1000))"
+local_height="$(printf '%s' "$local_head" |
+  jq -er '.result.head_topology.height | tonumber')"
+public_height="$(printf '%s' "$public_head" |
+  jq -er '.result.head_topology.height | tonumber')"
+local_time="$(printf '%s' "$local_head" |
+  jq -er '.result.head_block_time | tonumber')"
+public_time="$(printf '%s' "$public_head" |
+  jq -er '.result.head_block_time | tonumber')"
+local_age="$(((now_ms - local_time) / 1000))"
+public_age="$(((now_ms - public_time) / 1000))"
+
+printf 'local height=%s age=%ss\n' "$local_height" "$local_age"
+printf 'public height=%s age=%ss\n' "$public_height" "$public_age"
+test "$local_height" -gt 0
+test "$local_age" -ge -30
+test "$local_age" -le 300
 ```
 
-During the first synchronization, an old head time is normal. The node is
-ready only when:
+During initial synchronization the local age can exceed 300 seconds and the
+local height can lag substantially. Repeat the check until the local head is
+fresh and close to the public height. Do not use a public height alone as
+proof: the local values must come from `127.0.0.1`. The small negative
+tolerance permits ordinary clock and block-timestamp skew; a larger negative
+age requires a time-synchronization investigation.
+
+Prove that the local height continues to advance:
+
+```console
+height_before="$(curl --fail --silent --show-error \
+  http://127.0.0.1:8080/ \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}' |
+  jq -er '.result.head_topology.height | tonumber')"
+sleep 30
+height_after="$(curl --fail --silent --show-error \
+  http://127.0.0.1:8080/ \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}' |
+  jq -er '.result.head_topology.height | tonumber')"
+printf 'height before=%s after=%s\n' "$height_before" "$height_after"
+test "$height_after" -gt "$height_before"
+```
+
+Finally, verify gossip and peer activity separately. The public P2P RPC only
+reports whether gossip is enabled; it does not return a peer count:
+
+```console
+curl --fail --silent --show-error http://127.0.0.1:8080/ \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"p2p.get_gossip_status","params":{},"id":1}' |
+  jq -e '.result.enabled == true'
+
+peer_lines="$(docker compose logs --since 2m --no-color p2p |
+  grep -E ' - /.*/p2p/' || true)"
+test -n "$peer_lines"
+printf '%s\n' "$peer_lines"
+```
+
+The `p2p` service emits its “Connected peers” list once per minute in the
+verified version. Wait two minutes and investigate P2P configuration,
+firewall, DNS, and seed reachability if no peer line appears.
+
+The node is ready only when:
 
 - all expected containers remain running without a restart loop;
-- the head approaches a trusted mainnet endpoint and keeps advancing;
-- the reported head time becomes recent;
-- P2P gossip is enabled and peers are active;
+- the local head is no more than five minutes old, approaches a trusted
+  mainnet height, and advances across the 30-second observation;
+- P2P gossip is enabled and the P2P logs show at least one connected peer;
 - logs do not show recurring database, verification, or connectivity errors;
 - the data filesystem retains safe free space.
 

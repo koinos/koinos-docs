@@ -49,5 +49,7 @@ Inspect `.env` before assuming a command starts only required services.
     materially changes the threat model, even when producer configuration is
     incomplete.
 
-The recorded profile map is validated automatically against the Compose
-fixture under `examples/node-operators/upstream/`.
+Before changing a profile, inspect the `profiles` and `depends_on` sections in
+the `docker-compose.yml` supplied by the exact deployment revision. Confirm
+the selected services with `docker compose config --services`, then use
+`docker compose ps` after applying the change.

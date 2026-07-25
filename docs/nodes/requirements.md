@@ -4,18 +4,18 @@ icon: fontawesome/solid/file-lines
 
 # Node requirements
 
-These are capacity-planning starting points for the official Docker Compose
-deployment, not permanent guarantees. Measure the selected profiles on the
-network you will operate.
+These values are capacity-planning starting points for the official Docker
+Compose deployment, not permanent guarantees. Measure the role and services
+you actually operate.
 
 Verified on **2026-07-25**:
 
-- the pinned images used by this guide publish Linux `amd64` images;
+- the image set used by this guide publishes Linux `amd64` images;
 - a local mainnet `block_store` measurement was approximately 43 GB;
-- the public full-node backup dated 2026-07-19 reported 57 GB compressed and
-  included core data plus optional indexes.
+- the public full-node backup dated 2026-07-19 was approximately 57 GB
+  compressed and included core data plus optional indexes.
 
-Those observations make the previous "18 GB current usage" figure obsolete.
+Those observations make the previous “18 GB current usage” figure obsolete.
 They do not predict future growth.
 
 ## Planning matrix
@@ -27,9 +27,9 @@ They do not predict future growth.
 | RPC/API node | 8 cores / 16 GB | At least `max(200 GB, 2 × measured selected-profile data)` on SSD | Historical indexes grow independently |
 | Block producer | 4–8 cores / 8–16 GB | Observer rule plus encrypted key/config backups | Prioritize reliability and key protection |
 
-Use more capacity for heavy public traffic, retained logs, filesystem
-snapshots, or all optional indexes. Do not use swap as a substitute for the
-RAM required by the selected workload.
+Allow additional capacity for public traffic, retained logs, filesystem
+snapshots, or optional indexes. Do not use swap as a substitute for the RAM
+required by the workload.
 
 ## Host requirements
 
@@ -37,34 +37,38 @@ RAM required by the selected workload.
 - Linux `amd64` for the verified image set. Recheck image manifests before
   using another architecture.
 - Docker Engine and Docker Compose v2.
-- SSD-backed storage with reliable write latency; avoid a slow USB disk for a
-  production basedir.
-- Stable bidirectional internet access. Public P2P nodes need inbound
+- SSD-backed storage with reliable write latency.
+- Stable bidirectional internet access. A public P2P node needs inbound
   `8888/tcp`.
 - Correct time with NTP synchronization.
-- Enough off-host capacity for encrypted configuration and key backups.
-- Disk monitoring at 80% warning and 90% critical by default.
+- Off-host capacity for encrypted configuration and key backups.
+- Disk monitoring, with 80% warning and 90% critical as useful defaults.
 
-## Measure the actual node
+## Check the server
 
-**Safety: read-only.** The script rejects broad basedirs and reports filesystem
-capacity plus data usage by service.
+Run the standard host commands directly:
 
-<!-- node-example: measure-storage -->
-```bash title="measure-storage.sh"
---8<-- "examples/node-operators/observer/measure-storage.sh:measure-storage"
+```console
+uname -m
+docker --version
+docker compose version
+timedatectl status
+df -h /var/lib/koinos
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer/measure-storage.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/observer#run-locally)
+After the node has started, measure each service directory:
 
-Record measurements with the date, block height, enabled profiles, and retained
-log policy. Recalculate headroom after enabling `transaction_store`,
+```console
+du -sh /var/lib/koinos/*
+```
+
+Record the date, block height, enabled profiles, and log-retention policy with
+the measurement. Recalculate headroom after enabling `transaction_store`,
 `account_history`, or `contract_meta_store`.
 
 ## Avoid universal tuning
 
 Do not add fixed `jobs`, swap, or `nofile` overrides without measurements. A
 high open-file limit can hide a descriptor leak rather than solve it. Capture
-the affected service, descriptor count, sync state, and error before applying a
-temporary workload-specific override.
+the affected service, descriptor count, synchronization state, and exact error
+before applying a temporary workload-specific override.

@@ -18,9 +18,8 @@ producer enables `block_producer`. The `all` profile is not a safe shortcut.
 | `3000/tcp` | REST | closed or loopback | loopback behind proxy | closed or loopback |
 
 Docker-published ports can bypass assumptions about host firewalls. Verify both
-the effective Docker bindings and reachability from another host. The
-[RPC exposure audit](rpc-node.md#4-prove-internal-ports-are-not-public) provides
-a read-only check.
+the effective Docker bindings and reachability from another host. Follow the
+[two-location exposure check](rpc-node.md#4-verify-exposure-from-two-locations).
 
 ## Host and account controls
 
@@ -48,7 +47,8 @@ for a remotely administered deployment, store them outside version control,
 and update the Koinos AMQP URL consistently. A password alone does not make a
 public AMQP listener safe.
 
-Validate the complete [Caddy or nginx configurations](rpc-node.md#3-terminate-tls-and-control-traffic)
+Apply the
+[reverse-proxy requirements](rpc-node.md#3-publish-through-a-reverse-proxy)
 before reload, then test JSON-RPC, REST, Swagger assets, gRPC, CORS preflight,
 rate limiting, and certificate renewal from outside the host.
 

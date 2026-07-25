@@ -1,9 +1,11 @@
 # Run an RPC node
 
-An RPC node adds application-facing services to a healthy observer. The
-official `api` profile enables JSON-RPC, REST, gRPC, transaction store,
-contract metadata store, and account history. It does **not** need the
-`block_producer` profile.
+An RPC node is a healthy observer with application-facing services enabled.
+Operate those services through the official Koinos Compose project.
+
+The upstream `api` profile enables JSON-RPC, REST, gRPC, transaction store,
+contract metadata store, and account history. It does **not** require
+`block_producer`.
 
 ## Architecture and trust boundary
 
@@ -16,124 +18,126 @@ proxy:
 | REST and Swagger | `127.0.0.1:3000` | `https://rpc.example.com/v1/...` and `/swagger` | HTTP GET |
 | gRPC | `127.0.0.1:50051` | `grpc.example.com:443` | descriptor-based gRPC |
 
-RabbitMQ `5672` and its management UI `15672` must also remain private. P2P
-`8888` can be public if this host participates in peer-to-peer networking.
+RabbitMQ `5672` and its administration UI `15672` must remain private. P2P
+`8888` may be public when the host participates in peer-to-peer networking.
 
 ## 1. Enable the API profile
 
-Start from the same immutable deployment bundle used for the observer and
-measure the additional storage required by the selected index services.
+Start from the same official deployment checkout and basedir as the observer.
+Preserve the existing `.env`, then edit these values:
 
-**Safety: service-changing when installed.** This configuration keeps every API
-on loopback and intentionally enables `api`.
+| Setting | Value |
+| --- | --- |
+| `COMPOSE_PROFILES` | `api` |
+| `JSONRPC_INTERFACE` | `127.0.0.1` |
+| `JSONRPC_PORT` | `8080` |
+| `REST_INTERFACE` | `127.0.0.1` |
+| `REST_PORT` | `3000` |
+| `GRPC_INTERFACE` | `127.0.0.1` |
+| `GRPC_PORT` | `50051` |
+| `AMQP_INTERFACE` | `127.0.0.1` |
+| `AMQP_ADMIN_INTERFACE` | `127.0.0.1` |
 
-<!-- node-example: rpc-env -->
-```dotenv title=".env"
---8<-- "examples/node-operators/rpc/env.example:rpc-env"
+Keep the image tags from the selected deployment revision. Validate and start:
+
+```console
+cd /opt/koinos
+docker compose config
+docker compose up -d
+docker compose ps
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc/env.example) ·
-[Use locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc)
+Expect the five required services plus `jsonrpc`, `rest`, `grpc`,
+`transaction_store`, `contract_meta_store`, and `account_history`. Expect no
+`block_producer` container.
 
-After preserving the existing `.env`, apply the reviewed values and run
-`docker compose --profile api up -d`. Confirm that the six API services plus
-the five required services are healthy with `docker compose ps`.
+## 2. Verify each local protocol
 
-## 2. Verify locally before exposing it
+Check JSON-RPC:
 
-These read-only checks require `curl`, Python 3, and—in the gRPC case—`grpcurl`
-plus the `koinos_descriptors.pb` file from the **same deployment bundle**. The
-gRPC service does not advertise reflection, so a reflection-only command is not
-a valid test.
-
-<!-- node-example: test-jsonrpc -->
-```bash title="test-jsonrpc.sh"
---8<-- "examples/node-operators/rpc/test-jsonrpc.sh:test-jsonrpc"
+```console
+curl --fail http://127.0.0.1:8080/ \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}'
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc/test-jsonrpc.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc)
+Check REST:
 
-<!-- node-example: test-rest -->
-```bash title="test-rest.sh"
---8<-- "examples/node-operators/rpc/test-rest.sh:test-rest"
+```console
+curl --fail http://127.0.0.1:3000/v1/chain/head_info
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc/test-rest.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc)
+Check gRPC with `grpcurl` and the descriptor set from the same deployment
+bundle:
 
-<!-- node-example: test-grpc -->
-```bash title="test-grpc.sh"
---8<-- "examples/node-operators/rpc/test-grpc.sh:test-grpc"
+```console
+grpcurl -plaintext \
+  -protoset /opt/koinos/config/koinos_descriptors.pb \
+  -d '{}' \
+  127.0.0.1:50051 \
+  koinos.rpc.chain.chain_rpc/get_head_info
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc/test-grpc.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc)
+Koinos gRPC does not advertise reflection, so a reflection-only test is not
+sufficient. Plaintext is appropriate only for this loopback check; public gRPC
+must use TLS.
 
-Use `GRPC_PLAINTEXT=1` only for the local loopback test. Public gRPC should use
-TLS on port 443.
+## 3. Publish through a reverse proxy
 
-## 3. Terminate TLS and control traffic
+Use Caddy, nginx, or an equivalent maintained reverse proxy. Configure it as
+an independent host service and meet all of these requirements:
 
-Choose one complete proxy configuration and replace every example domain and
-allowed browser origin. Do not use `*` for CORS when the caller origin is
-known. Both examples cap request bodies, define timeouts, hide internal ports,
-route REST/Swagger assets, and handle gRPC separately.
+- obtain and renew valid public TLS certificates;
+- route JSON-RPC to `127.0.0.1:8080`;
+- route `/v1/`, `/swagger`, and required Swagger assets to
+  `127.0.0.1:3000`;
+- proxy gRPC with HTTP/2 to `127.0.0.1:50051`;
+- limit request body size;
+- set connection and upstream timeouts;
+- rate-limit by client;
+- allow only the required browser origins instead of `*`;
+- remove unnecessary server-identification headers;
+- retain bounded access and error logs.
 
-### Caddy
+Follow the current
+[Caddy reverse proxy documentation](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
+or
+[nginx proxy documentation](https://nginx.org/en/docs/http/ngx_http_proxy_module.html)
+for the software version you install. Validate the proxy configuration before
+reloading it.
 
-Caddy can obtain and renew certificates automatically when public DNS and
-ports 80/443 are correctly configured. The configuration uses the
-`caddy-ratelimit` module, which is not part of the standard Caddy binary. Build
-the complete pinned
-[`Dockerfile.caddy`](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc/Dockerfile.caddy)
-from the example directory and verify `caddy list-modules` includes
-`http.handlers.rate_limit` before installation.
+The Koinos ports must remain bound to loopback even when a host firewall is
+also present. Defense in depth matters: a future firewall change must not
+publish the raw services automatically.
 
-<!-- node-example: rpc-caddy -->
-```caddyfile title="Caddyfile"
---8<-- "examples/node-operators/rpc/Caddyfile:rpc-caddy"
+## 4. Verify exposure from two locations
+
+On the node host, inspect listeners:
+
+```console
+sudo ss -lntp
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc/Caddyfile) ·
-[Validate locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc)
+The API, RabbitMQ, and RabbitMQ administration ports should show
+`127.0.0.1`, not `0.0.0.0` or `[::]`.
 
-### nginx
+From a different machine or network, test the intended public ports:
 
-The nginx example expects certificates to exist at the declared paths. Use
-your ACME client or certificate-management process before starting nginx.
-
-<!-- node-example: rpc-nginx -->
-```nginx title="nginx.conf"
---8<-- "examples/node-operators/rpc/nginx.conf:rpc-nginx"
+```console
+nc -vz rpc.example.com 443
+nc -vz rpc.example.com 8080
+nc -vz rpc.example.com 3000
+nc -vz rpc.example.com 50051
+nc -vz rpc.example.com 5672
+nc -vz rpc.example.com 15672
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc/nginx.conf) ·
-[Validate locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc)
+Expect `443` to succeed. Expect the raw Koinos and RabbitMQ ports to fail.
+Port `8888` is the only Koinos service port that may intentionally be public.
 
-## 4. Prove internal ports are not public
-
-Inspect the local listeners, then run the same script with the public hostname
-from another network. This is read-only; it does not change firewall rules.
-
-<!-- node-example: audit-exposure -->
-```bash title="audit-exposure.sh"
---8<-- "examples/node-operators/rpc/audit-exposure.sh:audit-exposure"
-```
-
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc/audit-exposure.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/rpc)
-
-From outside the server, expect only 80/443 and any intentionally public P2P
-port. Treat externally reachable 5672, 15672, 8080, 50051, or 3000 as a
-misconfiguration.
-
-## Operate from measurements
-
-Monitor endpoint latency, non-2xx responses, container restarts, queue pressure,
-head freshness, disk growth, and host saturation. Do not infer request rates
-from fictional log messages, raise compute limits without a measured workload,
-or use swap as a substitute for adequate memory.
+Finally, repeat the JSON-RPC, REST, and gRPC checks through the public TLS
+names. Monitor latency, non-2xx responses, container restarts, queue pressure,
+head freshness, disk growth, and host saturation.
 
 Continue with [Security](security.md) and
 [Operations and recovery](management.md).

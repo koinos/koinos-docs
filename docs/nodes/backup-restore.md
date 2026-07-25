@@ -1,124 +1,244 @@
 # Backup and restore
 
-Backups serve different recovery goals. Do not put every class into one
-unencrypted archive.
+This chapter gives a direct, staged procedure for recovering a Koinos node.
 
-| Class | Examples | Secret? | Recovery use |
-| --- | --- | --- | --- |
-| Deployment | checked-out revision, `.env`, `config/`, Compose | may contain broker credentials | reproduce reviewed configuration |
-| Producer and wallet keys | private key files, wallet files | **yes** | recover authority; encrypt and restrict separately |
-| Local identity | P2P state and seed | **yes** | retain stable peer identity |
-| Core data | `chain`, `block_store` | no private authority | avoid full P2P resync |
-| Optional indexes | transaction, account, contract metadata stores | normally no | avoid index rebuild time |
-| Transient state | mempool | no | rebuild; do not rely on it as recovery data |
+The public backup is useful for avoiding a full mainnet synchronization. It is
+not a replacement for your private configuration, peer identity, wallet, or
+producer-key backups.
 
-## Make a private recovery set
+The example paths below are:
 
-Record the network, chain ID, bundle revision, image tags, basedir, owner, and
-timestamp. Verify enough free space, stop with `docker compose stop`, and wait
-until `docker compose ps` shows no running Koinos services before snapshotting
-data. Copy configuration and identities without following paths into another
-network's basedir.
+- `/opt/koinos`: the official deployment checkout;
+- `/var/lib/koinos`: the active node data;
+- `/srv/koinos-restore`: temporary download and extraction space.
 
-Encrypt key and identity backups before copying them off-host. Store the
-encryption secret separately, test decryption and restoration in an isolated
-directory, and retain more than one recovery generation.
+Confirm your real paths in `.env` before running any command. Do not adapt this
+procedure to another network.
 
-## Public mainnet backup
+## What to back up privately
 
-Verified on **2026-07-25**, the Koinos Foundation seed host exposed a discovery
-listing at `https://seed.koinosfoundation.org/backups/` with:
+Keep separate recovery copies according to their sensitivity:
+
+| Data | Typical location | Recovery purpose |
+| --- | --- | --- |
+| deployment and configuration | checkout, `.env`, `config/` | reproduce the reviewed node |
+| producer and wallet keys | operator-defined key storage | recover authority |
+| P2P identity | `BASEDIR/p2p` | retain the peer identity |
+| core public data | `BASEDIR/chain`, `BASEDIR/block_store` | avoid a full synchronization |
+| optional indexes | transaction, account, contract metadata stores | avoid index rebuild time |
+
+Encrypt keys and identities before copying them off-host. Store the decryption
+secret separately and test a restoration in an isolated directory.
+
+## About the public mainnet backup
+
+Verified on **2026-07-25**, the Koinos Foundation seed host published:
 
 - `koinos-backup.tar.gz`;
 - `koinos-backup.tar.gz.metadata`;
 - `koinos-backup.tar.gz.sha256`.
 
-The observed metadata dated the snapshot **2026-07-19 02:39:13 UTC**, described
-an approximately **57 GB compressed** mainnet archive, and listed core state
-plus optional indexes. This is time-sensitive evidence, not a retention
-guarantee. Always rediscover the current names and read the current metadata
-before downloading.
+The observed metadata dated the snapshot **2026-07-19 02:39:13 UTC** and
+reported approximately **57 GB compressed**. Always open the current
+[backup directory](https://seed.koinosfoundation.org/backups/) and read the
+current metadata before downloading. The filename, size, date, checksum, and
+layout can change.
 
-!!! warning "Do not follow the archive metadata's direct extraction command"
-    The current metadata suggests extraction into `/` and ownership as `root`.
-    That bypasses staging, path review, least privilege, local-identity
-    separation, and recoverable replacement. Use the guarded procedure below.
+!!! warning "Do not extract the archive directly into `/`"
+    The published metadata currently shows a direct extraction command. Do
+    not use it. First verify the checksum and archive paths, extract into a
+    staging directory, and install only `chain` and `block_store`.
 
-The fetch helper uses HTTPS and defaults to metadata only. Downloading the full
-archive modifies the staging directory and requires substantial free space.
+## 1. Prepare enough space
 
-<!-- node-example: fetch-public-backup -->
-```bash title="fetch-public-backup.sh"
---8<-- "examples/node-operators/backup-restore/fetch-public-backup.sh:fetch-public-backup"
+You need room for:
+
+- the compressed archive;
+- the extracted `chain` and `block_store`;
+- the previous local data retained for rollback.
+
+Check both the active data filesystem and staging filesystem:
+
+```console
+df -h /var/lib/koinos /srv
+du -sh /var/lib/koinos
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/backup-restore/fetch-public-backup.sh) ·
-[Use locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/backup-restore)
+Create a staging directory owned by the node operator:
 
-## Inspect without extracting
-
-Treat a public archive as untrusted input. The read-only inspector verifies the
-published SHA-256, rejects unsafe paths, and confirms that `chain` and
-`block_store` are present.
-
-<!-- node-example: inspect-backup -->
-```bash title="inspect-backup.sh"
---8<-- "examples/node-operators/backup-restore/inspect-backup.sh:inspect-backup"
+```console
+sudo install -d -m 750 -o koinos -g koinos /srv/koinos-restore
+cd /srv/koinos-restore
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/backup-restore/inspect-backup.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/backup-restore)
+Replace `koinos` with the real operator account.
 
-Review the metadata and full member listing yourself as well. Stop if the
-checksum, owner, network, date, layout, or required free space is unclear.
+## 2. Download the metadata and backup
 
-## Stage a mainnet restore
+Download the three current files directly from the Foundation seed:
 
-The restore helper supports only the verified public **mainnet** archive. It
-requires the active config to set `chain.verify-blocks: true`. Its default
-dry-run prints the exact source, target, config, and network without extracting
-or replacing data.
-
-**Safety: state-destructive in apply mode.** Apply mode requires an absolute
-non-broad basedir, clean-shutdown acknowledgement, private-backup
-acknowledgement, and the exact confirmation `RESTORE_MAINNET`.
-
-<!-- node-example: restore-backup -->
-```bash title="restore-backup.sh"
---8<-- "examples/node-operators/backup-restore/restore-backup.sh:restore-backup"
+```console
+curl --fail --location --remote-name \
+  https://seed.koinosfoundation.org/backups/koinos-backup.tar.gz.metadata
+curl --fail --location --remote-name \
+  https://seed.koinosfoundation.org/backups/koinos-backup.tar.gz.sha256
+curl --fail --location --continue-at - --remote-name \
+  https://seed.koinosfoundation.org/backups/koinos-backup.tar.gz
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/backup-restore/restore-backup.sh) ·
-[Use locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/backup-restore)
+`--continue-at -` allows `curl` to resume an interrupted large download.
 
-Only `chain` and `block_store` enter the live basedir. Existing core, mempool,
-and optional-index directories move to `.pre-restore-TIMESTAMP`. The helper
-does not restore public configuration, peer identity, wallets, or producer
-keys.
+Read the metadata before continuing:
 
-After reviewing the dry run, stop the node and independently verify the private
-backup before adding `--apply --node-stopped --backup-confirmed --confirm
-RESTORE_MAINNET`.
+```console
+less koinos-backup.tar.gz.metadata
+```
 
-## Validate and roll back
+Stop if it does not describe the intended mainnet backup or if you cannot
+provide the required free space.
 
-Before startup, inspect ownership, available space, active `.env`, active
-config, genesis data, descriptors, and expected chain ID. Start the selected
-profiles, then verify:
+## 3. Verify the download and archive paths
 
-- all expected containers remain running;
-- local chain ID is mainnet;
-- head advances and becomes fresh;
-- block verification produces no errors;
-- P2P peers and gossip are active;
-- disk has safe headroom;
-- enabled JSON-RPC, REST, and gRPC probes succeed.
+Print the downloaded archive checksum:
 
-If validation fails, stop cleanly. Move the newly restored `chain` and
-`block_store` aside, move the required directories back from
-`.pre-restore-TIMESTAMP`, restore the prior reviewed bundle, and re-run the
-same health checks. Do not delete either generation until recovery is proven.
+```console
+sha256sum koinos-backup.tar.gz
+```
+
+Then display the published checksum:
+
+```console
+cat koinos-backup.tar.gz.sha256
+```
+
+The two 64-character SHA-256 values must match exactly. The published file
+currently contains the seed host's absolute source path, so running
+`sha256sum -c` against it directly is not portable.
+
+Inspect the archive member names without extracting anything:
+
+```console
+tar -tzf koinos-backup.tar.gz | less
+```
+
+Continue only when:
+
+- no member begins with `/`;
+- no member contains `../`;
+- the listing contains `.koinos/chain/`;
+- the listing contains `.koinos/block_store/`.
+
+If the current archive uses a different layout, stop and review the procedure
+instead of guessing new extraction paths.
+
+## 4. Stop the node and preserve local state
+
+From the official checkout, stop the node cleanly:
+
+```console
+cd /opt/koinos
+docker compose stop
+docker compose ps
+```
+
+Wait until no Koinos service is running.
+
+Create a dated rollback directory. Replace the date in this example with the
+actual maintenance date:
+
+```console
+sudo mkdir /var/lib/koinos-before-restore-2026-07-25
+```
+
+Move the current core data there:
+
+```console
+sudo mv /var/lib/koinos/chain \
+  /var/lib/koinos-before-restore-2026-07-25/
+sudo mv /var/lib/koinos/block_store \
+  /var/lib/koinos-before-restore-2026-07-25/
+```
+
+Also move any existing `mempool`, `transaction_store`, `account_history`, and
+`contract_meta_store` directories into the same rollback directory. Move only
+directories that exist.
+
+Do **not** move or replace:
+
+- `.env` or the deployment checkout;
+- `config/`;
+- the local `p2p` directory;
+- wallets or producer keys.
+
+## 5. Extract only the core public data
+
+Return to the staging directory and create an empty extraction target:
+
+```console
+cd /srv/koinos-restore
+mkdir extracted
+```
+
+Extract only the two paths confirmed in the listing:
+
+```console
+tar -xzf koinos-backup.tar.gz -C extracted \
+  .koinos/chain .koinos/block_store
+```
+
+Copy the staged core data into the active basedir:
+
+```console
+sudo cp -a extracted/.koinos/chain /var/lib/koinos/
+sudo cp -a extracted/.koinos/block_store /var/lib/koinos/
+sudo chown -R --reference=/var/lib/koinos \
+  /var/lib/koinos/chain /var/lib/koinos/block_store
+```
+
+Before startup, confirm that `chain.verify-blocks` is `true` in the active
+`/opt/koinos/config/config.yml`. Keep the active mainnet genesis data,
+descriptors, peer identity, and image versions from your reviewed deployment
+bundle.
+
+## 6. Start and validate
+
+Start the same profiles that were active before the restore:
+
+```console
+cd /opt/koinos
+docker compose up -d
+docker compose ps
+docker compose logs --tail 100 --follow chain block_store p2p
+```
+
+Do not remove the rollback directory yet. Confirm:
+
+- every expected container remains running;
+- the local chain ID is mainnet;
+- block verification reports no errors;
+- the head advances and becomes recent;
+- peers and gossip are active;
+- disk space remains safe;
+- any enabled JSON-RPC, REST, or gRPC endpoint responds normally.
+
+Optional index services will rebuild their local data because this procedure
+installs only `chain` and `block_store`.
+
+## Roll back
+
+If validation fails:
+
+1. stop the node cleanly;
+2. move the newly installed `chain` and `block_store` into a separate failed
+   restore directory;
+3. move the previous directories from
+   `/var/lib/koinos-before-restore-2026-07-25/` back into
+   `/var/lib/koinos/`;
+4. restore any previous optional-index directories;
+5. start the previous reviewed deployment and run the same health checks.
+
+Do not delete either generation until the recovered node has remained healthy.
 
 The current public testnet has query endpoints but no verified public
-external-operator bundle, so this mainnet restore must not be adapted by
-substituting testnet or Harbinger files.
+external-operator bundle. Do not substitute testnet or Harbinger files into
+this mainnet procedure.

@@ -5,97 +5,102 @@ icon: fontawesome/solid/gears
 # Configuration
 
 Koinos configuration is a versioned deployment bundle, not a collection of
-interchangeable files. Keep these files from the same upstream revision and
-network:
+interchangeable files. Operate from the files supplied by the exact selected
+[`koinos/koinos`](https://github.com/koinos/koinos) revision instead of
+copying a replacement configuration from this documentation.
 
 | File | Purpose | Operator rule |
 | --- | --- | --- |
-| `.env` | Host paths, published bindings, Compose profiles, image tags | Preserve local changes and pin every image tag |
-| `docker-compose.yml` | Services, dependencies, volumes, ports, profiles | Do not edit blindly across releases |
-| `config/config.yml` | Common and service-specific runtime options | Review dangerous options separately |
-| `config/genesis_data.json` | Initial chain state and chain identity | Never edit or mix between networks |
-| `config/koinos_descriptors.pb` | Built-in protobuf descriptors | Must match JSON-RPC/gRPC binaries |
-| `config/rabbitmq.conf` | Internal message broker configuration | Keep private; change only with a tested reason |
+| `.env` | Host paths, published bindings, Compose profiles, image tags | preserve local values and pin image tags |
+| `docker-compose.yml` | Services, dependencies, volumes, ports, profiles | review changes between releases |
+| `config/config.yml` | Common and service-specific runtime options | change only the setting required by the procedure |
+| `config/genesis_data.json` | Initial chain state and chain identity | never edit or mix between networks |
+| `config/koinos_descriptors.pb` | Built-in protobuf descriptors | keep matched to JSON-RPC and gRPC binaries |
+| `config/rabbitmq.conf` | Internal message broker configuration | keep private and version-compatible |
 
-The verified documentation baseline is
+The documentation baseline is
 [`koinos/koinos@8216746`](https://github.com/koinos/koinos/commit/821674672e699bf56e94d7c0e8bce122e83d1482).
-See [Run an observer](running-node.md) for why that newer deployment-bundle
-revision is not presented as an immutable stable release.
+For a new node, copy `env.example` to `.env` and `config-example` to `config`
+from the selected official checkout.
 
-## Precedence
+## How settings are applied
 
-`global` values in `config.yml` apply across services. A value under a service
-section overrides its global value for that service. Compose passes the common
-file into the relevant containers; host bindings and image tags come from
-`.env`.
+`global` values in `config.yml` apply across services. A value under one
+service section overrides the global value for that service. Compose mounts
+the common files into the containers; `.env` controls host paths, published
+bindings, profiles, and image tags.
 
-The following complete mainnet example retains the critical API blacklist,
-uses current filenames and ports, and enables block verification. Block
-production remains unconfigured.
+Review the complete official
+[`config-example/config.yml`](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/config-example/config.yml)
+from the same revision as the Compose file.
 
-**Safety: service-changing when installed.**
+The most important operator settings are:
 
-<!-- node-example: common-config -->
-```yaml title="config.yml"
---8<-- "examples/node-operators/configuration/config.yml:common-config"
+| Setting | Operational meaning |
+| --- | --- |
+| `global.log-level` and `global.log-dir` | log detail and retention location |
+| `global.blacklist` | must protect internal write calls such as `block_store.add_block` and `chain.propose_block` |
+| `chain.verify-blocks` | verify blocks as they are applied; enable for restored data |
+| `p2p.listen` and `p2p.peer` | public listener and seed peers |
+| `jsonrpc.listen` | container listener; `.env` controls the host binding |
+| `grpc.endpoint` | container listener; `.env` controls the host binding |
+| `block_producer.producer` | producer account; configure only in the block-production procedure |
+| `block_producer.private-key-file` | hot signing-key filename |
+
+REST has no section in this YAML file. Its image tag and host binding come
+from `REST_TAG`, `REST_INTERFACE`, and `REST_PORT` in `.env`.
+
+## Make one reviewed change
+
+Before editing:
+
+```console
+cd /opt/koinos
+cp .env .env.before-change
+cp -R config config.before-change
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/configuration/config.yml) ·
-[Use locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/configuration)
+Edit only the intended value, then review and validate:
 
-Do not copy only this file into a checkout for another network. Start from the
-official configuration directory of the exact selected deployment bundle,
-compare the example, then preserve `genesis_data.json`, descriptors, RabbitMQ
-configuration, peer list, and any local key material.
+```console
+diff -u .env.before-change .env
+diff -ru config.before-change config
+docker compose config
+```
 
-## Common stable options
+If validation succeeds, apply the configuration through Compose:
 
-The useful operator surface is intentionally smaller than every binary flag:
+```console
+docker compose up -d
+docker compose ps
+```
 
-- `global.log-level`, log formatting, and log directory control observability;
-- `global.jobs` changes worker concurrency and should follow measurements;
-- `global.blacklist` must continue to include `block_store.add_block` and
-  `chain.propose_block` on exposed APIs;
-- `chain.verify-blocks` validates blocks as they are applied and is especially
-  important during a restore;
-- `p2p.listen`, `p2p.peer`, checkpoints, and gossip options control network
-  connectivity;
-- `jsonrpc.listen` is the container listener; `.env` controls the host binding;
-- `grpc.endpoint` is the container listener; `.env` controls the host binding;
-- `block_producer.pob-production` is a current production percentage option,
-  but it belongs only in the explicit [block-production](block-production.md)
-  procedure.
-
-REST has no section in this YAML bundle: its image tag and host binding are
-configured through `REST_TAG`, `REST_INTERFACE`, and `REST_PORT` in `.env`, and
-Compose points it at the JSON-RPC service.
+Re-run the health checks relevant to the changed service. Keep the preserved
+files until the change is proven healthy.
 
 ## Dangerous and recovery-only settings
 
-`reset: true` can discard a service database on startup. Never leave it enabled
-after a reset, and do not use a global reset as a first response to corruption.
-The safe sequence is: identify the absolute basedir and network, stop cleanly,
-verify free space, preserve configuration and keys, take a recoverable
-snapshot, stage the operation, confirm the target, and run post-operation
-health checks. Follow [Operations and recovery](management.md).
+`reset: true` can discard a service database on startup. Never leave it
+enabled after a reset and never use a global reset as the first response to
+corruption. Follow [Operations and recovery](management.md).
 
-Likewise, changing genesis data, fork algorithm, checkpoints, peer identity,
-producer address, or private-key filename can change network identity or
-security behavior. Review those changes as separate operations.
+Changing genesis data, fork algorithm, checkpoints, peer identity, producer
+address, or private-key filename can change network identity or security
+behavior. Review each as a separate operation.
 
 ## Upgrade without configuration drift
 
 For every upgrade:
 
-1. record the old and proposed bundle revision;
-2. download the new bundle into a separate directory;
-3. compare Compose, `.env`, all four config assets, profiles, ports, and tags;
-4. preserve local `.env`, config, peer identity, and producer key;
-5. validate YAML and `docker compose config`;
-6. pull the exact pinned images before downtime;
-7. stop cleanly, apply the reviewed bundle, and start;
+1. record the old and proposed bundle revisions;
+2. download the proposed bundle into a separate directory;
+3. compare Compose, `.env`, config, genesis, descriptors, profiles, ports, and
+   tags;
+4. preserve local configuration, peer identity, and producer keys;
+5. validate the proposed bundle with `docker compose config`;
+6. pull exact pinned images before downtime;
+7. stop cleanly and start the reviewed bundle;
 8. verify chain ID, head freshness, gossip, containers, disk, and APIs;
-9. retain the previous bundle and data snapshot until the new version is
-   proven healthy.
+9. retain the previous bundle and snapshot until the update is proven healthy.
 
-For the full rollback sequence, see [Node management](management.md).
+For the complete sequence, see [Operations and recovery](management.md).

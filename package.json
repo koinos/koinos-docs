@@ -13,11 +13,6 @@
     "examples:start": "node scripts/run-example-projects.mjs start",
     "examples:test": "npm test --workspaces --if-present",
     "examples:smoke": "node scripts/run-example-projects.mjs smoke",
-    "node-examples:verify": "node scripts/verify-node-operator-examples.mjs",
-    "node-examples:test": "node scripts/test-node-operator-examples.mjs",
-    "node-examples:smoke": "node scripts/smoke-node-operator-examples.mjs",
-    "node-examples:configs": "bash scripts/validate-node-operator-configs.sh",
-    "node-examples:shellcheck": "find examples/node-operators scripts -type f -name '*.sh' -print0 | xargs -0 shellcheck",
     "docs:links": "node scripts/check-documentation-links.mjs"
   },
   "engines": {

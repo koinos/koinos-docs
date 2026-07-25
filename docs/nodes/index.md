@@ -5,7 +5,7 @@ This section covers the official Koinos multiservice node distributed by
 enabling services: the safest starting point is an observer with private local
 JSON-RPC for health checks.
 
-The deployment examples were verified on **2026-07-25** against
+The operating procedures were verified on **2026-07-25** against
 `koinos/koinos` commit
 [`8216746`](https://github.com/koinos/koinos/commit/821674672e699bf56e94d7c0e8bce122e83d1482).
 That revision is a recorded deployment bundle, not a new immutable release.
@@ -58,7 +58,7 @@ before installing or upgrading.
     ---
 
     Enable JSON-RPC, REST, and gRPC intentionally, with loopback bindings,
-    complete reverse-proxy examples, TLS, and external verification.
+    clear reverse-proxy requirements, TLS, and external verification.
 
     [:octicons-arrow-right-24: Configure RPC](rpc-node.md)
 

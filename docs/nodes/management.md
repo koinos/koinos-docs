@@ -4,71 +4,116 @@ icon: fontawesome/solid/list-check
 
 # Operations and recovery
 
-Operate from evidence: chain ID, advancing head, head freshness, gossip, peers,
-container restart state, API probes, disk growth, memory pressure, and error
-logs. A container marked `running` is not enough.
+Operate the node directly through its official Compose project.
 
-## Routine health and logs
+A container marked `running` is not enough. Use chain ID, advancing head, head
+freshness, gossip, peers, restart state, API probes, disk growth, memory
+pressure, and logs as operational evidence.
 
-Use the [observer health helper](running-node.md#5-verify-synchronization-and-health)
-and [storage measurement](requirements.md#measure-the-actual-node). Follow a
-bounded log tail with `docker compose logs --tail 100 --follow chain p2p
-block_store`; use `--since` and `--until` for an incident window. Retain
-service log directories and host/Docker logs according to a space-bounded
-rotation policy.
+## Routine health
 
-Alert before disk reaches the documented warning threshold, when the head stops
-advancing or becomes stale, when gossip disables unexpectedly, when peers
-disappear, or when a container repeatedly restarts.
+From the official checkout:
+
+```console
+cd /opt/koinos
+docker compose ps
+docker compose logs --tail 100 chain p2p block_store
+```
+
+Query the private JSON-RPC head:
+
+```console
+curl --fail http://127.0.0.1:8080/ \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}'
+```
+
+Check storage:
+
+```console
+df -h /var/lib/koinos
+du -sh /var/lib/koinos/*
+```
+
+Use `docker compose logs --since` and `--until` for a specific incident
+window. Alert before the filesystem reaches the documented warning threshold,
+when the head stops advancing, gossip disables unexpectedly, peers disappear,
+or a container repeatedly restarts.
 
 ## Clean service control
 
-Use `docker compose stop` and wait for containers to exit before host
-maintenance or a consistent snapshot. Use `docker compose up -d` after
-reviewed configuration changes; this recreates services as required. A plain
-`restart` neither pulls images nor necessarily applies Compose changes.
+Stop all configured services cleanly:
 
-Restart one service only when its dependencies and state contract make that
-safe. Capture logs and exact versions first, and file an upstream bug report
-when behavior suggests a defect.
+```console
+docker compose stop
+docker compose ps
+```
+
+Start or recreate them after a reviewed configuration change:
+
+```console
+docker compose up -d
+docker compose ps
+```
+
+A plain `restart` neither pulls images nor necessarily applies Compose
+changes. Restart a single service only when its dependencies and data contract
+make that safe.
 
 ## Update and rollback
 
-Select an immutable release tag or recorded deployment-bundle commit. Prepare
-it in a separate checkout; never overwrite the running checkout before review.
-The update planner is read-only.
+Prepare a new release or recorded deployment commit in a separate checkout.
+Do not overwrite the running checkout before comparison.
 
-<!-- node-example: plan-update -->
-```bash title="plan-update.sh"
---8<-- "examples/node-operators/operations/plan-update.sh:plan-update"
+Record both revisions:
+
+```console
+git -C /opt/koinos rev-parse HEAD
+git -C /opt/koinos-next rev-parse HEAD
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/operations/plan-update.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/f9f7dd675f4c5cbd9231cd44dbe250e1f79757c2/examples/node-operators/operations)
+Compare the operator-controlled files:
+
+```console
+diff -u /opt/koinos/.env /opt/koinos-next/env.example
+diff -ru /opt/koinos/config /opt/koinos-next/config-example
+diff -u /opt/koinos/docker-compose.yml /opt/koinos-next/docker-compose.yml
+```
+
+The differences are input for review, not files to copy blindly. Transfer your
+basedir, loopback bindings, profiles, credentials, peer settings, and any
+producer configuration deliberately into the new bundle.
 
 Before downtime:
 
 1. record current and proposed revisions, profiles, tags, and image digests;
-2. compare Compose, `.env`, config, genesis data, descriptors, and RabbitMQ;
-3. merge reviewed local values into the new bundle;
-4. validate YAML and `docker compose config`;
-5. pull the exact pinned images and inspect failures;
-6. verify free space;
-7. preserve configuration, encrypted keys, peer identity, and a recoverable
-   data snapshot;
-8. define rollback triggers and the maintenance window.
+2. review Compose, `.env`, config, genesis, descriptors, and RabbitMQ changes;
+3. validate the proposed bundle with `docker compose config`;
+4. pull its exact pinned images;
+5. verify free disk space;
+6. preserve configuration, encrypted keys, P2P identity, and recoverable data;
+7. define rollback triggers and a maintenance window.
 
-Then stop cleanly, activate the new checkout/configuration, and use
-`docker compose up -d`. Re-run every health and protocol check. Keep the old
-bundle, images, and snapshot until the new deployment has remained healthy.
+Stop the current node, activate the reviewed checkout, and start it:
 
-Rollback means another clean stop, restoration of the prior bundle and local
-configuration, restoration of the prior snapshot only if the data format
-requires it, startup, and the same chain-ID/head/gossip/API validation.
+```console
+cd /opt/koinos
+docker compose stop
+cd /opt/koinos-next
+docker compose config
+docker compose pull
+docker compose up -d
+docker compose ps
+```
 
-## Choose recovery depth
+Re-run every health and protocol check. Keep the old checkout, images, and
+snapshot until the new deployment has remained healthy.
 
-Use the least destructive operation supported by evidence:
+Rollback is the same controlled operation in reverse: stop cleanly, reactivate
+the prior checkout and local configuration, restore the prior data only if the
+data format requires it, start, and repeat all validation.
+
+## Choose the least destructive recovery
 
 | Symptom | First action | Escalation |
 | --- | --- | --- |
@@ -78,47 +123,55 @@ Use the least destructive operation supported by evidence:
 | core state is corrupt or unavailable | checksum-verified restore | full P2P resync |
 | power loss | preserve files/logs; check filesystem and Docker state | isolate corrupt service data |
 
-Before reindex, resync, or replacement, identify and print the absolute
-basedir, network, chain ID, active configuration, and selected directories.
-Reject root/home/broad targets. Stop cleanly, verify free space, preserve
-configuration and all keys, make a recoverable snapshot, and define rollback.
+Before reindexing, resynchronizing, or replacing data:
+
+1. identify the absolute basedir and network;
+2. record the chain ID and active configuration;
+3. stop the node cleanly;
+4. verify free space;
+5. preserve configuration, P2P identity, and every key;
+6. move old data to a dated rollback directory instead of deleting it;
+7. define the validation and rollback steps.
 
 ### Reindex
 
-Reindex replays stored blocks to rebuild selected derived state. Copy the
-active config, add `reset: true` only under the single affected service, show
-the diff, and start only that service/dependency set. As soon as initialization
-has consumed the reset, restore the normal config so a reboot cannot reset it
-again. Monitor replay and validate the result before removing the snapshot.
+Reindex replays stored blocks to rebuild derived state. Add `reset: true` only
+under the affected service in a copy of the active config, review the diff,
+and start only the required service and dependencies. Remove `reset: true`
+immediately after initialization consumes it, so a later restart cannot reset
+the service again.
 
 Never use a global reset when only `chain`, `transaction_store`,
 `contract_meta_store`, or `account_history` needs rebuilding.
 
-### Full resync
+### Full resynchronization
 
-Use a full P2P resync only when a narrower repair or verified backup restore is
-not suitable. With the node stopped and a private recovery set proven, move
-core and optional state into a timestamped preservation directory rather than
-deleting it. Retain configuration, genesis, descriptors, peer identity, and
-keys. Start the required services against empty state, then verify network,
-chain ID, peers, gossip, advancing head, disk, and APIs throughout the sync.
+Use a full P2P resynchronization only when a narrower repair or a verified
+backup restore is unsuitable. With the node stopped, move core and optional
+state into a dated preservation directory. Retain config, genesis,
+descriptors, P2P identity, and keys. Start the required services against empty
+state and monitor the network, chain ID, peers, gossip, head, disk, and logs
+throughout synchronization.
 
 ### Restore
 
-Prefer the staged, checksum-verified
-[public backup procedure](backup-restore.md) when its network, date, layout,
-and trust boundary fit the recovery goal. It is an acceleration source for
-public chain data—not a source of local identity or authority.
+Use the staged [public backup procedure](backup-restore.md) only when its
+network, date, layout, and trust boundary fit the recovery. It accelerates
+restoration of public chain data; it is not a source of local identity or
+authority.
 
-## Corruption and incident evidence
+## Incident evidence
 
-Do not repeatedly restart a failing database. Preserve the logs, `docker
-compose ps`, image tags/digests, bundle revision, config diff, disk and
-filesystem status, kernel messages, last clean shutdown, head data, and exact
-error text. Clone or snapshot affected data before experimentation. Test a
-repair only on the copy.
+Do not repeatedly restart a failing database. Preserve:
 
-Report reproducible evidence through the
+- the exact error and relevant bounded logs;
+- `docker compose ps`;
+- image tags and digests;
+- deployment revision and configuration diff;
+- disk, filesystem, and kernel status;
+- the last clean shutdown and latest valid head.
+
+Clone or snapshot affected data before experimenting. Report reproducible
+evidence through the
 [Koinos issue tracker](https://github.com/koinos/koinos/issues), omitting
-credentials, private keys, private network details, and archives that may
-contain them.
+credentials, private keys, private network details, and sensitive archives.

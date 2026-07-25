@@ -224,23 +224,27 @@ nav:
   - Architecture:
       - architecture/index.md
       - Microservices:
-          - architecture/microservices/koinos-chain.md
-          - architecture/microservices/block-store.md
-          - architecture/microservices/p2p.md
-          - architecture/microservices/mempool.md
-          - architecture/microservices/transaction-store.md
-          - architecture/microservices/block-producer.md
-          - architecture/microservices/json-rpc.md
-          - architecture/microservices/grpc.md
-          - architecture/microservices/contract-meta-store.md
-          - architecture/microservices/account-history.md
-      - architecture/interprocess-communication.md
-      - architecture/serialization.md
-      - architecture/smart-contracts.md
-      - architecture/contract-abi.md
-      - architecture/resources.md
-      - architecture/system-calls.md
-      - architecture/proof-of-burn.md
+          - Microservices overview: architecture/microservices.md
+          - Internal messaging: architecture/interprocess-communication.md
+          - Services:
+              - Chain: architecture/microservices/koinos-chain.md
+              - Block Store: architecture/microservices/block-store.md
+              - P2P: architecture/microservices/p2p.md
+              - Mempool: architecture/microservices/mempool.md
+              - Transaction Store: architecture/microservices/transaction-store.md
+              - Block Producer: architecture/microservices/block-producer.md
+              - JSON-RPC: architecture/microservices/json-rpc.md
+              - gRPC: architecture/microservices/grpc.md
+              - REST: architecture/microservices/rest.md
+              - Contract Meta Store: architecture/microservices/contract-meta-store.md
+              - Account History: architecture/microservices/account-history.md
+      - Smart contract execution:
+          - Smart contracts: architecture/smart-contracts.md
+          - Contract ABI: architecture/contract-abi.md
+          - System calls: architecture/system-calls.md
+          - Serialization: architecture/serialization.md
+      - Resource model: architecture/resources.md
+      - Proof of Burn: architecture/proof-of-burn.md
   - System Contracts:
       - system-contracts/index.md
       - system-contracts/tokenomics.md

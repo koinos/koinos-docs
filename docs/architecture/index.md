@@ -1,84 +1,93 @@
 ---
 hide:
-- toc
+  - toc
 ---
 
 # Architecture
-The architecture section of the Koinos documentation provides a comprehensive overview of the underlying design and components that power the Koinos blockchain. Explore the innovative features, consensus mechanisms, and scalability solutions that differentiate Koinos from other blockchain platforms. Learn about the Koinos Virtual Machine (KVM), resource management strategies, and the unique approach to smart contract execution.
+
+Koinos separates consensus, storage, networking, indexing, and public APIs into
+cooperating services. Smart contracts provide application logic and can also
+replace selected protocol behavior through the system-call architecture.
+
+This chapter explains those boundaries and the consistency rules between them.
+For commands and production procedures, use [Node Operators](../nodes/index.md).
+For contract development, use
+[Smart Contract Development](../contracts/index.md).
 
 <div class="grid cards" markdown>
 
--   :fontawesome-solid-circle-nodes:{ .lg .middle } __Microservices__
+-   :fontawesome-solid-circle-nodes:{ .lg .middle } **Microservices**
 
     ---
 
-    
-    In the architecture of the Koinos blockchain, microservices play a crucial role in promoting scalability, flexibility, and maintainability. By breaking down complex functionalities into smaller, independent services, Koinos adopts a modular approach that allows for easier development, deployment, and scaling of specific blockchain components, enhancing overall system resilience and performance.
-    <br/><br/>
+    Understand the services inside a Koinos node, which service owns each kind
+    of state, and how optional API and index services extend the core node.
 
-    [:octicons-arrow-right-24: The nuts and bolts](microservices.md)
+    [:octicons-arrow-right-24: Explore the node](microservices.md)
 
--  :fontawesome-solid-network-wired:{ .lg .middle } __Interprocess communication__
-
-    ---
-
-    Interprocess communication (IPC) is fundamental to the architecture of the Koinos blockchain, enabling different components and microservices to communicate and collaborate efficiently. Koinos utilizes IPC mechanisms such as message queues and remote procedure calls (RPC) to facilitate secure and reliable communication between nodes, ensuring seamless coordination and data exchange within the blockchain network.
-    <br/><br/>
-
-    [:octicons-arrow-right-24: Internal communication](interprocess-communication.md)
-
--   :fontawesome-solid-fire:{ .lg .middle } __Proof-of-Burn__
+-   :fontawesome-solid-network-wired:{ .lg .middle } **Internal messaging**
 
     ---
 
-    
-    Proof-of-Burn (PoB) is a consensus mechanism used by Koinos where participants burn tokens, demonstrating commitment to the network. The act of burning tokens reduces the circulating supply and increases the probability of being selected as a block validator based on the size of the burn relative to the total amount burned in a given period, ensuring a fair and efficient method of block producer selection.
+    See how protobuf RPC requests and broadcasts move through RabbitMQ, and why
+    this internal bus is different from the peer-to-peer network.
 
-    [:octicons-arrow-right-24: A novel consensus algorithm](proof-of-burn.md)
+    [:octicons-arrow-right-24: Follow a message](interprocess-communication.md)
 
--   :fontawesome-solid-cubes:{ .lg .middle } __Serialization__
-
-    ---
-
-    Serialization is a critical aspect of the Koinos blockchain architecture, responsible for encoding and decoding structured data for efficient storage and transmission. Koinos uses serialization frameworks like Protocol Buffers to define data schemas, optimize data transmission, and ensure interoperability across different components of the blockchain network.
-    <br/><br/>
-
-    [:octicons-arrow-right-24: Encoding and decoding](serialization.md)
-
--   :fontawesome-solid-code:{ .lg .middle } __Smart contracts__
+-   :fontawesome-solid-code:{ .lg .middle } **Smart contract execution**
 
     ---
 
-    Smart contracts are a foundational component of the Koinos blockchain architecture, enabling decentralized and self-executing agreements. Koinos supports smart contracts which are executed on the Koinos Virtual Machine (KVM) to enforce trustless and deterministic execution of code on the blockchain.
-    <br/><br/><br/>
+    Learn how Chain executes WebAssembly contracts, separates read-only calls
+    from transactions, records state, and emits events.
 
-    [:octicons-arrow-right-24: A turing complete solution](smart-contracts.md)
+    [:octicons-arrow-right-24: Enter the runtime](smart-contracts.md)
 
--   :fontawesome-solid-file:{ .lg .middle } __Contract ABI__
-
-    ---
-
-    
-    Contract ABIs (Application Binary Interfaces) define the interface and interaction points of smart contracts on the Koinos blockchain. These interfaces specify the methods, parameters, and return types that can be accessed and invoked by external entities interacting with smart contracts, facilitating interoperability and enabling seamless communication between different components of the blockchain ecosystem.
-
-    [:octicons-arrow-right-24: Defining your interface](contract-abi.md)
-
--   :fontawesome-solid-microchip:{ .lg .middle } __Resources__
+-   :fontawesome-solid-file-code:{ .lg .middle } **ABI and serialization**
 
     ---
 
-    Blockchain resources in the context of Koinos refer to the computational and storage resources required for blockchain operations such as transaction processing and smart contract execution. Koinos implements resource management mechanisms like Resource Credits (RC) and payer semantics to efficiently allocate and regulate these resources, ensuring fair usage and optimal performance of the blockchain network.
-    <br/><br/><br/>
+    Understand how an ABI describes contract entry points and how Protocol
+    Buffers encode data across APIs, services, transactions, and contracts.
 
-    [:octicons-arrow-right-24: Compute, network, and disk oh my!](resources.md)
+    [:octicons-arrow-right-24: Understand the data](contract-abi.md)
 
--   :fontawesome-solid-left-right:{ .lg .middle } __System calls__
+-   :fontawesome-solid-left-right:{ .lg .middle } **System calls**
 
     ---
 
-    System calls are fundamental components of the Koinos blockchain architecture, enabling smart contracts to interact with the underlying blockchain system and external services. These calls provide secure and controlled access to blockchain functionalities such as accessing data, performing transactions, or invoking other smart contracts, allowing developers to build complex decentralized applications (dApps) with flexible and robust capabilities on the Koinos platform.
-    <br/><br/>
+    Learn how contracts access blockchain capabilities and how system contracts
+    can replace selected native behavior without changing the node executable.
 
-    [:octicons-arrow-right-24: From KVM to native](system-calls.md)
+    [:octicons-arrow-right-24: Cross the runtime boundary](system-calls.md)
+
+-   :fontawesome-solid-microchip:{ .lg .middle } **Resource model**
+
+    ---
+
+    See how Koinos measures compute, network bandwidth, and disk storage and
+    charges those resources in Resource Credits instead of conventional gas
+    fees.
+
+    [:octicons-arrow-right-24: Follow resource accounting](resources.md)
+
+-   :fontawesome-solid-fire:{ .lg .middle } **Proof of Burn**
+
+    ---
+
+    Understand the relationship between KOIN, Virtual Hash Power, block
+    production eligibility, and the VHP consumed during production.
+
+    [:octicons-arrow-right-24: Understand consensus](proof-of-burn.md)
 
 </div>
+
+## Source baseline
+
+The service architecture in this chapter follows the version set declared by
+the official Koinos deployment bundle at commit
+[`821674672e699bf56e94d7c0e8bce122e83d1482`](https://github.com/koinos/koinos/tree/821674672e699bf56e94d7c0e8bce122e83d1482).
+RPC and broadcast definitions use
+[`koinos-proto` v2.6.0](https://github.com/koinos/koinos-proto/tree/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80).
+Versioned links on each page identify the implementation inspected for that
+explanation.

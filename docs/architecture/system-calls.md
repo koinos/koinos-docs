@@ -3,143 +3,70 @@ icon: fontawesome/solid/left-right
 ---
 
 # System calls
-System calls are how requests to the Koinos Blockchain Framework are made. Each system call provides important functionality to be utilized from smart contracts or other parts of the framework.
 
-Each system call has its base functionality implemented natively in a function known as a "thunk". What differentiates a system call from its thunk, is that the system call can have its functionality overridden by a special type of smart contract known as a "system contract".
+System calls are the controlled interface between WebAssembly contracts and the
+capabilities provided by Chain. A contract uses them to read or write state,
+inspect its execution context, call another contract, emit an event, use
+cryptographic functions, or consume blockchain resources.
 
-|System Call|Description|
-|---|---|
-|`get_head_info`|Retrieves the current head block information|
-|`apply_block`|Applies a block to the blockchain|
-|`apply_transaction`|Applies a transaction to the current block|
-|`apply_upload_contract_operation`|Applies an upload contract operation to the current transaction|
-|`apply_call_contract_operation`|Applies a call contract operation to the current transaction|
-|`apply_set_system_call_operation`|Applies a set system call operation to the current transaction|
-|`apply_set_system_contract_operation`|Applies a set system contract operation to the current transaction|
-|`pre_block_callback`|Callback prior to block application|
-|`post_block_callback`|Callback after block application|
-|`pre_transaction_callback`|Callback prior to transaction application|
-|`post_transaction_callback`|Callback after transaction application|
-|`get_chain_id`|Retrieves the current chain ID|
-|`process_block_signature`|Handles block signatures during block application|
-|`get_transaction`|Retrieves the current transaction|
-|`get_transaction_field`|Retrieves a field from the current transaction|
-|`get_block`|Retrieves the current block|
-|`get_block_field`|Retrieves a field from the current block|
-|`get_last_irreversible_block`|Retrieves the last irreversible block height|
-|`get_account_nonce`|Retrieves the last account nonce|
-|`verify_account_nonce`|Verifies the account nonce|
-|`set_account_nonce`|Sets an account nonce|
-|`check_system_authority`|Verifies whether the system authorizes the action|
-|`get_operation`|Retrieves the current operation|
-|`get_account_rc`|Retrieves the current account resource credits|
-|`consume_account_rc`|Consumes resource credits on an account|
-|`get_resource_limits`|Retrieves the current resource limits|
-|`consume_block_resources`|Consumes resource credits for the block|
-|`put_object`|Inserts data into a key value store|
-|`remove_object`|Deletes data in the key value store|
-|`get_object`|Retrieves data from the key value store|
-|`get_next_object`|Iterates forward through the key value store|
-|`get_prev_object`|Iterates backwards through the key value store|
-|`log`|Emits a log entry|
-|`event`|Emits an event|
-|`hash`|Performs a hashing algorithm on given data|
-|`recover_public_key`|Recovers a public key|
-|`verify_merkle_root`|Validates a merkle root given leaves|
-|`verify_signature`|Validates a signature|
-|`verify_vrf_proof`|Validate a verifiably random proof|
-|`call`|Calls another smart contract|
-|`exit`|Stops smart contract execution|
-|`get_arguments`|Retrieves arguments passed to a smart contract|
-|`get_contract_id`|Retrieves the current smart contract ID|
-|`get_caller`|Retrieves the caller of the smart contract|
-|`check_authority`|Validates authorization was given|
-|`get_contract_name`|Retrieves the name of a smart contract given the address from the name service|
-|`get_contract_address`|Retrieves the address of a smart contract given the name from the name service|
-|`get_contract_meta_data`|Retrieves meta information about a smart contract given the address|
+An ordinary contract call invokes another contract's entry point. A system call
+crosses from the contract runtime into a capability managed by the blockchain
+framework.
 
-_**Table 1.** A comprehensive list of system calls._
+## System calls and thunks
 
-Detailed information regarding the arguments and return values of system calls are defined as protocol buffer messages in the [Koinos Proto](https://github.com/koinos/koinos-proto/blob/master/koinos/chain/system_calls.proto) repository.
+Each system call has a native implementation called a **thunk**. Chain dispatches
+the call to that implementation unless the active protocol configuration
+assigns an authorized system contract as the override.
 
-## Overriding system calls
-While any system call can be overridden by a contract that simply calls the underlying thunk, the underlying functionality of some of them cannot be reproduced in the KVM. **Table 2** lists system calls which cannot be fully replaced by an override, and the reason it cannot be overridden.
+```mermaid
+flowchart TB
+    Contract["WebAssembly contract"] --> Call["System-call interface"]
+    Call --> Override{"Override active?"}
+    Override -- "No" --> Thunk["Native thunk"]
+    Override -- "Yes" --> SystemContract["Authorized system contract"]
+    SystemContract --> Thunk
+```
 
-_**Table 2.** System calls which cannot be overridden_
+This design leaves low-level capabilities in the node while allowing selected
+protocol behavior to change through governed contract upgrades. A system
+contract can call a thunk directly when it needs the native primitive as part
+of its implementation.
 
-|System Call|Reason|
-|---|---|
-|`apply_block`|Requires access to the execution context|
-|`apply_set_system_call_operation`|Requires call to `get_transaction`|
-|`apply_set_system_contract_operation`|Requires call to `get_transaction`|
-|`apply_transaction`|Requires state access|
-|`call`|Requires stack frame access|
-|`event`|Requires event recorder access|
-|`exit`|Would cause infinite recursion|
-|`get_caller`|Requires stack frame access and caller access on execution environment|
-|`get_arguments`|Requires access to contract call arguments on execution environment|
-|`get_contract_id`|Requires access to contract id on execution environment|
-|`get_head_info`|Requires state access|
-|`get_last_irreversible_block`|Requires state access|
-|`get_next_object`|Requires state access|
-|`get_object`|Requires state access|
-|`get_prev_object`|Requires state access|
-|`put_object`|Requires state access|
+## Capability groups
 
----
-## Thunks
-Ultimately system calls you make ends up manipulating native code. The native functions that get invoked are known as thunks. When the Koinos blockchain launched all system calls were a light translation layer that directly mapped to thunks implemented in C++. While system calls can be implemented via smart contract or native code, thunks only exist as native C++ implementations.
+The versioned schema defines system calls in several groups:
 
-There are several reasons for implementing functionality via thunks. Some system calls require low level access and can only be implemented natively. As part of the Koinos Blockchain Framework design, we attempt to minimize these cases in order to facilitate forkless upgrades. Another reason to implement functionality via thunks is performance. It will always be more efficient to execute code natively than to run bytecode in the Koinos Virtual Machine. This results in lower the mana costs which improves the user experience.
+| Group | Examples |
+| --- | --- |
+| Execution context | Current block, transaction, operation, caller, and contract ID |
+| State | Read, write, remove, and iterate objects |
+| Contract execution | Read arguments, call another contract, and exit |
+| Authorization | Check account or system authority and verify nonces |
+| Resources | Read account Resource Credits and consume transaction or block resources |
+| Cryptography | Hashing, signature verification, public-key recovery, Merkle proofs, and VRF verification |
+| Observability | Contract logs and structured events |
+| Protocol hooks | Block, transaction, and operation processing callbacks |
 
-System contracts have unique abilities when compared to user contracts. Aside from accessing kernel space, system contracts can call thunks directly. This makes it possible to alter the behavior of a system call that requires calling a thunk with pre and post processing in the KVM.
+The complete list is tied to the selected `koinos-proto` and Chain releases.
+Applications should not copy a static list into their own compatibility logic.
 
-|Thunk|Description|
-|---|---|
-|`get_head_info`|Retrieves the current head block information|
-|`apply_block`|Applies a block to the blockchain|
-|`apply_transaction`|Applies a transaction to the current block|
-|`apply_upload_contract_operation`|Applies an upload contract operation to the current transaction|
-|`apply_call_contract_operation`|Applies a call contract operation to the current transaction|
-|`apply_set_system_call_operation`|Applies a set system call operation to the current transaction|
-|`apply_set_system_contract_operation`|Applies a set system contract operation to the current transaction|
-|`pre_block_callback`|Callback prior to block application|
-|`post_block_callback`|Callback after block application|
-|`pre_transaction_callback`|Callback prior to transaction application|
-|`post_transaction_callback`|Callback after transaction application|
-|`get_chain_id`|Retrieves the current chain ID|
-|`process_block_signature`|Handles block signatures during block application|
-|`get_transaction`|Retrieves the current transaction|
-|`get_transaction_field`|Retrieves a field from the current transaction|
-|`get_block`|Retrieves the current block|
-|`get_block_field`|Retrieves a field from the current block|
-|`get_last_irreversible_block`|Retrieves the last irreversible block height|
-|`get_account_nonce`|Retrieves the last account nonce|
-|`verify_account_nonce`|Verifies the account nonce|
-|`set_account_nonce`|Sets an account nonce|
-|`check_system_authority`|Verifies whether the system authorizes the action|
-|`get_operation`|Retrieves the current operation|
-|`get_account_rc`|Retrieves the current account resource credits|
-|`consume_account_rc`|Consumes resource credits on an account|
-|`get_resource_limits`|Retrieves the current resource limits|
-|`consume_block_resources`|Consumes resource credits for the block|
-|`put_object`|Inserts data into a key value store|
-|`remove_object`|Deletes data in the key value store|
-|`get_object`|Retrieves data from the key value store|
-|`get_next_object`|Iterates forward through the key value store|
-|`get_prev_object`|Iterates backwards through the key value store|
-|`log`|Emits a log entry|
-|`event`|Emits an event|
-|`hash`|Performs a hashing algorithm on given data|
-|`recover_public_key`|Recovers a public key|
-|`verify_merkle_root`|Validates a merkle root given leaves|
-|`verify_signature`|Validates a signature|
-|`verify_vrf_proof`|Validate a verifiably random proof|
-|`call`|Calls another smart contract|
-|`exit`|Stops smart contract execution|
-|`get_arguments`|Retrieves arguments passed to a smart contract|
-|`get_contract_id`|Retrieves the current smart contract ID|
-|`get_caller`|Retrieves the caller of the smart contract|
-|`check_authority`|Validates authorization was given|
+## Consensus and security boundary
 
-_**Table 3.** A comprehensive list of thunks._
+System calls run inside deterministic block execution. Their results, state
+changes, resource use, logs, and events contribute to the transaction receipt
+and the state selected by consensus.
+
+Changing a system-call override changes protocol behavior. Only operations with
+the required system authority can make that assignment. The governance and
+privileged-contract model is documented under
+[System Contracts](../system-contracts/index.md).
+
+Contract developers normally use their SDK's typed system-call wrappers rather
+than constructing the low-level protobuf messages directly.
+
+## Versioned sources
+
+- [System-call schemas in `koinos-proto` v2.6.0](https://github.com/koinos/koinos-proto/blob/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80/koinos/chain/system_calls.proto)
+- [Chain thunk documentation at v1.5.2](https://github.com/koinos/koinos-chain/blob/0ae99eced8b585c4145424e9c2a28f667796cc66/docs/thunks.md)
+- [Chain system-call implementation at v1.5.2](https://github.com/koinos/koinos-chain/tree/0ae99eced8b585c4145424e9c2a28f667796cc66/src/koinos/chain)

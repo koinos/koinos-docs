@@ -1,215 +1,379 @@
-# Configure Node as RPC Node
+# Run a public API node
 
-Configure your Koinos node to serve as an RPC endpoint for applications and services.
+A public API node is a healthy standard Koinos node with API and index
+services enabled. Operate those services through the official Koinos Compose
+project.
 
-## What is an RPC Node?
+The upstream `api` profile enables JSON-RPC, REST, gRPC, transaction store,
+contract metadata store, and account history. It does **not** require
+`block_producer`.
 
-An RPC node provides API access to the Koinos blockchain for external applications. It serves JSON-RPC and gRPC requests, allowing developers to:
+## Public and private interfaces
 
-- Query blockchain data
-- Submit transactions
-- Read smart contract state
-- Access account information
-- Retrieve block and transaction history
+Keep the Koinos API ports on loopback and expose only a hardened HTTPS reverse
+proxy:
 
-## Prerequisites
+| Protocol | Local host port | Public route | Verification |
+| --- | ---: | --- | --- |
+| JSON-RPC | `127.0.0.1:8080` | `https://rpc.example.com/` | HTTP POST |
+| REST and Swagger | `127.0.0.1:3000` | `https://rpc.example.com/v1/...` and `/swagger` | HTTP GET |
+| gRPC | `127.0.0.1:50051` | `grpc.example.com:443` | descriptor-based gRPC |
 
-- A running Koinos node (see [Running a Node](running-node.md))
-- Understanding of [Docker Compose profiles](docker-profiles.md)
+RabbitMQ `5672` and its administration UI `15672` must remain private. P2P
+`8888` may be public when the host participates in peer-to-peer networking.
 
-## Configuration
+## 1. Enable the API profile
 
-### 1. Enable API Services
+Start from the same official checkout and basedir as the standard node.
+Preserve the existing `.env`, then edit these values:
 
-Edit your `.env` file to enable the API profile:
+| Setting | Value |
+| --- | --- |
+| `COMPOSE_PROFILES` | `api` |
+| `JSONRPC_INTERFACE` | `127.0.0.1` |
+| `JSONRPC_PORT` | `8080` |
+| `REST_INTERFACE` | `127.0.0.1` |
+| `REST_PORT` | `3000` |
+| `GRPC_INTERFACE` | `127.0.0.1` |
+| `GRPC_PORT` | `50051` |
+| `AMQP_INTERFACE` | `127.0.0.1` |
+| `AMQP_ADMIN_INTERFACE` | `127.0.0.1` |
 
-```bash
-# Enable API services for RPC functionality
-COMPOSE_PROFILES=api
-```
+Keep the image tags from the selected release or commit. Validate and start:
 
-The `api` profile includes:
-- `jsonrpc` - JSON-RPC API endpoint
-- `grpc` - gRPC API endpoint  
-- `transaction_store` - Transaction history
-- `contract_meta_store` - Contract ABI data
-- `account_history` - Account transaction history
-
-### 2. Configure Network Binding
-
-By default, API services bind to localhost only. For a public RPC node, you may need to expose ports:
-
-```bash
-# JSON-RPC configuration
-JSONRPC_INTERFACE=0.0.0.0  # Bind to all interfaces (use with caution)
-JSONRPC_PORT=8080
-
-# gRPC configuration  
-GRPC_INTERFACE=0.0.0.0     # Bind to all interfaces (use with caution)
-GRPC_PORT=8090
-```
-
-!!! warning "Security Warning"
-    Only bind to `0.0.0.0` if you intend to run a public RPC node. For private use, keep the default `127.0.0.1` binding and use a reverse proxy or VPN for external access.
-
-### 3. Resource Configuration
-
-RPC nodes require additional resources for API services:
-
-```yaml
-# In config/config.yml
-global:
-  jobs: 8  # Increase worker threads for API load
-  
-chain:
-  read-compute-bandwidth-limit: 100000000  # Increase read limits for API calls
-```
-
-### 4. API Blacklist (Security)
-
-Ensure critical APIs remain blacklisted in your configuration:
-
-```yaml
-# In config/config.yml
-jsonrpc:
-  blacklist:
-    - block_store.add_block
-    - chain.propose_block
-```
-
-## Starting the RPC Node
-
-1. **Restart with API profile:**
-```bash
-docker compose --profile api up -d
-```
-
-2. **Verify services are running:**
-```bash
+```console
+cd /opt/koinos
+docker compose config
+docker compose up -d
 docker compose ps
 ```
 
-You should see additional services running:
-- `jsonrpc`
-- `grpc` 
-- `transaction_store`
-- `contract_meta_store`
-- `account_history`
+Expect the five required services plus `jsonrpc`, `rest`, `grpc`,
+`transaction_store`, `contract_meta_store`, and `account_history`. Expect no
+`block_producer` container.
 
-## Testing Your RPC Node
+## 2. Verify each local protocol
 
-### JSON-RPC Test
+Check JSON-RPC:
 
-Test the JSON-RPC endpoint:
-
-```bash
-curl -X POST http://localhost:8080 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "method": "chain.get_head_info",
-    "params": {},
-    "id": 1
-  }'
+```console
+curl --fail http://127.0.0.1:8080/ \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}'
 ```
 
-Expected response:
-```json
-{
-  "jsonrpc": "2.0",
-  "result": {
-    "head_topology": {
-      "id": "0x1220...",
-      "height": "8062397",
-      "previous": "0x1220..."
-    }
-  },
-  "id": 1
+Check REST:
+
+```console
+curl --fail http://127.0.0.1:3000/v1/chain/head_info
+```
+
+Check gRPC with `grpcurl` and the descriptor set from the same selected
+release or commit:
+
+```console
+grpcurl -plaintext \
+  -protoset /opt/koinos/config/koinos_descriptors.pb \
+  -d '{}' \
+  127.0.0.1:50051 \
+  koinos.rpc.chain.chain_rpc/get_head_info
+```
+
+Koinos gRPC does not advertise reflection, so a reflection-only test is not
+sufficient. Plaintext is appropriate only for this loopback check; public gRPC
+must use TLS.
+
+## 3. Publish through a reverse proxy
+
+This direct procedure uses the standard Ubuntu nginx package. It publishes:
+
+- JSON-RPC and REST/Swagger as `https://rpc.example.com`;
+- gRPC as `grpc.example.com:443`;
+- no raw Koinos or RabbitMQ port.
+
+Replace both example hostnames and the single allowed browser origin before
+validation.
+
+Install nginx, Certbot, and the network test tools:
+
+```console
+sudo apt-get update
+sudo apt-get install -y nginx certbot netcat-openbsd ufw
+sudo systemctl enable --now nginx
+```
+
+Point both DNS names at this host. Allow SSH and the reverse proxy through the
+host firewall; allow P2P only when this node accepts inbound peers:
+
+```console
+read -r -p 'Administrative CIDR allowed to use SSH: ' admin_cidr
+test -n "$admin_cidr"
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow from "$admin_cidr" to any port 22 proto tcp
+sudo ufw allow 'Nginx Full'
+read -r -p 'Allow inbound P2P on port 8888? [yes/NO]: ' allow_p2p
+if [[ "$allow_p2p" = yes ]]; then
+  sudo ufw allow 8888/tcp
+fi
+sudo ufw show added
+```
+
+Before enabling UFW, open a second SSH session from the configured
+administrative CIDR and keep the first session open. In the second session,
+verify that a new login and `sudo` command succeed. Then return to the first
+session and enable the prepared rules deliberately:
+
+```console
+read -r -p 'Type ENABLE after the second SSH session succeeds: ' confirmation
+test "$confirmation" = ENABLE
+sudo ufw --force enable
+sudo ufw status verbose
+sudo ss -lntp
+```
+
+Stop if the second SSH session cannot connect or use `sudo`. Remove any broader
+pre-existing SSH rule only after UFW is active and the restricted recovery
+path works. Ports `8080`, `3000`, `50051`, `5672`, and `15672` need no public
+firewall rule. Section 4 completes the check from a different machine.
+
+Obtain one certificate containing both DNS names through the initial Ubuntu
+nginx web root:
+
+```console
+sudo certbot certonly --webroot --webroot-path /var/www/html \
+  -d rpc.example.com \
+  -d grpc.example.com
+sudo certbot certificates
+```
+
+Create the HTTP-level rate-limit and CORS-origin definitions:
+
+```console
+sudoedit /etc/nginx/conf.d/koinos-rpc-global.conf
+```
+
+```nginx
+map $http_origin $koinos_cors_origin {
+    default "";
+    "https://app.example.com" $http_origin;
 }
+
+limit_req_zone $binary_remote_addr zone=koinos_rpc:10m rate=10r/s;
 ```
 
-### gRPC Test
+Create the complete site:
 
-Test gRPC endpoint (requires grpcurl):
-
-```bash
-grpcurl -plaintext localhost:8090 koinos.rpc.chain.chain_rpc/get_head_info
+```console
+sudoedit /etc/nginx/sites-available/koinos-rpc
 ```
-
-## Performance Considerations
-
-### Hardware Requirements
-
-RPC nodes require additional resources:
-- **CPU**: 8+ cores recommended
-- **RAM**: 16+ GB for API services
-- **Storage**: Additional space for transaction/account history
-- **Network**: Higher bandwidth for serving requests
-
-### Monitoring
-
-Monitor your RPC node performance:
-
-```bash
-# Check API response times
-docker compose logs jsonrpc | grep "response time"
-
-# Monitor resource usage
-docker stats
-
-# Check request volume
-docker compose logs jsonrpc | grep "requests per second"
-```
-
-## Public RPC Node Setup
-
-If running a public RPC node:
-
-### 1. Reverse Proxy
-
-Use nginx or similar for SSL and rate limiting:
 
 ```nginx
 server {
-    listen 443 ssl;
-    server_name your-rpc-domain.com;
-    
+    listen 80;
+    listen [::]:80;
+    server_name rpc.example.com grpc.example.com;
+
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/html;
+    }
+
     location / {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        
-        # Rate limiting
-        limit_req zone=api burst=100 nodelay;
+        return 308 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name rpc.example.com;
+
+    ssl_certificate
+        /etc/letsencrypt/live/rpc.example.com/fullchain.pem;
+    ssl_certificate_key
+        /etc/letsencrypt/live/rpc.example.com/privkey.pem;
+
+    server_tokens off;
+    client_max_body_size 1m;
+    proxy_connect_timeout 5s;
+    proxy_send_timeout 30s;
+    proxy_read_timeout 30s;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+
+    add_header Access-Control-Allow-Origin
+        $koinos_cors_origin always;
+    add_header Access-Control-Allow-Methods
+        "GET, POST, OPTIONS" always;
+    add_header Access-Control-Allow-Headers
+        "Content-Type, Authorization" always;
+    add_header Vary "Origin" always;
+    add_header X-Content-Type-Options "nosniff" always;
+
+    if ($request_method = OPTIONS) {
+        return 204;
+    }
+
+    location = / {
+        limit_req zone=koinos_rpc burst=20 nodelay;
+        limit_req_status 429;
+        proxy_pass http://127.0.0.1:8080;
+    }
+
+    location ^~ /v1/ {
+        limit_req zone=koinos_rpc burst=20 nodelay;
+        limit_req_status 429;
+        proxy_pass http://127.0.0.1:3000;
+    }
+
+    location = /swagger {
+        limit_req zone=koinos_rpc burst=20 nodelay;
+        proxy_pass http://127.0.0.1:3000;
+    }
+
+    location ^~ /swagger/ {
+        limit_req zone=koinos_rpc burst=20 nodelay;
+        proxy_pass http://127.0.0.1:3000;
+    }
+
+    location ^~ /api/ {
+        limit_req zone=koinos_rpc burst=20 nodelay;
+        proxy_pass http://127.0.0.1:3000;
+    }
+
+    location ^~ /_next/ {
+        limit_req zone=koinos_rpc burst=20 nodelay;
+        proxy_pass http://127.0.0.1:3000;
+    }
+
+    location = /favicon.ico {
+        proxy_pass http://127.0.0.1:3000;
+    }
+
+    location / {
+        return 404;
+    }
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name grpc.example.com;
+
+    ssl_certificate
+        /etc/letsencrypt/live/rpc.example.com/fullchain.pem;
+    ssl_certificate_key
+        /etc/letsencrypt/live/rpc.example.com/privkey.pem;
+
+    server_tokens off;
+    client_max_body_size 1m;
+
+    location / {
+        limit_req zone=koinos_rpc burst=20 nodelay;
+        limit_req_status 429;
+        grpc_connect_timeout 5s;
+        grpc_read_timeout 30s;
+        grpc_send_timeout 30s;
+        grpc_set_header Host $host;
+        grpc_pass grpc://127.0.0.1:50051;
     }
 }
 ```
 
-### 2. Firewall Configuration
+The `10r/s` rate, `burst=20`, `1m` body limit, and timeout values are
+conservative starting controls, not universal capacity recommendations.
+Load-test the intended methods and payload sizes on a test server, monitor
+queue and node saturation, and change them only from measured evidence.
 
-```bash
-# Allow only necessary ports
-ufw allow 443/tcp  # HTTPS
-ufw allow 22/tcp   # SSH
-ufw deny 8080/tcp  # Block direct RPC access
+Enable and validate the site before reloading:
+
+```console
+test -L /etc/nginx/sites-enabled/koinos-rpc ||
+  sudo ln -s /etc/nginx/sites-available/koinos-rpc \
+    /etc/nginx/sites-enabled/koinos-rpc
+sudo nginx -t
+sudo systemctl reload nginx
+sudo systemctl --no-pager --full status nginx
+sudo certbot renew --dry-run
 ```
 
-### 3. Monitoring and Alerting
+The Koinos ports must remain bound to loopback even when a host firewall is
+also present. Defense in depth matters: a future firewall change must not
+publish the raw services automatically.
 
-Set up monitoring for:
-- API response times
-- Request volume
-- Error rates
-- Resource utilization
+## 4. Verify exposure from two locations
 
-## Troubleshooting
+On the node host, inspect listeners:
 
-**High Memory Usage**: Increase swap or RAM for API services
-**Slow Responses**: Check if node is fully synced
-**Connection Refused**: Verify ports and firewall settings
-**Missing Data**: Ensure all API profile services are running
+```console
+sudo ss -lntp
+```
 
-## Next Steps
+The API, RabbitMQ, and RabbitMQ administration ports should show
+`127.0.0.1`, not `0.0.0.0` or `[::]`.
 
-- [Node Security](security.md) - Secure your RPC node
-- [Node Management](management.md) - Ongoing maintenance
-- [Configuration](configuration.md) - Advanced configuration options
+From a different machine or network, list every relevant port:
+
+```console
+for port in 22 80 443 8888 5672 15672 8080 3000 50051; do
+  if nc -z -w 3 rpc.example.com "$port"; then
+    printf 'OPEN   %s\n' "$port"
+  else
+    printf 'CLOSED %s\n' "$port"
+  fi
+done
+```
+
+Expect `80` and `443` to be open. Port `22` should be restricted to the
+administration source, and `8888` may be open when inbound P2P is intentional.
+Expect `5672`, `15672`, `8080`, `3000`, and `50051` to be closed externally.
+
+Run every public protocol test from that external machine. Check JSON-RPC:
+
+```console
+curl --fail --silent --show-error https://rpc.example.com/ \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}' |
+  jq -e '.result.head_topology.height | tonumber > 0'
+```
+
+Check REST and Swagger:
+
+```console
+curl --fail --silent --show-error \
+  https://rpc.example.com/v1/chain/head_info |
+  jq -e '.head_topology.height | tonumber > 0'
+curl --fail --head https://rpc.example.com/swagger
+```
+
+Check the allowed CORS preflight:
+
+```console
+curl --fail --include --request OPTIONS https://rpc.example.com/ \
+  -H 'Origin: https://app.example.com' \
+  -H 'Access-Control-Request-Method: POST' \
+  -H 'Access-Control-Request-Headers: Content-Type'
+```
+
+The response must be `204` and must return exactly the configured
+`Access-Control-Allow-Origin`, not `*`.
+
+Copy `koinos_descriptors.pb` from the same selected release or commit to the
+external test machine, then check public gRPC over TLS:
+
+```console
+grpcurl \
+  -protoset ./koinos_descriptors.pb \
+  -d '{}' \
+  grpc.example.com:443 \
+  koinos.rpc.chain.chain_rpc/get_head_info
+```
+
+Monitor latency, non-2xx responses, container restarts, queue pressure, head
+freshness, disk growth, certificate expiry, nginx log growth, and host
+saturation.
+
+Continue with [Security](security.md) and
+[Operations and recovery](management.md).

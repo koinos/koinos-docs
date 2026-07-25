@@ -200,27 +200,18 @@ nav:
   #     - developers/guides/calculator.md
   #     - developers/guides/token.md
   - Node Operators:
-      - nodes/index.md
-      - nodes/running-node.md
-      - nodes/block-production.md
-      - nodes/rpc-node.md
-      - nodes/requirements.md
-      - nodes/docker-profiles.md
-      - nodes/microservices.md
-      - nodes/configuration.md
-      - nodes/security.md
-      - nodes/management.md
-  # - Validators:
-  #   - validators/index.md
-  #   - validators/configuration.md
-  #   - validators/docker-compose-profiles.md
-  #   - validators/microservices.md
-  #   - validators/node-management.md
-  #   - validators/node-requirements.md
-  #   - validators/node-security.md
-  #   - Guides:
-  #     - validators/guides/block-production.md
-  #     - validators/guides/running-a-node.md
+      - Overview: nodes/index.md
+      - Requirements: nodes/requirements.md
+      - Run a Koinos Node: nodes/running-node.md
+      - Networks: nodes/networks.md
+      - Docker Compose Profiles: nodes/docker-profiles.md
+      - Microservices: nodes/microservices.md
+      - Run a Public API Node: nodes/rpc-node.md
+      - Block Production: nodes/block-production.md
+      - Configuration: nodes/configuration.md
+      - Security: nodes/security.md
+      - Operations: nodes/management.md
+      - Backup and restore: nodes/backup-restore.md
   - Architecture:
       - architecture/index.md
       - Microservices:

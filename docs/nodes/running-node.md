@@ -1,147 +1,360 @@
-# Running a Koinos node
-The Koinos cluster is comprised of multiple microservices. To simplify the deployment of the Koinos cluster, it is recommended to use the provided Docker compose script to launch a local node. The most time consuming part would be installing Docker, after that its just a matter of cloning the repository and running a single command.
+# Run a standard Koinos node
 
-Before running a Koinos node, you should check that your system meets the Koinos node [minimum requirements](requirements.md).
+This guide operates the official
+[`koinos/koinos`](https://github.com/koinos/koinos) Docker Compose
+deployment directly.
 
----
-## Installing on macOS/Linux
-1. Download and install [Docker](https://www.docker.com/products/docker-desktop)
-2. Clone (or download) the Koinos repository from [github](http://github.com/koinos/koinos)
-3. Copy `config-example` to `config` and `env.example` to `.env`
-4. Open the terminal in the downloaded directory and run the following command:
+The result is a standard mainnet node with the required Koinos services and a
+private JSON-RPC endpoint for health checks. It does **not** enable block
+production, REST, gRPC, or historical indexes.
+
+The commands below use:
+
+- `/opt/koinos` for the selected release or commit and its configuration files;
+- `/var/lib/koinos` for persistent node data;
+- a dedicated Linux user that operates Docker.
+
+Choose different absolute paths before starting if those do not match your
+host, then use the same paths throughout the procedure.
+
+## Quick path for a new node
+
+After Docker is installed and the selected `koinos/koinos` release or commit
+is checked out at `/opt/koinos`, the complete first-start path is:
 
 ```console
-docker compose --profile all up -d
+cd /opt/koinos
+test ! -e .env
+test ! -e config
+cp env.example .env
+cp -R config-example config
+sudoedit .env
+docker compose config
+docker compose up -d
+docker compose ps
+docker compose logs --tail 50 chain p2p block_store
 ```
 
----
-## Installing on Windows
-1. Download and install Docker
-2. Clone (or download) the Koinos repository from [github](http://github.com/koinos/koinos)
-3. Copy `config-example` to `config` and `env.example` to `.env`
-4. Edit the first line in the .env file to read:
+In `.env`, set `BASEDIR=/var/lib/koinos`,
+`JSONRPC_INTERFACE=127.0.0.1`, `JSONRPC_PORT=8080`, and
+`COMPOSE_PROFILES=jsonrpc`. Do not use this new-node shortcut over an existing
+`.env` or `config/`; follow the update procedure instead.
+
+When you intend to stop the node:
 
 ```console
-BASEDIR=c:\koinos
+cd /opt/koinos
+docker compose stop
+docker compose ps
 ```
 
-5. Open the terminal in the downloaded directory and run the following command:
+Read the numbered procedure before the first production installation. The
+quick path does not replace the detailed synchronization and health checks.
+
+## 1. Prepare the host
+
+Review [Node requirements](requirements.md). Install Docker Engine and the
+Compose plugin using the
+[official Ubuntu instructions](https://docs.docker.com/engine/install/ubuntu/).
+Do not substitute Docker Desktop instructions on a production server.
+
+Ubuntu 22.04 LTS and 24.04 LTS are the verified production path in this guide.
+The upstream project also supports Docker Compose v2 through Docker Desktop on
+macOS and Windows. Those platforms are useful for local evaluation, but the
+Linux users, paths, firewall, service management, and recovery commands below
+do not apply to them unchanged. Follow the
+[official Docker Desktop installation](https://docs.docker.com/desktop/) and
+keep platform-specific data separate from a production node.
+
+Confirm the installed tools, time synchronization, and available disk space:
+
+```console
+docker --version
+docker compose version
+curl --version
+jq --version
+timedatectl status
+df -h /var/lib
+```
+
+Install `curl` and `jq` from the Ubuntu repositories if either command is
+missing:
+
+```console
+sudo apt-get update
+sudo apt-get install -y curl jq
+```
+
+Create the data directory and make the node operator its owner. Replace
+`koinos` with the real operator account:
+
+```console
+sudo install -d -m 750 -o koinos -g koinos /var/lib/koinos
+```
+
+Do not continue until time synchronization is active and the data filesystem
+has the planned capacity.
+
+## 2. Select the deployment version
+
+The documentation was verified against commit
+[`8216746`](https://github.com/koinos/koinos/commit/821674672e699bf56e94d7c0e8bce122e83d1482).
+The latest immutable repository release at verification time was
+[`v2.2.1`](https://github.com/koinos/koinos/releases/tag/v2.2.1), while the
+newer verified commit referenced more recent microservice image tags.
+
+Clone the official repository and check out the exact release or commit you
+have selected:
+
+```console
+sudo git clone https://github.com/koinos/koinos.git /opt/koinos
+sudo chown -R koinos:koinos /opt/koinos
+cd /opt/koinos
+git checkout 821674672e699bf56e94d7c0e8bce122e83d1482
+```
+
+Record the output of `git rev-parse HEAD`. Do not operate a production node
+from an unrecorded moving `master` checkout or floating `latest` images.
+
+## 3. Prepare the official configuration
+
+For a new node, copy the configuration supplied by the selected official
+bundle:
+
+```console
+cd /opt/koinos
+cp env.example .env
+cp -R config-example config
+```
+
+Open `.env` in your usual text editor and review these values:
+
+| Setting | Standard node value | Reason |
+| --- | --- | --- |
+| `BASEDIR` | `/var/lib/koinos` | persistent node data |
+| `P2P_INTERFACE` | `0.0.0.0` | accept peers when `8888/tcp` is allowed |
+| `JSONRPC_INTERFACE` | `127.0.0.1` | keep the health API private |
+| `JSONRPC_PORT` | `8080` | local health endpoint used below |
+| `COMPOSE_PROFILES` | `jsonrpc` | add private JSON-RPC only |
+
+Leave RabbitMQ, its administration port, REST, and gRPC on loopback. Keep the
+image tags supplied by the selected revision.
+
+!!! danger "Do not use the `all` profile"
+    `all` also starts `block_producer`. Block production has separate key and
+    irreversible on-chain prerequisites.
+
+If this is an existing node, do not overwrite `.env` or `config/`. Follow the
+[update and rollback](management.md#update-and-rollback) procedure instead.
+
+## 4. Validate and start the node
+
+First ask Compose to render the configuration. Read any error before starting
+services:
+
+```console
+cd /opt/koinos
+docker compose config
+```
+
+Start the configured standard node and display its state:
 
 ```console
 docker compose up -d
+docker compose ps
 ```
 
----
-## Monitor the node
-The above commands started a node in daemon mode, meaning the node is running in the background. This is usually preferable because you can close the terminal window used the start the node and it will continue running.
+The expected services are `amqp`, `chain`, `mempool`, `block_store`, `p2p`,
+and `jsonrpc`. The `block_producer` container must not be present.
 
-If you want the quickly check the status of your node run the following:
+## 5. Verify synchronization and health
 
-```
-docker compose logs --tail 10 --follow
-```
+Watch the services responsible for receiving and applying blocks:
 
-This will show the last 10 log lines from each microservice and then continue to follow the node live. The output will look something like:
-
-``` { .txt, .no-copy }
-mempool-1      | 2024-04-29 21:06:10.777572 (mempool.Koinos) [koinos_mempool.cpp:93] <info>: Recently added 0 transaction(s)
-mempool-1      | 2024-04-29 21:07:10.878249 (mempool.Koinos) [koinos_mempool.cpp:93] <info>: Recently added 0 transaction(s)
-mempool-1      | 2024-04-29 21:08:10.990809 (mempool.Koinos) [koinos_mempool.cpp:93] <info>: Recently added 0 transaction(s)
-mempool-1      | 2024-04-29 21:09:11.102835 (mempool.Koinos) [koinos_mempool.cpp:93] <info>: Recently added 0 transaction(s)
-mempool-1      | 2024-04-29 21:10:11.194259 (mempool.Koinos) [koinos_mempool.cpp:93] <info>: Recently added 0 transaction(s)
-mempool-1      | 2024-04-29 21:11:11.280454 (mempool.Koinos) [koinos_mempool.cpp:93] <info>: Recently added 0 transaction(s)
-mempool-1      | 2024-04-29 21:12:11.358301 (mempool.Koinos) [koinos_mempool.cpp:93] <info>: Recently added 0 transaction(s)
-mempool-1      | 2024-04-29 21:13:11.469843 (mempool.Koinos) [koinos_mempool.cpp:93] <info>: Recently added 0 transaction(s)
-mempool-1      | 2024-04-29 21:14:11.591098 (mempool.Koinos) [koinos_mempool.cpp:93] <info>: Recently added 0 transaction(s)
-mempool-1      | 2024-04-29 21:15:11.707342 (mempool.Koinos) [koinos_mempool.cpp:93] <info>: Recently added 0 transaction(s)
-block_store-1  | 2024-04-29 21:06:50.582163 (block_store.Koinos) [koinos-block-store/main.go:232] <info>: Recently added 22 block(s)
-block_store-1  | 2024-04-29 21:07:50.582868 (block_store.Koinos) [koinos-block-store/main.go:232] <info>: Recently added 25 block(s)
-block_store-1  | 2024-04-29 21:08:50.583576 (block_store.Koinos) [koinos-block-store/main.go:232] <info>: Recently added 16 block(s)
-amqp-1         | 2024-04-23 19:18:49.197776+00:00 [info] <0.1013.0> accepting AMQP connection <0.1013.0> (172.19.0.7:40100 -> 172.19.0.2:5672)
-jsonrpc-1      | 2024-04-23 19:18:44.946638 (jsonrpc.Koinos) [internal/jsonrpc.go:407] <info>: Registered descriptor package: koinos
-jsonrpc-1      | 2024-04-23 19:18:44.946640 (jsonrpc.Koinos) [internal/jsonrpc.go:407] <info>: Registered descriptor package: koinos.contracts.pob
-jsonrpc-1      | 2024-04-23 19:18:44.946643 (jsonrpc.Koinos) [internal/jsonrpc.go:407] <info>: Registered descriptor package: koinos.rpc
-jsonrpc-1      | 2024-04-23 19:18:44.946645 (jsonrpc.Koinos) [internal/jsonrpc.go:407] <info>: Registered descriptor package: koinos.rpc.mempool
-jsonrpc-1      | 2024-04-23 19:18:44.946647 (jsonrpc.Koinos) [internal/jsonrpc.go:407] <info>: Registered descriptor package: openapi.v3
-block_store-1  | 2024-04-29 21:09:50.584569 (block_store.Koinos) [koinos-block-store/main.go:232] <info>: Recently added 21 block(s)
-p2p-1          | 2024-04-29 21:14:57.029304 (p2p.Koinos) [node/node.go:377] <info>: Connected peers:
-amqp-1         | 2024-04-23 19:18:49.198730+00:00 [info] <0.1013.0> connection <0.1013.0> (172.19.0.7:40100 -> 172.19.0.2:5672): user 'guest' authenticated and granted access to vhost '/'
-block_store-1  | 2024-04-29 21:10:50.585147 (block_store.Koinos) [koinos-block-store/main.go:232] <info>: Recently added 22 block(s)
-block_store-1  | 2024-04-29 21:11:50.586101 (block_store.Koinos) [koinos-block-store/main.go:232] <info>: Recently added 23 block(s)
-chain-1        | 2024-04-29 21:15:30.165253 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062383, ID: 0x12205874b173de1e21bae0dc3f7b7e63fc1376ab8a14ae1ad3b8273b2042a5f8fc2b (0 transactions)
-chain-1        | 2024-04-29 21:15:31.071760 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062384, ID: 0x1220c399b147b8e677b269f50e165d87c2d0e53eafbbc9ced39bcc0ac21876a494fb (0 transactions)
-chain-1        | 2024-04-29 21:15:32.071882 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062385, ID: 0x12201c073d46707be23fec05c2c3fe220fc28ce8159677354176161f2a29a1cb559a (0 transactions)
-chain-1        | 2024-04-29 21:15:34.073245 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062386, ID: 0x1220f349d8ef4743de5a072595806ce56e30b59c73c8c5d14cf9ff613116886d2aba (0 transactions)
-chain-1        | 2024-04-29 21:15:40.071471 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062387, ID: 0x12200f3c871527ab8e0de78f22093620b1b408bed07ee5b784e7d21bda7bcf0cdbec (0 transactions)
-chain-1        | 2024-04-29 21:15:47.073354 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062388, ID: 0x1220213be241aa0c4415c866b854765e2b5ed44531c26d2510dfa24b4aa5468b7f7c (0 transactions)
-jsonrpc-1      | 2024-04-23 19:18:44.946659 (jsonrpc.Koinos) [koinos-jsonrpc/main.go:323] <info>: Listening on :8080/
-jsonrpc-1      | 2024-04-23 19:18:45.943549 (jsonrpc.Koinos) [koinos-mq-golang@v1.0.1/connection.go:85] <info>: Dialing AMQP server amqp://guest:guest@amqp:5672/
-block_store-1  | 2024-04-29 21:12:50.586813 (block_store.Koinos) [koinos-block-store/main.go:232] <info>: Recently added 20 block(s)
-block_store-1  | 2024-04-29 21:13:50.587441 (block_store.Koinos) [koinos-block-store/main.go:232] <info>: Recently added 26 block(s)
-amqp-1         | 2024-04-23 19:18:49.213808+00:00 [info] <0.1032.0> accepting AMQP connection <0.1032.0> (172.19.0.5:53930 -> 172.19.0.2:5672)
-amqp-1         | 2024-04-23 19:18:49.214503+00:00 [info] <0.1032.0> connection <0.1032.0> (172.19.0.5:53930 -> 172.19.0.2:5672): user 'guest' authenticated and granted access to vhost '/'
-amqp-1         | 2024-04-23 19:18:51.080136+00:00 [info] <0.1058.0> accepting AMQP connection <0.1058.0> (172.19.0.3:36350 -> 172.19.0.2:5672)
-amqp-1         | 2024-04-23 19:18:51.081093+00:00 [info] <0.1058.0> connection <0.1058.0> (172.19.0.3:36350 -> 172.19.0.2:5672): user 'guest' authenticated and granted access to vhost '/'
-amqp-1         | 2024-04-23 19:18:51.081671+00:00 [info] <0.1069.0> accepting AMQP connection <0.1069.0> (172.19.0.3:36362 -> 172.19.0.2:5672)
-p2p-1          | 2024-04-29 21:14:57.029325 (p2p.Koinos) [node/node.go:379] <info>:  - /ip4/139.144.17.121/tcp/8888/p2p/QmcGiTpSm6YrmYo3rWoqrCPez2aJY4VdraBQsGsZKwFRuG
-p2p-1          | 2024-04-29 21:14:57.029340 (p2p.Koinos) [node/node.go:379] <info>:  - /ip4/178.238.228.69/tcp/8888/p2p/QmdZEEQQedMH9eWrQXtUdptzvEd9nusGNi81Tca5iPq4Y4
-p2p-1          | 2024-04-29 21:14:57.415417 (p2p.Koinos) [p2p/gossip.go:224] <info>: Recently gossiped 16 block(s) and 0 transaction(s)
-p2p-1          | 2024-04-29 21:15:57.030221 (p2p.Koinos) [node/node.go:375] <info>: My address:
-p2p-1          | 2024-04-29 21:15:57.030290 (p2p.Koinos) [node/node.go:376] <info>:  - /ip4/127.0.0.1/tcp/8888/p2p/QmevjAUbbZGciho3kQXAh55kNYxCXAmXgWDbx9Q2axtPTZ
-p2p-1          | 2024-04-29 21:15:57.030296 (p2p.Koinos) [node/node.go:377] <info>: Connected peers:
-p2p-1          | 2024-04-29 21:15:57.030307 (p2p.Koinos) [node/node.go:379] <info>:  - /ip4/139.144.17.121/tcp/8888/p2p/QmcGiTpSm6YrmYo3rWoqrCPez2aJY4VdraBQsGsZKwFRuG
-p2p-1          | 2024-04-29 21:15:57.030314 (p2p.Koinos) [node/node.go:379] <info>:  - /ip4/178.238.228.69/tcp/8888/p2p/QmdZEEQQedMH9eWrQXtUdptzvEd9nusGNi81Tca5iPq4Y4
-p2p-1          | 2024-04-29 21:15:57.415923 (p2p.Koinos) [p2p/gossip.go:224] <info>: Recently gossiped 23 block(s) and 0 transaction(s)
-block_store-1  | 2024-04-29 21:14:50.588420 (block_store.Koinos) [koinos-block-store/main.go:232] <info>: Recently added 19 block(s)
-amqp-1         | 2024-04-23 19:18:51.082166+00:00 [info] <0.1069.0> connection <0.1069.0> (172.19.0.3:36362 -> 172.19.0.2:5672): user 'guest' authenticated and granted access to vhost '/'
-block_store-1  | 2024-04-29 21:15:50.588692 (block_store.Koinos) [koinos-block-store/main.go:232] <info>: Recently added 23 block(s)
-chain-1        | 2024-04-29 21:15:48.072631 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062389, ID: 0x1220f7aacf52146711fa1a4de4128fd15b4308b1f00f55f66b5258354efe52be6bcb (0 transactions)
-jsonrpc-1      | 2024-04-23 19:18:45.943823 (jsonrpc.Koinos) [koinos-mq-golang@v1.0.1/connection.go:88] <warning>: AMQP error dialing server: dial tcp 172.19.0.2:5672: connect: connection refused
-jsonrpc-1      | 2024-04-23 19:18:48.945880 (jsonrpc.Koinos) [koinos-mq-golang@v1.0.1/connection.go:85] <info>: Dialing AMQP server amqp://guest:guest@amqp:5672/
-jsonrpc-1      | 2024-04-23 19:18:48.948857 (jsonrpc.Koinos) [koinos-mq-golang@v1.0.1/client.go:136] <info>: Client connected
-amqp-1         | 2024-04-23 19:18:51.209259+00:00 [info] <0.1093.0> accepting AMQP connection <0.1093.0> (172.19.0.7:40104 -> 172.19.0.2:5672)
-amqp-1         | 2024-04-23 19:18:51.209814+00:00 [info] <0.1093.0> connection <0.1093.0> (172.19.0.7:40104 -> 172.19.0.2:5672): user 'guest' authenticated and granted access to vhost '/'
-chain-1        | 2024-04-29 21:15:49.071084 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062390, ID: 0x1220d9df7230f2a24281354f4d7860a0467cabdd82c0478e2934bd1816aac7640523 (0 transactions)
-chain-1        | 2024-04-29 21:16:03.073047 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062391, ID: 0x1220d305405c55669c7142702445c84037ff5faa32c3346db65a8ad2bca8b5fdf93d (0 transactions)
-chain-1        | 2024-04-29 21:16:04.072380 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062392, ID: 0x122000ca93fc2222494fa8da86453bbd74ad941427652cc677ba2cd04bdfe7fb81fc (0 transactions)
-chain-1        | 2024-04-29 21:16:10.071755 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062393, ID: 0x122027d81c885571b6e30a5ff23aa1a4306e6fd4d0a14f1a652a0950425c35dcb959 (0 transactions)
-chain-1        | 2024-04-29 21:16:11.070651 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062394, ID: 0x12204f8f3a6fc5a9524108f6a1b545f6d971ca0f48fafb57cceae040f21490e7357c (0 transactions)
-mempool-1      | 2024-04-29 21:16:11.815693 (mempool.Koinos) [koinos_mempool.cpp:93] <info>: Recently added 0 transaction(s)
-chain-1        | 2024-04-29 21:16:12.070391 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062395, ID: 0x1220cf65e6ad5bb4b7cea907c3589844056977c9ae9c78228b15effb829977b0c03f (0 transactions)
-chain-1        | 2024-04-29 21:16:13.069968 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062396, ID: 0x1220bff141e7bec8cfa85438d83ad761099082b86da97253afb688e9a82fe19e8793 (0 transactions)
-chain-1        | 2024-04-29 21:16:14.070250 (chain.Koinos) [controller.cpp:434] <info>: Block applied - Height: 8062397, ID: 0x1220104208ba2ff9d91108e3c29ac0523c2c46dcb0c81488cf6f4e606744ae157048 (0 transactions)
+```console
+docker compose logs --tail 100 --follow chain p2p block_store
 ```
 
----
-## Node syncing
-When you have just started you node, it will be syncing blocks from the network. These blocks were all created in the past. It is necessary to play through the entire history of the Koinos blockchain in order to have a correct view of the present state. Sync specific log messages will be output to give you a rough idea of how much progress the node has made. Using the same log command above, you can view the sync progress.
+During the initial synchronization, these messages are expected:
 
+| Message | Meaning |
+| --- | --- |
+| `Requesting blocks ... from peer ...` | P2P is downloading historical blocks |
+| `Sync block progress - Height: ...` | Block Store is saving synchronized blocks |
+| `Sync progress - Height: ...` | Chain is replaying blocks to rebuild current state |
+| `Block applied - Height: ...` | Chain is applying blocks near the current head |
+
+The “block time remaining” displayed with `Sync progress` is the difference
+between the historical block timestamp and the current chain head. It is not a
+wall-clock completion estimate.
+
+In another terminal, verify that every expected service is running, the
+producer is absent, and no container restarts or is recreated during a
+30-second interval:
+
+```console
+(
+set -euo pipefail
+required_services=(amqp chain mempool block_store p2p jsonrpc)
+running_services="$(docker compose ps --status running --services)"
+for service in "${required_services[@]}"; do
+  printf '%s\n' "$running_services" | grep -qx "$service"
+done
+! printf '%s\n' "$running_services" | grep -qx block_producer
+
+snapshot_containers() {
+  for service in "${required_services[@]}"; do
+    container_id="$(docker compose ps --all -q "$service")"
+    if [[ -z "$container_id" ]]; then
+      printf 'ERROR: missing container for %s\n' "$service" >&2
+      return 1
+    fi
+    status="$(docker inspect --format '{{.State.Status}}' "$container_id")"
+    if [[ "$status" != running ]]; then
+      printf 'ERROR: %s status is %s\n' "$service" "$status" >&2
+      return 1
+    fi
+    restart_count="$(
+      docker inspect --format '{{.RestartCount}}' "$container_id"
+    )"
+    printf '%s %s %s\n' "$service" "$container_id" "$restart_count"
+  done
+}
+
+containers_before="$(snapshot_containers)"
+sleep 30
+containers_after="$(snapshot_containers)"
+printf '%s\n' "$containers_after"
+test "$containers_before" = "$containers_after"
+)
 ```
-docker compose logs --tail 10 --follow
+
+The final lines record service, container ID, and restart count. If the command
+fails, a required service is missing, is not running, restarted, or was
+recreated during the interval. Inspect `docker compose ps --all` and the last
+100 service log lines before continuing. A historical non-zero restart count
+is acceptable when it remains stable and the service is healthy.
+
+Fetch the local and independently operated mainnet heads, calculate their ages,
+and display their heights:
+
+```console
+local_head="$(curl --fail --silent --show-error http://127.0.0.1:8080/ \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}')"
+public_head="$(curl --fail --silent --show-error \
+  https://api.koinos.io/jsonrpc \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}')"
+
+now_ms="$(($(date +%s) * 1000))"
+local_height="$(printf '%s' "$local_head" |
+  jq -er '.result.head_topology.height | tonumber')"
+public_height="$(printf '%s' "$public_head" |
+  jq -er '.result.head_topology.height | tonumber')"
+local_time="$(printf '%s' "$local_head" |
+  jq -er '.result.head_block_time | tonumber')"
+public_time="$(printf '%s' "$public_head" |
+  jq -er '.result.head_block_time | tonumber')"
+local_age="$(((now_ms - local_time) / 1000))"
+public_age="$(((now_ms - public_time) / 1000))"
+
+printf 'local height=%s age=%ss\n' "$local_height" "$local_age"
+printf 'public height=%s age=%ss\n' "$public_height" "$public_age"
+test "$local_height" -gt 0
+test "$local_age" -ge -30
+test "$local_age" -le 300
 ```
 
-The sync logs will look something like this:
+During initial synchronization the local age can exceed 300 seconds and the
+local height can lag substantially. Repeat the check until the local head is
+fresh and close to the public height. Do not use a public height alone as
+proof: the local values must come from `127.0.0.1`. The small negative
+tolerance permits ordinary clock and block-timestamp skew; a larger negative
+age requires a time-synchronization investigation.
 
-``` { .txt, .no-copy }
-p2p-1          | 2024-04-29 21:19:12.840955 (p2p.Koinos) [p2p/peer_connection.go:142] <info>: Requesting blocks 441-941 from peer QmcGiTpSm6YrmYo3rWoqrCPez2aJY4VdraBQsGsZKwFRuG
-p2p-1          | 2024-04-29 21:19:17.922615 (p2p.Koinos) [p2p/peer_connection.go:142] <info>: Requesting blocks 881-1381 from peer QmcGiTpSm6YrmYo3rWoqrCPez2aJY4VdraBQsGsZKwFRuG
-chain-1        | 2024-04-29 21:19:19.667500 (chain.Koinos) [controller.cpp:450] <info>: Sync progress - Height: 1000, ID: 0x1220d24b4a274fa68090ce52889c7048ca3534d05df1fabaece454dba3c32a01856a (290d, 18h, 23m, 23s block time remaining)
-block_store-1  | 2024-04-29 21:19:19.667951 (block_store.Koinos) [koinos-block-store/main.go:207] <info>: Sync block progress - Height: 1000, ID: 0x1220d24b4a274fa68090ce52889c7048ca3534d05df1fabaece454dba3c32a01856a
-p2p-1          | 2024-04-29 21:19:23.018969 (p2p.Koinos) [p2p/peer_connection.go:142] <info>: Requesting blocks 1321-1821 from peer QmcGiTpSm6YrmYo3rWoqrCPez2aJY4VdraBQsGsZKwFRuG
-p2p-1          | 2024-04-29 21:19:28.059747 (p2p.Koinos) [p2p/peer_connection.go:142] <info>: Requesting blocks 1761-2261 from peer QmcGiTpSm6YrmYo3rWoqrCPez2aJY4VdraBQsGsZKwFRuG
-chain-1        | 2024-04-29 21:19:30.819182 (chain.Koinos) [controller.cpp:450] <info>: Sync progress - Height: 2000, ID: 0x12205f67e9a1b40136b49fb11620d1182c0b4e7921fd9ed27c2742e4a872262cfb40 (290d, 17h, 34m, 13s block time remaining)
-block_store-1  | 2024-04-29 21:19:30.819673 (block_store.Koinos) [koinos-block-store/main.go:207] <info>: Sync block progress - Height: 2000, ID: 0x12205f67e9a1b40136b49fb11620d1182c0b4e7921fd9ed27c2742e4a872262cfb40
-p2p-1          | 2024-04-29 21:19:33.063258 (p2p.Koinos) [p2p/peer_connection.go:142] <info>: Requesting blocks 2201-2701 from peer QmcGiTpSm6YrmYo3rWoqrCPez2aJY4VdraBQsGsZKwFRuG
+Verify that the local height continues to advance:
+
+```console
+height_before="$(curl --fail --silent --show-error \
+  http://127.0.0.1:8080/ \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}' |
+  jq -er '.result.head_topology.height | tonumber')"
+sleep 30
+height_after="$(curl --fail --silent --show-error \
+  http://127.0.0.1:8080/ \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"chain.get_head_info","params":{},"id":1}' |
+  jq -er '.result.head_topology.height | tonumber')"
+printf 'height before=%s after=%s\n' "$height_before" "$height_after"
+test "$height_after" -gt "$height_before"
 ```
 
-The chain logs will show sync progress every 1000 blocks. The time remaining is not wall clock time, but block time remaining to sync.
+Finally, verify gossip and peer activity separately. The public P2P RPC only
+reports whether gossip is enabled; it does not return a peer count:
 
----
-## Next steps
-Now that you have a Koinos node running, you may be interested in producing blocks or configuring your node. Any of these guides are great next steps to be able to better administer a Koinos node.
+```console
+curl --fail --silent --show-error http://127.0.0.1:8080/ \
+  -H 'Content-Type: application/json' \
+  --data '{"jsonrpc":"2.0","method":"p2p.get_gossip_status","params":{},"id":1}' |
+  jq -e '.result.enabled == true'
 
-- [Block Production](block-production.md)
-- [Configuration](configuration.md)
-- [Docker Compose Profiles](docker-profiles.md)
-- [Node Management](management.md)
-- [Node Security](security.md)
+peer_lines="$(docker compose logs --since 2m --no-color p2p |
+  awk '
+    /Connected peers:/ { in_peers=1; next }
+    in_peers && / - \/.*\/p2p\// { print; next }
+    in_peers { in_peers=0 }
+  ')"
+test -n "$peer_lines"
+printf '%s\n' "$peer_lines"
+```
+
+The `p2p` service emits its “Connected peers” list once per minute in the
+selected version. Only addresses after the `Connected peers` marker count; the
+node's own `My address` entry does not. Wait two minutes and investigate P2P
+configuration, firewall, DNS, and seed reachability if no peer line appears.
+
+The node is ready only when:
+
+- all expected containers remain running without a restart loop;
+- the local head is no more than five minutes old, approaches a trusted
+  mainnet height, and advances across the 30-second observation;
+- P2P gossip is enabled and the P2P logs show at least one connected peer;
+- logs do not show recurring database, verification, or connectivity errors;
+- the data filesystem retains safe free space.
+
+Check data growth directly:
+
+```console
+df -h /var/lib/koinos
+du -sh /var/lib/koinos/*
+```
+
+## Stop and restart safely
+
+Stop cleanly before host maintenance or a consistent data backup:
+
+```console
+cd /opt/koinos
+docker compose stop
+docker compose ps
+```
+
+Wait until no Koinos service is running. Start the same configured services
+again with:
+
+```console
+docker compose up -d
+docker compose ps
+```
+
+A plain `restart` does not pull newer images and may not apply every Compose
+configuration change.
+
+Next:
+
+- [Networks](networks.md)
+- [Docker Compose profiles](docker-profiles.md)
+- [Security](security.md)
+- [Operations](management.md)

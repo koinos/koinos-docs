@@ -8,7 +8,7 @@ These are capacity-planning starting points for the official Docker Compose
 deployment, not permanent guarantees. Measure the selected profiles on the
 network you will operate.
 
-Verified on **2026-07-24**:
+Verified on **2026-07-25**:
 
 - the pinned images used by this guide publish Linux `amd64` images;
 - a local mainnet `block_store` measurement was approximately 43 GB;

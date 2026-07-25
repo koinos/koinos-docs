@@ -185,12 +185,33 @@ for (const entry of manifest.entries) {
   const likelyMnemonic =
     /(?:mnemonic|recovery|seed)\s*(?:phrase)?\s*[:=]\s*["'][a-z]+(?:\s+[a-z]+){7,}/i;
   const telegramToken = /\b[0-9]{8,12}:[A-Za-z0-9_-]{30,}\b/;
+  const privateKeyBlock =
+    /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/;
+  const credentialAssignment =
+    /(?:password|passwd|api[_-]?key|access[_-]?token|secret)\s*[:=]\s*["']?(?!REPLACE|PLACEHOLDER|CHANGEME|EXAMPLE)[A-Za-z0-9_+./=-]{12,}/i;
   if (
     likelyWif.test(source) ||
     likelyMnemonic.test(source) ||
-    telegramToken.test(source)
+    telegramToken.test(source) ||
+    privateKeyBlock.test(source) ||
+    credentialAssignment.test(source)
   ) {
     errors.push(`${entry.id}: source appears to contain secret material`);
+  }
+
+  if (entry.safety === "read-only" && entry.modifies.length !== 0) {
+    errors.push(`${entry.id}: read-only example declares modifications`);
+  }
+
+  if (
+    entry.safety === "state-destructive" &&
+    (!/DRY RUN/.test(source) ||
+      !/--apply/.test(source) ||
+      !/--basedir/.test(source))
+  ) {
+    errors.push(
+      `${entry.id}: destructive helper lacks dry-run, apply, or basedir guard`
+    );
   }
 
   if (

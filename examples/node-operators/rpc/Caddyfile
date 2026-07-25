@@ -1,0 +1,94 @@
+# --8<-- [start:rpc-caddy]
+# Replace both example hostnames before validation or deployment. Caddy obtains
+# and renews public certificates when DNS points to this host and ports 80/443
+# are reachable.
+rpc.example.com {
+	encode zstd gzip
+
+	rate_limit {
+		zone rpc_per_client {
+			key {remote_host}
+			events 20
+			window 1s
+			ipv6_prefix 64
+		}
+	}
+
+	@preflight method OPTIONS
+	handle @preflight {
+		header Access-Control-Allow-Origin "https://app.example.com"
+		header Access-Control-Allow-Methods "GET, POST, OPTIONS"
+		header Access-Control-Allow-Headers "Content-Type, Authorization"
+		header Access-Control-Max-Age "3600"
+		respond "" 204
+	}
+
+	header {
+		Access-Control-Allow-Origin "https://app.example.com"
+		Access-Control-Allow-Methods "GET, POST, OPTIONS"
+		Access-Control-Allow-Headers "Content-Type, Authorization"
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		-Server
+	}
+
+	request_body {
+		max_size 2MB
+	}
+
+	@rest path /v1/* /swagger* /_next/* /favicon.ico
+	handle @rest {
+		reverse_proxy 127.0.0.1:3000 {
+			transport http {
+				dial_timeout 5s
+				response_header_timeout 30s
+			}
+		}
+	}
+
+	handle {
+		reverse_proxy 127.0.0.1:8080 {
+			transport http {
+				dial_timeout 5s
+				response_header_timeout 30s
+			}
+		}
+	}
+
+	log {
+		output file /var/log/caddy/koinos-rpc-access.log {
+			roll_size 100MiB
+			roll_keep 10
+		}
+	}
+}
+
+grpc.example.com {
+	rate_limit {
+		zone grpc_per_client {
+			key {remote_host}
+			events 20
+			window 1s
+			ipv6_prefix 64
+		}
+	}
+
+	request_body {
+		max_size 2MB
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		-Server
+	}
+
+	reverse_proxy h2c://127.0.0.1:50051 {
+		transport http {
+			versions h2c
+			dial_timeout 5s
+			response_header_timeout 30s
+		}
+	}
+}
+# --8<-- [end:rpc-caddy]

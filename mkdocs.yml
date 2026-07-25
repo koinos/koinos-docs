@@ -211,6 +211,7 @@ nav:
       - Configuration: nodes/configuration.md
       - Security: nodes/security.md
       - Operations: nodes/management.md
+      - Backup and restore: nodes/backup-restore.md
   - Architecture:
       - architecture/index.md
       - Microservices:

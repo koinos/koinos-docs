@@ -9,7 +9,7 @@ the upstream Compose profiles below.
 
 Verified against `koinos/koinos` commit
 [`8216746`](https://github.com/koinos/koinos/commit/821674672e699bf56e94d7c0e8bce122e83d1482)
-on 2026-07-24.
+on 2026-07-25.
 
 | Profile | Services enabled |
 | --- | --- |

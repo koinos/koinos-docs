@@ -1,215 +1,139 @@
-# Configure Node as RPC Node
+# Run an RPC node
 
-Configure your Koinos node to serve as an RPC endpoint for applications and services.
+An RPC node adds application-facing services to a healthy observer. The
+official `api` profile enables JSON-RPC, REST, gRPC, transaction store,
+contract metadata store, and account history. It does **not** need the
+`block_producer` profile.
 
-## What is an RPC Node?
+## Architecture and trust boundary
 
-An RPC node provides API access to the Koinos blockchain for external applications. It serves JSON-RPC and gRPC requests, allowing developers to:
+Keep the Koinos API ports on loopback and expose only a hardened HTTPS reverse
+proxy:
 
-- Query blockchain data
-- Submit transactions
-- Read smart contract state
-- Access account information
-- Retrieve block and transaction history
+| Protocol | Local host port | Public route | Verification |
+| --- | ---: | --- | --- |
+| JSON-RPC | `127.0.0.1:8080` | `https://rpc.example.com/` | HTTP POST |
+| REST and Swagger | `127.0.0.1:3000` | `https://rpc.example.com/v1/...` and `/swagger` | HTTP GET |
+| gRPC | `127.0.0.1:50051` | `grpc.example.com:443` | descriptor-based gRPC |
 
-## Prerequisites
+RabbitMQ `5672` and its management UI `15672` must also remain private. P2P
+`8888` can be public if this host participates in peer-to-peer networking.
 
-- A running Koinos node (see [Running a Node](running-node.md))
-- Understanding of [Docker Compose profiles](docker-profiles.md)
+## 1. Enable the API profile
 
-## Configuration
+Start from the same immutable deployment bundle used for the observer and
+measure the additional storage required by the selected index services.
 
-### 1. Enable API Services
+**Safety: service-changing when installed.** This configuration keeps every API
+on loopback and intentionally enables `api`.
 
-Edit your `.env` file to enable the API profile:
-
-```bash
-# Enable API services for RPC functionality
-COMPOSE_PROFILES=api
+<!-- node-example: rpc-env -->
+```dotenv title=".env"
+--8<-- "examples/node-operators/rpc/env.example:rpc-env"
 ```
 
-The `api` profile includes:
-- `jsonrpc` - JSON-RPC API endpoint
-- `grpc` - gRPC API endpoint  
-- `transaction_store` - Transaction history
-- `contract_meta_store` - Contract ABI data
-- `account_history` - Account transaction history
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/env.example) ·
+[Use locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
 
-### 2. Configure Network Binding
+After preserving the existing `.env`, apply the reviewed values and run
+`docker compose --profile api up -d`. Confirm that the six API services plus
+the five required services are healthy with `docker compose ps`.
 
-By default, API services bind to localhost only. For a public RPC node, you may need to expose ports:
+## 2. Verify locally before exposing it
 
-```bash
-# JSON-RPC configuration
-JSONRPC_INTERFACE=0.0.0.0  # Bind to all interfaces (use with caution)
-JSONRPC_PORT=8080
+These read-only checks require `curl`, Python 3, and—in the gRPC case—`grpcurl`
+plus the `koinos_descriptors.pb` file from the **same deployment bundle**. The
+gRPC service does not advertise reflection, so a reflection-only command is not
+a valid test.
 
-# gRPC configuration  
-GRPC_INTERFACE=0.0.0.0     # Bind to all interfaces (use with caution)
-GRPC_PORT=8090
+<!-- node-example: test-jsonrpc -->
+```bash title="test-jsonrpc.sh"
+--8<-- "examples/node-operators/rpc/test-jsonrpc.sh:test-jsonrpc"
 ```
 
-!!! warning "Security Warning"
-    Only bind to `0.0.0.0` if you intend to run a public RPC node. For private use, keep the default `127.0.0.1` binding and use a reverse proxy or VPN for external access.
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/test-jsonrpc.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
 
-### 3. Resource Configuration
-
-RPC nodes require additional resources for API services:
-
-```yaml
-# In config/config.yml
-global:
-  jobs: 8  # Increase worker threads for API load
-  
-chain:
-  read-compute-bandwidth-limit: 100000000  # Increase read limits for API calls
+<!-- node-example: test-rest -->
+```bash title="test-rest.sh"
+--8<-- "examples/node-operators/rpc/test-rest.sh:test-rest"
 ```
 
-### 4. API Blacklist (Security)
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/test-rest.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
 
-Ensure critical APIs remain blacklisted in your configuration:
-
-```yaml
-# In config/config.yml
-jsonrpc:
-  blacklist:
-    - block_store.add_block
-    - chain.propose_block
+<!-- node-example: test-grpc -->
+```bash title="test-grpc.sh"
+--8<-- "examples/node-operators/rpc/test-grpc.sh:test-grpc"
 ```
 
-## Starting the RPC Node
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/test-grpc.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
 
-1. **Restart with API profile:**
-```bash
-docker compose --profile api up -d
+Use `GRPC_PLAINTEXT=1` only for the local loopback test. Public gRPC should use
+TLS on port 443.
+
+## 3. Terminate TLS and control traffic
+
+Choose one complete proxy configuration and replace every example domain and
+allowed browser origin. Do not use `*` for CORS when the caller origin is
+known. Both examples cap request bodies, define timeouts, hide internal ports,
+route REST/Swagger assets, and handle gRPC separately.
+
+### Caddy
+
+Caddy can obtain and renew certificates automatically when public DNS and
+ports 80/443 are correctly configured. The configuration uses the
+`caddy-ratelimit` module, which is not part of the standard Caddy binary. Build
+the complete pinned
+[`Dockerfile.caddy`](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/Dockerfile.caddy)
+from the example directory and verify `caddy list-modules` includes
+`http.handlers.rate_limit` before installation.
+
+<!-- node-example: rpc-caddy -->
+```caddyfile title="Caddyfile"
+--8<-- "examples/node-operators/rpc/Caddyfile:rpc-caddy"
 ```
 
-2. **Verify services are running:**
-```bash
-docker compose ps
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/Caddyfile) ·
+[Validate locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
+
+### nginx
+
+The nginx example expects certificates to exist at the declared paths. Use
+your ACME client or certificate-management process before starting nginx.
+
+<!-- node-example: rpc-nginx -->
+```nginx title="nginx.conf"
+--8<-- "examples/node-operators/rpc/nginx.conf:rpc-nginx"
 ```
 
-You should see additional services running:
-- `jsonrpc`
-- `grpc` 
-- `transaction_store`
-- `contract_meta_store`
-- `account_history`
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/nginx.conf) ·
+[Validate locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
 
-## Testing Your RPC Node
+## 4. Prove internal ports are not public
 
-### JSON-RPC Test
+Inspect the local listeners, then run the same script with the public hostname
+from another network. This is read-only; it does not change firewall rules.
 
-Test the JSON-RPC endpoint:
-
-```bash
-curl -X POST http://localhost:8080 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "method": "chain.get_head_info",
-    "params": {},
-    "id": 1
-  }'
+<!-- node-example: audit-exposure -->
+```bash title="audit-exposure.sh"
+--8<-- "examples/node-operators/rpc/audit-exposure.sh:audit-exposure"
 ```
 
-Expected response:
-```json
-{
-  "jsonrpc": "2.0",
-  "result": {
-    "head_topology": {
-      "id": "0x1220...",
-      "height": "8062397",
-      "previous": "0x1220..."
-    }
-  },
-  "id": 1
-}
-```
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/audit-exposure.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
 
-### gRPC Test
+From outside the server, expect only 80/443 and any intentionally public P2P
+port. Treat externally reachable 5672, 15672, 8080, 50051, or 3000 as a
+misconfiguration.
 
-Test gRPC endpoint (requires grpcurl):
+## Operate from measurements
 
-```bash
-grpcurl -plaintext localhost:8090 koinos.rpc.chain.chain_rpc/get_head_info
-```
+Monitor endpoint latency, non-2xx responses, container restarts, queue pressure,
+head freshness, disk growth, and host saturation. Do not infer request rates
+from fictional log messages, raise compute limits without a measured workload,
+or use swap as a substitute for adequate memory.
 
-## Performance Considerations
-
-### Hardware Requirements
-
-RPC nodes require additional resources:
-- **CPU**: 8+ cores recommended
-- **RAM**: 16+ GB for API services
-- **Storage**: Additional space for transaction/account history
-- **Network**: Higher bandwidth for serving requests
-
-### Monitoring
-
-Monitor your RPC node performance:
-
-```bash
-# Check API response times
-docker compose logs jsonrpc | grep "response time"
-
-# Monitor resource usage
-docker stats
-
-# Check request volume
-docker compose logs jsonrpc | grep "requests per second"
-```
-
-## Public RPC Node Setup
-
-If running a public RPC node:
-
-### 1. Reverse Proxy
-
-Use nginx or similar for SSL and rate limiting:
-
-```nginx
-server {
-    listen 443 ssl;
-    server_name your-rpc-domain.com;
-    
-    location / {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        
-        # Rate limiting
-        limit_req zone=api burst=100 nodelay;
-    }
-}
-```
-
-### 2. Firewall Configuration
-
-```bash
-# Allow only necessary ports
-ufw allow 443/tcp  # HTTPS
-ufw allow 22/tcp   # SSH
-ufw deny 8080/tcp  # Block direct RPC access
-```
-
-### 3. Monitoring and Alerting
-
-Set up monitoring for:
-- API response times
-- Request volume
-- Error rates
-- Resource utilization
-
-## Troubleshooting
-
-**High Memory Usage**: Increase swap or RAM for API services
-**Slow Responses**: Check if node is fully synced
-**Connection Refused**: Verify ports and firewall settings
-**Missing Data**: Ensure all API profile services are running
-
-## Next Steps
-
-- [Node Security](security.md) - Secure your RPC node
-- [Node Management](management.md) - Ongoing maintenance
-- [Configuration](configuration.md) - Advanced configuration options
+Continue with [Security](security.md) and
+[Operations and recovery](management.md).

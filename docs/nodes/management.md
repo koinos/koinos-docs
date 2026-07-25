@@ -2,122 +2,123 @@
 icon: fontawesome/solid/list-check
 ---
 
-# Node management
-While our goal is to make the Koinos node as easy to use as possible, inevitably, there will be times where you need to do some maintenance on the node. Here we have listed a few common tasks and how to complete them.
+# Operations and recovery
 
----
-## Updating node
-The most common task will likely be updating the node. Periodically, new versions of the Koinos node will be released and you will need to update your node based on the release.
+Operate from evidence: chain ID, advancing head, head freshness, gossip, peers,
+container restart state, API probes, disk growth, memory pressure, and error
+logs. A container marked `running` is not enough.
 
-If you are running a default configuration (no changes to `.env` or any config files), you can simple bring down your node with `docker compose down`, remove `.env` and `config`, copy the release files over the existing release, and follow the [getting started guide](running-node.md) to bring your node back up as though it were brand new.
+## Routine health and logs
 
-If you have made changes to the default configuration, your upgrade process becomes a little more tricky. You still need to bring down your node with `docker compose down`. You can then either copy the new files over your current ones and re-apply the changes you had made. Or look over the new files and selectively apply updates. When changes are made to the config files, they should be documented in the release notes for that particular node version. Regardless of what changes you have made, `koinos_descriptors.pb` and the microservice tags in `.env` should always be updated to the release version.
+Use the [observer health helper](running-node.md#5-verify-synchronization-and-health)
+and [storage measurement](requirements.md#measure-the-actual-node). Follow a
+bounded log tail with `docker compose logs --tail 100 --follow chain p2p
+block_store`; use `--since` and `--until` for an incident window. Retain
+service log directories and host/Docker logs according to a space-bounded
+rotation policy.
 
-You can then bring your node back up with `docker compose up -d` and you should be all set!
+Alert before disk reaches the documented warning threshold, when the head stops
+advancing or becomes stale, when gossip disables unexpectedly, when peers
+disappear, or when a container repeatedly restarts.
 
----
-## Viewing logs
-Sometimes you will need to inspect the logs from the node. That may be just to check that everything is operating as normal, or to investigate a problem with the node. There are two ways to view logs. The first is through Docker Compose. The second is through logs saved to disk.
+## Clean service control
 
-To view logs through Docker Compose, you will use the `docker compose logs` command.
+Use `docker compose stop` and wait for containers to exit before host
+maintenance or a consistent snapshot. Use `docker compose up -d` after
+reviewed configuration changes; this recreates services as required. A plain
+`restart` neither pulls images nor necessarily applies Compose changes.
 
-To view live logs, we recommend setting a tail on logs (to avoid showing all logs) and following along with the node.
+Restart one service only when its dependencies and state contract make that
+safe. Capture logs and exact versions first, and file an upstream bug report
+when behavior suggests a defect.
 
-```
-docker compose logs --tail 10 --follow
-```
+## Update and rollback
 
-If you want to see logs over a particular range, you can use the `--since` and `--until` flags to view logs over a time range. It is also recommended whenever viewing large log messages to save them to disk or pipe through a utility, such as `less`, to improve your ability to read through the logs.
+Select an immutable release tag or recorded deployment-bundle commit. Prepare
+it in a separate checkout; never overwrite the running checkout before review.
+The update planner is read-only.
 
-```
-docker compose logs --since 2024-04-15T10:00:00Z --until 2024-04-15T10:10:00Z | less
-```
-
-The second way you can view logs is through the logs stored on disk. By default, all logs are stored on disk in their respective microservice directories under `logs`. If your basedir is set to `~/.koinos` in `.env`, then you can find chain logs at `~/.koinos/chain/logs`. These files are truncated at regular interval to make it easier to manually parse them. This is usually not the preferred method of looking through logs, but it is good to have them backed up and to know where you can find them in case you need them. For example, if you update your node, `docker compose logs` will only return logs up until the last time you brought the node up, but the log directories will have logs from before then, which can be helpful.
-
----
-## Restart node
-Rarely you may encounter a bug that requires restarting the node. First, please file a [bug report](https://github.com/koinos/koinos/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml&title=%5BBUG%5D%3A+%3Ctitle%3E) so we can try an fix the bug. Second, run this command to restart your node:
-
-```
-docker compose restart
-```
-
-``` { .txt, .no-copy }
-[+] Restarting 10/10
- ✔ Container koinos-transaction_store-1    Started             1.5s
- ✔ Container koinos-grpc-1                 Started            11.2s
- ✔ Container koinos-amqp-1                 Started             6.7s
- ✔ Container koinos-jsonrpc-1              Started             1.6s
- ✔ Container koinos-contract_meta_store-1  Started             1.4s
- ✔ Container koinos-block_store-1          Started             1.7s
- ✔ Container koinos-account_history-1      Started            11.3s
- ✔ Container koinos-p2p-1                  Started             1.7s
- ✔ Container koinos-chain-1                Started            11.3s
- ✔ Container koinos-mempool-1              Started            11.3s
+<!-- node-example: plan-update -->
+```bash title="plan-update.sh"
+--8<-- "examples/node-operators/operations/plan-update.sh:plan-update"
 ```
 
----
-## Restart a microservice
-If you encounter a problem with a single microservice, you can restart a microservice on its own. Please file a bug report with the corresponding microservice repository. If you cannot find it, filing a [bug report](https://github.com/koinos/koinos/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml&title=%5BBUG%5D%3A+%3Ctitle%3E) on the Koinos repo is acceptable, and we will move it to the appropriate repo. Restarting an individual microservice is the same as restarting the entire node, except you specify the microservice(s) to restart.
+[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/operations/plan-update.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/operations)
 
-```
-docker compose restart chain mempool
-```
+Before downtime:
 
-``` { .txt, .no-copy }
-[+] Restarting 2/2
- ✔ Container koinos-chain-1    Started                         0.8s
- ✔ Container koinos-mempool-1  Started                         0.8s
-```
+1. record current and proposed revisions, profiles, tags, and image digests;
+2. compare Compose, `.env`, config, genesis data, descriptors, and RabbitMQ;
+3. merge reviewed local values into the new bundle;
+4. validate YAML and `docker compose config`;
+5. pull the exact pinned images and inspect failures;
+6. verify free space;
+7. preserve configuration, encrypted keys, peer identity, and a recoverable
+   data snapshot;
+8. define rollback triggers and the maintenance window.
 
----
-## Reindex
-Reindex is a term used to describe when you need to rebuild the chain state. This involves replaying each block and reconstructing the current state from scratch. This can be helpful if the chain state somehow gets corrupted. We have had reports of this happening in extreme cases such as power loss, but this is extremely unlikely. If this does happen to you, please file a [bug report](https://github.com/koinos/koinos/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml&title=%5BBUG%5D%3A+%3Ctitle%3E) so we can diagnose and fix the issue.
+Then stop cleanly, activate the new checkout/configuration, and use
+`docker compose up -d`. Re-run every health and protocol check. Keep the old
+bundle, images, and snapshot until the new deployment has remained healthy.
 
-There are a few microservices you can reset. Those are chain, blocks tore, transaction store, contract metastore, and account history. Usually you will just need to reset the chain microservice. To do so add the following to `config.yml`.
+Rollback means another clean stop, restoration of the prior bundle and local
+configuration, restoration of the prior snapshot only if the data format
+requires it, startup, and the same chain-ID/head/gossip/API validation.
 
-``` { .yml }
-chain:
-  reset: true
-```
+## Choose recovery depth
 
-Then restart the chain microservice:
+Use the least destructive operation supported by evidence:
 
-```
-docker compose restart chain
-```
+| Symptom | First action | Escalation |
+| --- | --- | --- |
+| one service is unresponsive | capture evidence; recreate only that service | restart its dependency set |
+| optional index is inconsistent | preserve it; rebuild only that index | rebuild selected API indexes |
+| chain state is corrupt but block store is sound | preserve everything; reindex chain state | checksum-verified restore |
+| core state is corrupt or unavailable | checksum-verified restore | full P2P resync |
+| power loss | preserve files/logs; check filesystem and Docker state | isolate corrupt service data |
 
-Immediately after restarting chain, undo the changes to `config.yml`. The next time chain start, it will reset again if you do not undo the changes, which means if the host restarts, chain will reindex again. Reindexing can take a day or two, so it is best to only do it when necessary.
+Before reindex, resync, or replacement, identify and print the absolute
+basedir, network, chain ID, active configuration, and selected directories.
+Reject root/home/broad targets. Stop cleanly, verify free space, preserve
+configuration and all keys, make a recoverable snapshot, and define rollback.
 
----
-## Resync
-In the worst case scenarios, a full resync may be required. This resets all microservices back to their initial state and resyncs the entire blockchain from the p2p network as though you were starting from scratch. If you need to resync and it is not related to some other known event, please file a [bug report](https://github.com/koinos/koinos/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml&title=%5BBUG%5D%3A+%3Ctitle%3E) so we can diagnose and fix the issue.
+### Reindex
 
-To resync, uncomment `reset: true` in `config.yml` under the `global` section. It should look something like:
+Reindex replays stored blocks to rebuild selected derived state. Copy the
+active config, add `reset: true` only under the single affected service, show
+the diff, and start only that service/dependency set. As soon as initialization
+has consumed the reset, restore the normal config so a reboot cannot reset it
+again. Monitor replay and validate the result before removing the snapshot.
 
-``` { .yml }
-global:
-  amqp: amqp://guest:guest@amqp:5672/                 # AMQP server URL
-  log-level: info                                     # Log filtering level (debug, info, warn, error)
-  log-color: true                                     # Enable colors in logs
-  log-datetime: true                                  # Enable datetime prefix in logs
-  log-dir: logs                                       # The directory in which logs are stored
-  instance-id: Koinos                                 # ID that uniquely identifies the instance
-  fork-algorithm: pob                                 # Fork resolution algorithm (fifo, pob, block-time)
-  blacklist:                                          # RPC targets to blacklist, can be an entire microservice (i.e. chain), or specific API calls
-    - block_store.add_block
-    - chain.propose_block
-  # jobs: 32                                          # Number of jobs to run
-  reset: true                                       # DANGEROUS: Resets the entire node. To reset a single microservice, set this in the microservice config
-  # whitelist:                                        # RPC targets to whitelist
-  # - RPC
-```
+Never use a global reset when only `chain`, `transaction_store`,
+`contract_meta_store`, or `account_history` needs rebuilding.
 
-Then restart your node:
+### Full resync
 
-```
-docker compose restart
-```
+Use a full P2P resync only when a narrower repair or verified backup restore is
+not suitable. With the node stopped and a private recovery set proven, move
+core and optional state into a timestamped preservation directory rather than
+deleting it. Retain configuration, genesis, descriptors, peer identity, and
+keys. Start the required services against empty state, then verify network,
+chain ID, peers, gossip, advancing head, disk, and APIs throughout the sync.
 
-Immediately after restarting the node, undo the changes in `config.yml`. The next time the node starts, it will reset again if you do not undo the changes, which means if the host restarts, the entire node will reset and begin syncing from scratch again.
+### Restore
+
+Prefer the staged, checksum-verified
+[public backup procedure](backup-restore.md) when its network, date, layout,
+and trust boundary fit the recovery goal. It is an acceleration source for
+public chain data—not a source of local identity or authority.
+
+## Corruption and incident evidence
+
+Do not repeatedly restart a failing database. Preserve the logs, `docker
+compose ps`, image tags/digests, bundle revision, config diff, disk and
+filesystem status, kernel messages, last clean shutdown, head data, and exact
+error text. Clone or snapshot affected data before experimentation. Test a
+repair only on the copy.
+
+Report reproducible evidence through the
+[Koinos issue tracker](https://github.com/koinos/koinos/issues), omitting
+credentials, private keys, private network details, and archives that may
+contain them.

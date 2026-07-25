@@ -70,7 +70,7 @@ chain ID makes a mismatch fail closed.
 [View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/networks/query-network.sh) ·
 [Run locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/networks)
 
-The public testnet chain ID verified on 2026-07-24 was
+The public testnet chain ID verified on 2026-07-25 was
 `EiAIKVvm6-V2qmsmUvPJy09vCCLbtn9lHFpwrJbcTIEWRQ==`. Treat that value as a
 verification expectation, not a promise that a resettable network can never
 change.

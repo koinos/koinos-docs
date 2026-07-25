@@ -202,7 +202,8 @@ nav:
   - Node Operators:
       - Overview: nodes/index.md
       - Requirements: nodes/requirements.md
-      - Run a Koinos Node: nodes/running-node.md
+      - Quick Start: nodes/running-node.md
+      - Advanced Setup and Verification: nodes/running-node-advanced.md
       - Networks: nodes/networks.md
       - Docker Compose Profiles: nodes/docker-profiles.md
       - Microservices: nodes/microservices.md

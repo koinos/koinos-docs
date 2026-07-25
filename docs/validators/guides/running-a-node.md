@@ -8,4 +8,6 @@ hide:
 
 # Running a node moved
 
-Continue to [Run an observer node](../../nodes/running-node.md).
+Continue to the [Koinos node Quick Start](../../nodes/running-node.md), then use
+[Advanced setup and verification](../../nodes/running-node-advanced.md) for a
+production installation.

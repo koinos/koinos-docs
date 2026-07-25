@@ -12,6 +12,7 @@ const docs = [
   "docs/nodes/requirements.md",
   "docs/nodes/networks.md",
   "docs/nodes/running-node.md",
+  "docs/nodes/running-node-advanced.md",
   "docs/nodes/rpc-node.md",
   "docs/nodes/block-production.md",
   "docs/nodes/configuration.md",
@@ -119,11 +120,11 @@ const requiredProcedures = [
     "docs/nodes/running-node.md",
     ["cp env.example .env", "cp -R config-example config"],
   ],
-  ["docs/nodes/running-node.md", ["docker compose config"]],
-  ["docs/nodes/running-node.md", ["RestartCount", "block_producer"]],
-  ["docs/nodes/running-node.md", ["local_age", "public_height"]],
-  ["docs/nodes/running-node.md", ["height_before", "height_after"]],
-  ["docs/nodes/running-node.md", ["p2p.get_gossip_status", "peer_lines"]],
+  ["docs/nodes/running-node-advanced.md", ["docker compose config"]],
+  ["docs/nodes/running-node-advanced.md", ["RestartCount", "block_producer"]],
+  ["docs/nodes/running-node-advanced.md", ["local_age", "public_height"]],
+  ["docs/nodes/running-node-advanced.md", ["height_before", "height_after"]],
+  ["docs/nodes/running-node-advanced.md", ["p2p.get_gossip_status", "peer_lines"]],
   ["docs/nodes/rpc-node.md", ["grpcurl", "-protoset"]],
   [
     "docs/nodes/rpc-node.md",
@@ -704,14 +705,14 @@ exit 0
           "-euo",
           "pipefail",
           "-c",
-          findBlock("docs/nodes/running-node.md", fragments),
+          findBlock("docs/nodes/running-node-advanced.md", fragments),
         ],
         { env, timeout: 30_000 }
       )
     );
   }
 
-  const restartBlock = findBlock("docs/nodes/running-node.md", [
+  const restartBlock = findBlock("docs/nodes/running-node-advanced.md", [
     "RestartCount",
     "containers_before",
     "containers_after",
@@ -744,7 +745,7 @@ exit 0
     "restart check accepted a container in a restart loop"
   );
 
-  const peerBlock = findBlock("docs/nodes/running-node.md", [
+  const peerBlock = findBlock("docs/nodes/running-node-advanced.md", [
     "p2p.get_gossip_status",
     "Connected peers:",
     "peer_lines",

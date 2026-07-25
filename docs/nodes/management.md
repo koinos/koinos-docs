@@ -13,7 +13,7 @@ pressure, and logs as operational evidence.
 ## Routine health
 
 Run the complete
-[synchronization and health procedure](running-node.md#5-verify-synchronization-and-health).
+[synchronization and health procedure](running-node-advanced.md#5-verify-synchronization-and-health).
 It fails when a required service is absent, a restart count increases, a
 container is recreated, the head is stale or does not advance, gossip is
 disabled, or no connected peer is visible.

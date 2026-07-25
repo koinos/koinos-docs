@@ -15,7 +15,7 @@ Docker Compose orchestrator and the image tags selected there. See
 
 | Purpose | Services | Public exposure | Main risk | Start here |
 | --- | --- | --- | --- | --- |
-| Standard node | Required services; optional private JSON-RPC | P2P `8888/tcp` | Disk growth and synchronization | [Run a Koinos node](running-node.md) |
+| Standard node | Required services; optional private JSON-RPC | P2P `8888/tcp` | Disk growth and synchronization | [Quick Start](running-node.md) or [advanced setup](running-node-advanced.md) |
 | Public API node | Standard node plus selected API services | HTTPS through a reverse proxy | Abuse, capacity, and incorrect port exposure | [Run a public API node](rpc-node.md) |
 | Block producer | Standard node plus `block_producer` | P2P; APIs need not be public | Hot key and irreversible PoB actions | [Block production](block-production.md) |
 
@@ -29,11 +29,12 @@ Docker Compose orchestrator and the image tags selected there. See
 
     ---
 
-    Prepare an Ubuntu LTS host, download the current official orchestrator,
-    start only the required services, and verify synchronization and P2P
-    activity.
+    Start a basic node in three steps with the current official orchestrator
+    and its default configuration. Continue separately with the production
+    setup and health checks when needed.
 
-    [:octicons-arrow-right-24: Run a Koinos node](running-node.md)
+    [:octicons-arrow-right-24: Quick Start](running-node.md) ·
+    [Advanced setup](running-node-advanced.md)
 
 -   :fontawesome-solid-file-lines:{ .lg .middle } __Requirements__
 

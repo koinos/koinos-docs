@@ -17,7 +17,7 @@ Never mix the following between networks:
 
 The `config-example/` and `env.example` files in the official
 [`koinos/koinos`](https://github.com/koinos/koinos) repository configure
-mainnet. This is the supported deployment covered by the observer guide.
+mainnet. This is the supported deployment covered by the standard node guide.
 
 Keep mainnet in its own absolute basedir, such as `/var/lib/koinos`. Confirm
 the chain ID from the running node before restoring data or performing a
@@ -57,7 +57,7 @@ Use a separate basedir and first verify whether that network is still active.
 ## Check an endpoint
 
 Query the chain ID and head directly through JSON-RPC. Replace the URL with
-`http://127.0.0.1:8080/` to check your local observer:
+`http://127.0.0.1:8080/` to check your local Koinos node:
 
 ```console
 curl --fail https://api.koinos.io/jsonrpc \

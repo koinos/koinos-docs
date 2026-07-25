@@ -33,8 +33,8 @@ Required services:
 
 ## Select the least profile
 
-- Core observer: leave `COMPOSE_PROFILES` empty.
-- Observer with private health API: `COMPOSE_PROFILES=jsonrpc`.
+- Standard node with core services only: leave `COMPOSE_PROFILES` empty.
+- Standard node with private health API: `COMPOSE_PROFILES=jsonrpc`.
 - Full API/index node: `COMPOSE_PROFILES=api`.
 - Individual APIs: use `jsonrpc`, `grpc`, or `rest`.
 - Producer: follow [Block production](block-production.md) and enable
@@ -44,7 +44,7 @@ Profiles can be set in `.env` or passed with `docker compose --profile`.
 Commands that omit `--profile` still honor `COMPOSE_PROFILES` from `.env`.
 Inspect `.env` before assuming a command starts only required services.
 
-!!! danger "`all` is not an observer shortcut"
+!!! danger "`all` is not a quick-start profile"
     `all` starts the producer service. It can initialize producer-key state and
     materially changes the threat model, even when producer configuration is
     incomplete.

@@ -1,15 +1,16 @@
 # Secure a node
 
-Security starts by deploying the fewest services required for the node's role.
-An observer needs core services; an RPC host deliberately adds `api`; only a
-producer enables `block_producer`. The `all` profile is not a safe shortcut.
+Security starts by deploying the fewest services required for the node's
+purpose. A standard node needs core services; a public API host adds `api`;
+only a producer enables `block_producer`. The `all` profile is not a safe
+shortcut.
 
-## Network exposure by role
+## Network exposure by purpose
 
-| Port | Service | Observer | Public RPC host | Producer |
+| Port | Service | Standard node | Public API host | Producer |
 | ---: | --- | --- | --- | --- |
 | `22/tcp` | SSH | restricted administration source | restricted administration source | restricted administration source |
-| `80`, `443/tcp` | reverse proxy | closed | public when needed | closed unless also an RPC host |
+| `80`, `443/tcp` | reverse proxy | closed | public when needed | closed unless also a public API host |
 | `8888/tcp` | P2P | public when accepting peers | public when accepting peers | public when accepting peers |
 | `5672/tcp` | RabbitMQ AMQP | loopback only | loopback only | loopback only |
 | `15672/tcp` | RabbitMQ management | loopback only | loopback only | loopback only |
@@ -25,7 +26,7 @@ the effective Docker bindings and reachability from another host. Follow the
 
 - Use a dedicated unprivileged Unix account for the checkout and basedir.
 - Restrict SSH by source network where possible; use keys, disable password
-  authentication after recovery access is proven, and protect privileged
+  authentication after recovery access is verified, and protect privileged
   accounts with MFA at the access layer.
 - Keep Ubuntu, Docker Engine, Compose, the reverse proxy, and monitoring agents
   patched through a tested maintenance window.
@@ -60,7 +61,7 @@ rate limiting, and certificate renewal from outside the host.
 - Record image digests after pull when your deployment process supports digest
   pinning.
 - Preserve the last known-good bundle and a rollback snapshot until health,
-  chain ID, and advancing head are proven.
+  chain ID, and advancing head are verified.
 
 ## Keys, backups, and incident readiness
 
@@ -69,9 +70,9 @@ same key. Keep producer keys only on the producer host, with owner-only
 permissions. Encrypt off-host backups, control access separately from the
 server, and test restore procedures in an isolated location.
 
-Back up these classes deliberately:
+Back up these items according to their sensitivity:
 
-- deployment bundle and reviewed local configuration;
+- selected release or commit and confirmed local configuration;
 - wallet and producer keys, encrypted and separately access-controlled;
 - P2P identity if stable peer identity matters;
 - core chain and block-store data;

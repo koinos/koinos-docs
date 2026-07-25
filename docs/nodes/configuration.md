@@ -4,10 +4,10 @@ icon: fontawesome/solid/gears
 
 # Configuration
 
-Koinos configuration is a versioned deployment bundle, not a collection of
-interchangeable files. Operate from the files supplied by the exact selected
+Koinos configuration must stay matched to the selected release or commit.
+Operate from the files supplied by that exact
 [`koinos/koinos`](https://github.com/koinos/koinos) revision instead of
-copying a replacement configuration from this documentation.
+copying replacement files from this documentation.
 
 | File | Purpose | Operator rule |
 | --- | --- | --- |
@@ -34,6 +34,41 @@ Review the complete official
 [`config-example/config.yml`](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/config-example/config.yml)
 from the same revision as the Compose file.
 
+## Find current options
+
+Use versioned sources instead of copying a large option table into the
+documentation:
+
+| Information | Current source |
+| --- | --- |
+| host paths, ports, profiles, and image tags | versioned [`env.example`](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/env.example) |
+| services, dependencies, mounts, and profile membership | versioned [`docker-compose.yml`](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/docker-compose.yml) |
+| shared and service-specific values | versioned [`config.yml`](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/config-example/config.yml) |
+| every option accepted by one service image | that selected image's `--help` output |
+
+Inspect what Compose will use without starting the node:
+
+```console
+cd /opt/koinos
+docker compose config --environment
+docker compose config --profiles
+docker compose config --services
+```
+
+On a test server, inspect the option list supplied by a selected service image:
+
+```console
+cd /opt/koinos
+docker compose run --rm --no-deps chain --help
+docker compose run --rm --no-deps p2p --help
+```
+
+`p2p.listen` and `p2p.peer` use
+[multiaddr](https://multiformats.io/multiaddr/) strings, which encode the
+protocol, address, port, and optionally peer ID in one value. Copy peer
+addresses only from the selected network configuration and validate the
+complete configuration before starting services.
+
 The most important operator settings are:
 
 | Setting | Operational meaning |
@@ -50,7 +85,7 @@ The most important operator settings are:
 REST has no section in this YAML file. Its image tag and host binding come
 from `REST_TAG`, `REST_INTERFACE`, and `REST_PORT` in `.env`.
 
-## Make one reviewed change
+## Make one confirmed change
 
 Before editing:
 
@@ -76,7 +111,7 @@ docker compose ps
 ```
 
 Re-run the health checks relevant to the changed service. Keep the preserved
-files until the change is proven healthy.
+files until the change is verified healthy.
 
 ## Dangerous and recovery-only settings
 
@@ -93,14 +128,14 @@ behavior. Review each as a separate operation.
 For every upgrade:
 
 1. record the old and proposed bundle revisions;
-2. download the proposed bundle into a separate directory;
+2. download the proposed release or commit into a separate directory;
 3. compare Compose, `.env`, config, genesis, descriptors, profiles, ports, and
    tags;
 4. preserve local configuration, peer identity, and producer keys;
-5. validate the proposed bundle with `docker compose config`;
+5. validate the proposed checkout with `docker compose config`;
 6. pull exact pinned images before downtime;
-7. stop cleanly and start the reviewed bundle;
+7. stop cleanly and start the confirmed checkout;
 8. verify chain ID, head freshness, gossip, containers, disk, and APIs;
-9. retain the previous bundle and snapshot until the update is proven healthy.
+9. retain the previous checkout and snapshot until the update is verified.
 
 For the complete sequence, see [Operations and recovery](management.md).

@@ -4,10 +4,18 @@ Koinos mainnet uses Proof-of-Burn (PoB). KOIN is irreversibly burned to obtain
 Virtual Hash Power (VHP), and a producer signing key is registered to the
 account that owns the VHP.
 
+VHP represents block-production power, similar to hash power in
+Proof-of-Work, without requiring physical mining hardware. A producer may need
+to replenish or top up VHP over time according to its production plan. Every
+additional burn is a separate irreversible on-chain decision, not a node
+startup step. Keep enough liquid KOIN and mana for block-production costs.
+See [Proof-of-Burn](../architecture/proof-of-burn.md) for the consensus
+mechanics.
+
 !!! danger "Do not start here"
-    First operate a fully synchronized observer. Confirm mainnet chain ID,
-    advancing fresh head, active peers and gossip, safe disk space, clean logs,
-    working backups, and a tested disable and rollback procedure.
+    First operate a fully synchronized standard Koinos node. Confirm mainnet
+    chain ID, advancing recent head, active peers and gossip, safe disk space,
+    clean logs, working backups, and a tested disable and rollback procedure.
 
 The current public testnet can be queried but, at the verification date, did
 not publish a complete external-operator node bundle. Do not substitute
@@ -118,14 +126,14 @@ chain before enabling the service.
 ## Configure production
 
 Edit the active `/opt/koinos/config/config.yml` from the selected official
-bundle. Under `block_producer`, set only the reviewed values:
+release or commit. Under `block_producer`, set only the confirmed values:
 
 | Setting | Required decision |
 | --- | --- |
 | `algorithm` | `pob` for mainnet |
 | `producer` | exact account that owns the VHP |
 | `private-key-file` | filename inside `BASEDIR/block_producer` |
-| `pob-production` | deliberate percentage from 1 to 100 |
+| `pob-production` | chosen percentage from 1 to 100 |
 
 Keep JSON-RPC private. In `.env`, set
 `COMPOSE_PROFILES=block_producer,jsonrpc`; do not use `all`, which also enables
@@ -138,7 +146,7 @@ cd /opt/koinos
 docker compose config
 ```
 
-Start only after the observer, key, registration, and backup gates pass:
+Start only after the standard node, key, registration, and backup checks pass:
 
 ```console
 docker compose up -d
@@ -186,7 +194,7 @@ miss as proof that the block was rejected.
 
 For each first-production or post-change check:
 
-1. record the produced block ID from the bounded producer logs;
+1. record the produced block ID from the latest producer log lines;
 2. query that block ID from the local block store;
 3. query the same block ID through an independently operated mainnet endpoint
    or explorer;
@@ -211,10 +219,11 @@ For suspected key compromise:
 2. preserve logs and transaction evidence without exposing the key;
 3. generate a replacement key on a hardened host with restrictive permissions;
 4. verify its public key through a second channel;
-5. re-register deliberately through the current PoB ABI and CLI;
+5. re-register through the current PoB ABI and CLI after confirming every
+   address and key;
 6. confirm the new association from an independent endpoint;
 7. start with the replacement key and verify a canonical block;
 8. revoke access to and securely retire old key copies.
 
 Re-registration is an on-chain authority change. Store an encrypted recovery
-generation and rehearse the operational sequence before an incident.
+copy and rehearse the operational sequence before an incident.

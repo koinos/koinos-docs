@@ -13,11 +13,12 @@ pressure, and logs as operational evidence.
 ## Routine health
 
 Run the complete
-[synchronization and health procedure](running-node.md#5-prove-synchronization-and-health).
-It fails when a required service is absent or restarted, the head is stale or
-does not advance, gossip is disabled, or no connected peer is visible.
+[synchronization and health procedure](running-node.md#5-verify-synchronization-and-health).
+It fails when a required service is absent, a restart count increases, a
+container is recreated, the head is stale or does not advance, gossip is
+disabled, or no connected peer is visible.
 
-For a quick bounded view from the official checkout:
+For a quick view from the official checkout:
 
 ```console
 cd /opt/koinos
@@ -39,7 +40,7 @@ du -sh /var/lib/koinos/*/logs 2>/dev/null
 docker info --format 'Docker logging driver: {{.LoggingDriver}}'
 ```
 
-Set a space-bounded retention policy for both the service log directories and
+Set a capped retention policy for both the service log directories and
 the active Docker logging driver. Alert before the filesystem reaches the
 documented warning threshold, when the head stops advancing, gossip disables
 unexpectedly, peers disappear, or a container repeatedly restarts.
@@ -53,7 +54,7 @@ docker compose stop
 docker compose ps
 ```
 
-Start or recreate them after a reviewed configuration change:
+Start or recreate them after a confirmed configuration change:
 
 ```console
 docker compose up -d
@@ -69,12 +70,12 @@ make that safe.
 Prepare a new release or recorded deployment commit in a separate checkout.
 Do not overwrite the running checkout before comparison.
 
-Create the proposed checkout and select the reviewed release or commit:
+Create the proposed checkout and select the release tag or commit:
 
 ```console
 sudo git clone https://github.com/koinos/koinos.git /opt/koinos-next
 sudo chown -R koinos:koinos /opt/koinos-next
-read -r -p 'Reviewed release tag or commit: ' next_revision
+read -r -p 'Selected release tag or commit: ' next_revision
 test -n "$next_revision"
 git -C /opt/koinos-next checkout "$next_revision"
 git -C /opt/koinos-next rev-parse HEAD
@@ -102,8 +103,8 @@ The first three comparisons show upstream changes. The final two show the
 current operator's local changes. Use both sets as review input; do not copy
 the old configuration blindly.
 
-Create the new active files from the proposed bundle, then use your editor to
-apply only the reviewed local values:
+Create the new active files from the proposed release or commit, then use your
+editor to apply only the confirmed local values:
 
 ```console
 cd /opt/koinos-next
@@ -115,40 +116,64 @@ docker compose config
 ```
 
 Transfer the absolute basedir, loopback bindings, profiles, credentials, peer
-settings, and producer configuration deliberately. Preserve the new genesis,
+settings, and producer configuration carefully. Preserve the new genesis,
 descriptors, RabbitMQ configuration, and required version-specific settings
-unless the reviewed upstream diff says otherwise.
+unless the confirmed upstream diff says otherwise.
 
 Before downtime:
 
 1. record current and proposed revisions, profiles, tags, and image digests;
 2. review Compose, `.env`, config, genesis, descriptors, and RabbitMQ changes;
-3. validate the proposed bundle with `docker compose config`;
+3. validate the proposed checkout with `docker compose config`;
 4. pull its exact pinned images;
 5. verify free disk space;
 6. preserve configuration, encrypted keys, P2P identity, and recoverable data;
 7. define rollback triggers and a maintenance window.
 
-Stop the current node, activate the reviewed checkout, and start it:
+The current checkout at `/opt/koinos` naturally uses the Compose project name
+`koinos`. Pass that name explicitly from both directories so the proposed
+checkout updates the same project instead of creating a second
+`koinos-next` project.
+
+Pull the selected images, stop the current services, and activate the proposed
+checkout:
 
 ```console
-cd /opt/koinos
-docker compose stop
 cd /opt/koinos-next
-docker compose config
-docker compose pull
-docker compose up -d
-docker compose ps
+docker compose --project-name koinos config
+docker compose --project-name koinos pull
+
+cd /opt/koinos
+docker compose --project-name koinos stop
+docker compose --project-name koinos ps --all
+
+cd /opt/koinos-next
+docker compose --project-name koinos up -d --remove-orphans
+docker compose --project-name koinos ps
 ```
 
 Re-run every health and protocol check. Keep the old checkout, images, and
 snapshot until the new deployment has remained healthy.
 
-Rollback is the same controlled operation in reverse: stop cleanly, reactivate
-the prior checkout and local configuration, restore the prior data only if the
-data format requires it, start, and repeat all validation.
+If a software or configuration check fails and the data format remains
+compatible, roll back to the prior checkout directly:
 
-## Choose the least destructive recovery
+```console
+cd /opt/koinos-next
+docker compose --project-name koinos stop
+
+cd /opt/koinos
+docker compose --project-name koinos config
+docker compose --project-name koinos up -d --remove-orphans
+docker compose --project-name koinos ps
+```
+
+Repeat every health and protocol check. If the selected release changes an
+on-disk format incompatibly, stop and follow that release's documented data
+rollback procedure before starting the prior version; do not improvise by
+mixing data directories.
+
+## Choose the smallest recovery action
 
 | Symptom | First action | Escalation |
 | --- | --- | --- |
@@ -180,8 +205,8 @@ Never use a global reset when only `chain`, `transaction_store`,
 `contract_meta_store`, or `account_history` needs rebuilding.
 
 The following direct procedure reindexes `chain` from the existing
-`block_store`. It is **state-destructive** and assumes the standard paths used
-throughout this guide.
+`block_store`. It replaces the active chain state and assumes the standard
+paths used throughout this guide.
 
 Stop cleanly, preserve the active configuration and chain state, and record the
 recovery directory:
@@ -253,7 +278,7 @@ docker compose up -d
 docker compose ps
 ```
 
-Keep both recovery generations until the restored node passes the full health
+Keep both chain-state copies until the restored node passes the full health
 procedure.
 
 ### Full resynchronization
@@ -265,7 +290,8 @@ descriptors, P2P identity, and keys. Start the required services against empty
 state and monitor the network, chain ID, peers, gossip, head, disk, and logs
 throughout synchronization.
 
-Stop the node, prove the intended basedir, and create a recoverable destination:
+Stop the node, verify the intended basedir, and create a recoverable
+destination:
 
 ```console
 cd /opt/koinos
@@ -294,7 +320,7 @@ do
 done
 ```
 
-Do not move `p2p`, `block_producer`, the deployment checkout, `.env`, or
+Do not move `p2p`, `block_producer`, the selected checkout, `.env`, or
 `config`. Confirm that neither the global section nor any service retains
 `reset: true`, then validate and start:
 
@@ -330,24 +356,23 @@ docker compose up -d
 docker compose ps
 ```
 
-Keep the failed and restored generations until the node passes the full health
+Keep the failed and restored data copies until the node passes the full health
 procedure.
 
 ### Restore
 
 Use the staged [public backup procedure](backup-restore.md) only when its
-network, date, layout, and trust boundary fit the recovery. It accelerates
-restoration of public chain data; it is not a source of local identity or
-authority.
+network, date, layout, and source fit the recovery. It accelerates restoration
+of public chain data; it is not a source of local identity or authority.
 
 ## Incident evidence
 
 Do not repeatedly restart a failing database. Preserve:
 
-- the exact error and relevant bounded logs;
+- the exact error and the relevant last log lines or incident time range;
 - `docker compose ps`;
 - image tags and digests;
-- deployment revision and configuration diff;
+- selected release or commit and configuration diff;
 - disk, filesystem, and kernel status;
 - the last clean shutdown and latest valid head.
 

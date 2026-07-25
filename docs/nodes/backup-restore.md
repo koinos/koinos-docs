@@ -153,7 +153,7 @@ instead of guessing new extraction paths.
 
 ## 4. Stop the node and preserve local state
 
-Before stopping, reject an unexpected target and prove that the running node
+Before stopping, reject an unexpected target and verify that the running node
 and the trusted public endpoint have the same chain ID:
 
 ```console
@@ -271,7 +271,8 @@ printf '%s\n' "$chain_section" |
 
 The command fails if the displayed `chain` section does not explicitly set
 `verify-blocks: true`. Keep the active mainnet genesis data, descriptors, peer
-identity, and image versions from your reviewed deployment bundle.
+identity, and image versions from your selected release or commit and its
+configuration files.
 
 ## 6. Start and validate
 

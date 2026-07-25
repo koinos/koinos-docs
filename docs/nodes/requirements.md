@@ -22,10 +22,10 @@ They do not predict future growth.
 
 | Role | CPU/RAM planning start | Disk planning rule | Notes |
 | --- | --- | --- | --- |
-| Core observer | 4 modern cores / 8 GB | At least `max(100 GB, 2 × current core data)` on SSD | Required services only |
-| Monitored observer | 4 modern cores / 8 GB | Core rule plus JSON-RPC logs | Adds private `jsonrpc` |
-| RPC/API node | 8 cores / 16 GB | At least `max(200 GB, 2 × measured selected-profile data)` on SSD | Historical indexes grow independently |
-| Block producer | 4–8 cores / 8–16 GB | Observer rule plus encrypted key/config backups | Prioritize reliability and key protection |
+| Standard node | 4 modern cores / 8 GB | At least `max(100 GB, 2 × current core data)` on SSD | Required services only |
+| Standard node with private health API | 4 modern cores / 8 GB | Standard-node rule plus JSON-RPC logs | Adds private `jsonrpc` |
+| Public API node | 8 cores / 16 GB | At least `max(200 GB, 2 × measured selected-profile data)` on SSD | Historical indexes grow independently |
+| Block producer | 4–8 cores / 8–16 GB | Standard-node rule plus encrypted key/config backups | Prioritize reliability and key protection |
 
 Allow additional capacity for public traffic, retained logs, filesystem
 snapshots, or optional indexes. Do not use swap as a substitute for the RAM

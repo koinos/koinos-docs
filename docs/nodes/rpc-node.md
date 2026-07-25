@@ -1,13 +1,14 @@
-# Run an RPC node
+# Run a public API node
 
-An RPC node is a healthy observer with application-facing services enabled.
-Operate those services through the official Koinos Compose project.
+A public API node is a healthy standard Koinos node with API and index
+services enabled. Operate those services through the official Koinos Compose
+project.
 
 The upstream `api` profile enables JSON-RPC, REST, gRPC, transaction store,
 contract metadata store, and account history. It does **not** require
 `block_producer`.
 
-## Architecture and trust boundary
+## Public and private interfaces
 
 Keep the Koinos API ports on loopback and expose only a hardened HTTPS reverse
 proxy:
@@ -23,7 +24,7 @@ RabbitMQ `5672` and its administration UI `15672` must remain private. P2P
 
 ## 1. Enable the API profile
 
-Start from the same official deployment checkout and basedir as the observer.
+Start from the same official checkout and basedir as the standard node.
 Preserve the existing `.env`, then edit these values:
 
 | Setting | Value |
@@ -38,7 +39,7 @@ Preserve the existing `.env`, then edit these values:
 | `AMQP_INTERFACE` | `127.0.0.1` |
 | `AMQP_ADMIN_INTERFACE` | `127.0.0.1` |
 
-Keep the image tags from the selected deployment revision. Validate and start:
+Keep the image tags from the selected release or commit. Validate and start:
 
 ```console
 cd /opt/koinos
@@ -67,8 +68,8 @@ Check REST:
 curl --fail http://127.0.0.1:3000/v1/chain/head_info
 ```
 
-Check gRPC with `grpcurl` and the descriptor set from the same deployment
-bundle:
+Check gRPC with `grpcurl` and the descriptor set from the same selected
+release or commit:
 
 ```console
 grpcurl -plaintext \
@@ -107,16 +108,34 @@ host firewall; allow P2P only when this node accepts inbound peers:
 ```console
 read -r -p 'Administrative CIDR allowed to use SSH: ' admin_cidr
 test -n "$admin_cidr"
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
 sudo ufw allow from "$admin_cidr" to any port 22 proto tcp
 sudo ufw allow 'Nginx Full'
-sudo ufw allow 8888/tcp
-sudo ufw status verbose
+read -r -p 'Allow inbound P2P on port 8888? [yes/NO]: ' allow_p2p
+if [[ "$allow_p2p" = yes ]]; then
+  sudo ufw allow 8888/tcp
+fi
+sudo ufw show added
 ```
 
-Do not enable or reload a remote firewall until a second administrative
-session from that CIDR proves that SSH recovery access remains available.
-Remove any broader pre-existing SSH rule only after that test. Ports `8080`,
-`3000`, `50051`, `5672`, and `15672` need no public firewall rule.
+Before enabling UFW, open a second SSH session from the configured
+administrative CIDR and keep the first session open. In the second session,
+verify that a new login and `sudo` command succeed. Then return to the first
+session and enable the prepared rules deliberately:
+
+```console
+read -r -p 'Type ENABLE after the second SSH session succeeds: ' confirmation
+test "$confirmation" = ENABLE
+sudo ufw --force enable
+sudo ufw status verbose
+sudo ss -lntp
+```
+
+Stop if the second SSH session cannot connect or use `sudo`. Remove any broader
+pre-existing SSH rule only after UFW is active and the restricted recovery
+path works. Ports `8080`, `3000`, `50051`, `5672`, and `15672` need no public
+firewall rule. Section 4 completes the check from a different machine.
 
 Obtain one certificate containing both DNS names through the initial Ubuntu
 nginx web root:
@@ -265,7 +284,7 @@ server {
 
 The `10r/s` rate, `burst=20`, `1m` body limit, and timeout values are
 conservative starting controls, not universal capacity recommendations.
-Load-test the intended methods and payload sizes on a staging host, monitor
+Load-test the intended methods and payload sizes on a test server, monitor
 queue and node saturation, and change them only from measured evidence.
 
 Enable and validate the site before reloading:
@@ -338,11 +357,11 @@ curl --fail --include --request OPTIONS https://rpc.example.com/ \
   -H 'Access-Control-Request-Headers: Content-Type'
 ```
 
-The response must be `204` and must return exactly the reviewed
+The response must be `204` and must return exactly the configured
 `Access-Control-Allow-Origin`, not `*`.
 
-Copy `koinos_descriptors.pb` from the same deployment bundle to the external
-test machine, then check public gRPC over TLS:
+Copy `koinos_descriptors.pb` from the same selected release or commit to the
+external test machine, then check public gRPC over TLS:
 
 ```console
 grpcurl \

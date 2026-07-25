@@ -76,8 +76,8 @@ function extractLanguageBlocks(relativePath, language) {
 
 const blocks = docs.flatMap(extractConsoleBlocks);
 assert(
-  blocks.length === 84,
-  `expected 84 reviewed console blocks, found ${blocks.length}; ` +
+  blocks.length === 90,
+  `expected 90 reviewed console blocks, found ${blocks.length}; ` +
     "classify and test any command-set change"
 );
 
@@ -117,7 +117,10 @@ const requiredProcedures = [
   ["docs/nodes/running-node.md", ["height_before", "height_after"]],
   ["docs/nodes/running-node.md", ["p2p.get_gossip_status", "peer_lines"]],
   ["docs/nodes/rpc-node.md", ["grpcurl", "-protoset"]],
-  ["docs/nodes/rpc-node.md", ["sudo ss -lntp"]],
+  [
+    "docs/nodes/rpc-node.md",
+    ["Type ENABLE", "ufw --force enable", "sudo ss -lntp"],
+  ],
   ["docs/nodes/rpc-node.md", ["for port in", "8888", "15672"]],
   ["docs/nodes/rpc-node.md", ["certbot renew --dry-run", "nginx -t"]],
   ["docs/nodes/block-production.md", ["chmod 600", "private.key"]],
@@ -127,7 +130,18 @@ const requiredProcedures = [
     ["block_store.get_blocks_by_id", "produced_block_id"],
   ],
   ["docs/nodes/configuration.md", ["diff -u", ".env.before-change"]],
-  ["docs/nodes/management.md", ["docker compose pull"]],
+  [
+    "docs/nodes/configuration.md",
+    ["docker compose config --environment", "config --profiles"],
+  ],
+  [
+    "docs/nodes/management.md",
+    ["/opt/koinos-next", "--project-name koinos pull", "--remove-orphans"],
+  ],
+  [
+    "docs/nodes/management.md",
+    ["/opt/koinos-next", "/opt/koinos", "--project-name koinos stop"],
+  ],
   ["docs/nodes/management.md", ["reindex_backup", "chain"]],
   ["docs/nodes/management.md", ["failed_reindex", "reindex_backup"]],
   ["docs/nodes/management.md", ["resync_backup", "for state_dir"]],
@@ -316,6 +330,7 @@ async function verifyPublicBackupMetadata() {
 
 function transformedFixtureCommand(command, fixture) {
   let transformed = command
+    .replaceAll("/opt/koinos-next", path.join(fixture, "project-next"))
     .replaceAll("/opt/koinos", path.join(fixture, "project"))
     .replaceAll("/var/lib/koinos", path.join(fixture, "active"))
     .replaceAll("/srv/koinos-restore", path.join(fixture, "stage"))
@@ -473,7 +488,7 @@ function verifyBackupProcedure(fixture) {
   );
 
   runFixtureBlock(
-    "documented restore target and network gates",
+    "documented restore target and network checks",
     findBlock("docs/nodes/backup-restore.md", [
       "local_chain_id",
       "mainnet_chain_id",
@@ -492,7 +507,7 @@ function verifyBackupProcedure(fixture) {
     fixture
   );
   runFixtureBlock(
-    "documented rollback target display and gates",
+    "documented rollback target display and checks",
     findBlock("docs/nodes/backup-restore.md", [
       "active data:",
       "rollback-directory.txt",
@@ -533,7 +548,7 @@ function verifyBackupProcedure(fixture) {
     stage
   );
   runFixtureBlock(
-    "documented verify-blocks configuration gate",
+    "documented verify-blocks configuration check",
     findBlock("docs/nodes/backup-restore.md", [
       "chain_section=",
       "verify-blocks:",
@@ -600,23 +615,34 @@ function verifyBackupProcedure(fixture) {
 
 function verifyHealthCommands(fixture) {
   const fakeBin = path.join(fixture, "health-fake-bin");
-  const counter = path.join(fixture, "health-counter");
+  const headCounter = path.join(fixture, "health-counter");
+  const restartCounter = path.join(fixture, "restart-counter");
   fs.mkdirSync(fakeBin, { recursive: true });
-  fs.writeFileSync(counter, "100\n");
+  fs.writeFileSync(headCounter, "100\n");
+  fs.writeFileSync(restartCounter, "5\n");
   fs.writeFileSync(
     path.join(fakeBin, "docker"),
     `#!/usr/bin/env bash
 if [[ "$1" == "compose" && "$2" == "ps" && "$*" == *"--services"* ]]; then
   printf '%s\\n' amqp chain mempool block_store p2p jsonrpc
 elif [[ "$1" == "compose" && "$2" == "ps" && "$*" == *"-q"* ]]; then
-  printf '%s\\n' fixture-amqp fixture-chain fixture-p2p
+  printf 'fixture-%s\\n' "\${!#}"
 elif [[ "$1" == "inspect" && "$3" == *"State.Status"* ]]; then
-  printf 'running\\n'
+  if [[ "$HEALTH_MODE" == "restarting" ]]; then
+    printf 'restarting\\n'
+  else
+    printf 'running\\n'
+  fi
 elif [[ "$1" == "inspect" && "$3" == *"RestartCount"* ]]; then
-  printf '0\\n'
+  cat "$FAKE_RESTART_COUNTER"
 elif [[ "$1" == "compose" && "$2" == "logs" ]]; then
+  printf 'p2p | My address:\\n'
+  printf 'p2p |  - /ip4/127.0.0.1/tcp/8888/p2p/QmOwnAddress\\n'
   printf 'p2p | Connected peers:\\n'
-  printf 'p2p |  - /ip4/127.0.0.1/tcp/8888/p2p/QmFixture\\n'
+  if [[ "$HEALTH_MODE" != "own-address-only" ]]; then
+    printf 'p2p |  - /ip4/192.0.2.10/tcp/8888/p2p/QmFixturePeer\\n'
+  fi
+  printf 'p2p | Recently gossiped:\\n'
 else
   exit 1
 fi
@@ -638,19 +664,29 @@ fi
 `,
     { mode: 0o755 }
   );
-  fs.writeFileSync(path.join(fakeBin, "sleep"), "#!/usr/bin/env bash\nexit 0\n", {
-    mode: 0o755,
-  });
+  fs.writeFileSync(
+    path.join(fakeBin, "sleep"),
+    `#!/usr/bin/env bash
+if [[ "$HEALTH_MODE" == "restart-increase" ]]; then
+  value="$(cat "$FAKE_RESTART_COUNTER")"
+  printf '%s\\n' "$((value + 1))" > "$FAKE_RESTART_COUNTER"
+fi
+exit 0
+`,
+    { mode: 0o755 }
+  );
   const env = {
     PATH: `${fakeBin}:${process.env.PATH}`,
-    FAKE_HEAD_COUNTER: counter,
+    FAKE_HEAD_COUNTER: headCounter,
+    FAKE_RESTART_COUNTER: restartCounter,
+    HEALTH_MODE: "stable",
   };
 
   for (const [name, fragments] of [
-    ["service and restart gates", ["RestartCount", "block_producer"]],
+    ["service and restart checks", ["RestartCount", "block_producer"]],
     ["head freshness calculation", ["local_age", "public_height"]],
-    ["head advancement gate", ["height_before", "height_after"]],
-    ["gossip and peer gates", ["p2p.get_gossip_status", "peer_lines"]],
+    ["head advancement check", ["height_before", "height_after"]],
+    ["gossip and peer checks", ["p2p.get_gossip_status", "peer_lines"]],
   ]) {
     expectSuccess(
       `documented ${name}`,
@@ -666,6 +702,205 @@ fi
       )
     );
   }
+
+  const restartBlock = findBlock("docs/nodes/running-node.md", [
+    "RestartCount",
+    "containers_before",
+    "containers_after",
+  ]);
+  fs.writeFileSync(restartCounter, "5\n");
+  const increasingRestart = run(
+    "bash",
+    ["-euo", "pipefail", "-c", restartBlock],
+    {
+      env: { ...env, HEALTH_MODE: "restart-increase" },
+      timeout: 30_000,
+    }
+  );
+  assert(
+    increasingRestart.status !== 0,
+    "restart check accepted an increasing restart count"
+  );
+
+  fs.writeFileSync(restartCounter, "5\n");
+  const restartingContainer = run(
+    "bash",
+    ["-euo", "pipefail", "-c", restartBlock],
+    {
+      env: { ...env, HEALTH_MODE: "restarting" },
+      timeout: 30_000,
+    }
+  );
+  assert(
+    restartingContainer.status !== 0,
+    "restart check accepted a container in a restart loop"
+  );
+
+  const peerBlock = findBlock("docs/nodes/running-node.md", [
+    "p2p.get_gossip_status",
+    "Connected peers:",
+    "peer_lines",
+  ]);
+  const ownAddressOnly = run(
+    "bash",
+    ["-euo", "pipefail", "-c", peerBlock],
+    {
+      env: { ...env, HEALTH_MODE: "own-address-only" },
+      timeout: 30_000,
+    }
+  );
+  assert(
+    ownAddressOnly.status !== 0,
+    "peer check counted the node's own My address entry as a connected peer"
+  );
+}
+
+function verifyFirewallProcedure(fixture) {
+  const firewallFixture = path.join(fixture, "firewall");
+  const fakeBin = path.join(firewallFixture, "fake-bin");
+  const logPath = path.join(firewallFixture, "commands.log");
+  fs.mkdirSync(fakeBin, { recursive: true });
+  fs.writeFileSync(
+    path.join(fakeBin, "sudo"),
+    "#!/usr/bin/env bash\nprintf '%s\\n' \"$*\" >> \"$FIREWALL_LOG\"\n",
+    { mode: 0o755 }
+  );
+
+  const command = findBlock("docs/nodes/rpc-node.md", [
+    "Type ENABLE",
+    "ufw --force enable",
+    "ufw status verbose",
+    "sudo ss -lntp",
+  ]);
+  const env = {
+    PATH: `${fakeBin}:${process.env.PATH}`,
+    FIREWALL_LOG: logPath,
+  };
+  expectSuccess(
+    "documented UFW activation after recovery SSH verification",
+    run("bash", ["-euo", "pipefail", "-c", command], {
+      env,
+      input: "ENABLE\n",
+    })
+  );
+  const log = fs.readFileSync(logPath, "utf8");
+  for (const expected of [
+    "ufw --force enable",
+    "ufw status verbose",
+    "ss -lntp",
+  ]) {
+    assert(log.includes(expected), `UFW procedure did not run ${expected}`);
+  }
+
+  const rejectedConfirmation = run(
+    "bash",
+    ["-euo", "pipefail", "-c", command],
+    { env, input: "NO\n" }
+  );
+  assert(
+    rejectedConfirmation.status !== 0,
+    "UFW procedure accepted activation without explicit confirmation"
+  );
+}
+
+function verifyUpdateRollback(fixture) {
+  const updateFixture = path.join(fixture, "update-switch");
+  const currentProject = path.join(updateFixture, "project");
+  const nextProject = path.join(updateFixture, "project-next");
+  const fakeBin = path.join(updateFixture, "fake-bin");
+  const logPath = path.join(updateFixture, "compose.log");
+  fs.mkdirSync(currentProject, { recursive: true });
+  fs.mkdirSync(nextProject, { recursive: true });
+  fs.mkdirSync(fakeBin, { recursive: true });
+  fs.writeFileSync(
+    path.join(fakeBin, "docker"),
+    "#!/usr/bin/env bash\nprintf '%s|%s\\n' \"$PWD\" \"$*\" >> \"$COMPOSE_LOG\"\n",
+    { mode: 0o755 }
+  );
+  const env = {
+    PATH: `${fakeBin}:${process.env.PATH}`,
+    COMPOSE_LOG: logPath,
+  };
+
+  const activation = findBlock("docs/nodes/management.md", [
+    "/opt/koinos-next",
+    "--project-name koinos pull",
+    "--project-name koinos stop",
+    "up -d --remove-orphans",
+  ]);
+  runFixtureBlock(
+    "documented update activation commands",
+    activation,
+    updateFixture,
+    root,
+    env
+  );
+  let lines = fs.readFileSync(logPath, "utf8").trim().split("\n");
+  assert(
+    lines.every((line) => line.includes("compose --project-name koinos")),
+    "update activation did not use the explicit Compose project name"
+  );
+  assert(
+    lines.some(
+      (line) => line.startsWith(`${nextProject}|`) && line.endsWith(" pull")
+    ),
+    "update activation did not pull from the proposed checkout"
+  );
+  assert(
+    lines.some(
+      (line) =>
+        line.startsWith(`${currentProject}|`) && line.endsWith(" stop")
+    ),
+    "update activation did not stop the current checkout"
+  );
+  assert(
+    lines.some(
+      (line) =>
+        line.startsWith(`${nextProject}|`) &&
+        line.endsWith(" up -d --remove-orphans")
+    ),
+    "update activation did not start the proposed checkout"
+  );
+
+  fs.writeFileSync(logPath, "");
+  const rollbackMatch = blocks.find(
+    (block) =>
+      block.doc === "docs/nodes/management.md" &&
+      block.command.includes("/opt/koinos-next") &&
+      block.command.includes("/opt/koinos") &&
+      block.command.includes("--project-name koinos stop") &&
+      block.command.includes("up -d --remove-orphans") &&
+      !block.command.includes("--project-name koinos pull")
+  );
+  assert(
+    Boolean(rollbackMatch),
+    "docs/nodes/management.md: missing executable update rollback block"
+  );
+  const rollback = rollbackMatch?.command ?? "";
+  runFixtureBlock(
+    "documented update rollback commands",
+    rollback,
+    updateFixture,
+    root,
+    env
+  );
+  lines = fs.readFileSync(logPath, "utf8").trim().split("\n");
+  assert(
+    lines.every((line) => line.includes("compose --project-name koinos")),
+    "update rollback did not use the explicit Compose project name"
+  );
+  assert(
+    lines[0]?.startsWith(`${nextProject}|`) && lines[0].endsWith(" stop"),
+    "update rollback did not stop the proposed checkout first"
+  );
+  assert(
+    lines.some(
+      (line) =>
+        line.startsWith(`${currentProject}|`) &&
+        line.endsWith(" up -d --remove-orphans")
+    ),
+    "update rollback did not restart the previous checkout"
+  );
 }
 
 function verifyNginxConfiguration(fixture) {
@@ -1001,10 +1236,10 @@ try {
   const baseEnv = fs.readFileSync(path.join(bundle, "env.example"), "utf8");
   const requiredCore = ["amqp", "chain", "mempool", "block_store", "p2p"];
 
-  const observer = serviceSet(bundle, baseEnv, "jsonrpc");
+  const standardNode = serviceSet(bundle, baseEnv, "jsonrpc");
   assertServices(
-    "observer profile",
-    observer,
+    "standard node profile",
+    standardNode,
     [...requiredCore, "jsonrpc"],
     ["block_producer", "rest", "grpc"]
   );
@@ -1114,6 +1349,8 @@ try {
   );
 
   verifyHealthCommands(fixture);
+  verifyFirewallProcedure(fixture);
+  verifyUpdateRollback(fixture);
   verifyNginxConfiguration(fixture);
   await verifyPublicBackupMetadata();
   verifyBackupProcedure(fixture);

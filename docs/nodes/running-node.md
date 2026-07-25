@@ -1,21 +1,55 @@
-# Run an observer node
+# Run a standard Koinos node
 
 This guide operates the official
 [`koinos/koinos`](https://github.com/koinos/koinos) Docker Compose
 deployment directly.
 
-The result is a mainnet observer with the required Koinos services and a
+The result is a standard mainnet node with the required Koinos services and a
 private JSON-RPC endpoint for health checks. It does **not** enable block
 production, REST, gRPC, or historical indexes.
 
 The commands below use:
 
-- `/opt/koinos` for the checked-out deployment bundle;
+- `/opt/koinos` for the selected release or commit and its configuration files;
 - `/var/lib/koinos` for persistent node data;
 - a dedicated Linux user that operates Docker.
 
 Choose different absolute paths before starting if those do not match your
 host, then use the same paths throughout the procedure.
+
+## Quick path for a new node
+
+After Docker is installed and the selected `koinos/koinos` release or commit
+is checked out at `/opt/koinos`, the complete first-start path is:
+
+```console
+cd /opt/koinos
+test ! -e .env
+test ! -e config
+cp env.example .env
+cp -R config-example config
+sudoedit .env
+docker compose config
+docker compose up -d
+docker compose ps
+docker compose logs --tail 50 chain p2p block_store
+```
+
+In `.env`, set `BASEDIR=/var/lib/koinos`,
+`JSONRPC_INTERFACE=127.0.0.1`, `JSONRPC_PORT=8080`, and
+`COMPOSE_PROFILES=jsonrpc`. Do not use this new-node shortcut over an existing
+`.env` or `config/`; follow the update procedure instead.
+
+When you intend to stop the node:
+
+```console
+cd /opt/koinos
+docker compose stop
+docker compose ps
+```
+
+Read the numbered procedure before the first production installation. The
+quick path does not replace the detailed synchronization and health checks.
 
 ## 1. Prepare the host
 
@@ -23,6 +57,14 @@ Review [Node requirements](requirements.md). Install Docker Engine and the
 Compose plugin using the
 [official Ubuntu instructions](https://docs.docker.com/engine/install/ubuntu/).
 Do not substitute Docker Desktop instructions on a production server.
+
+Ubuntu 22.04 LTS and 24.04 LTS are the verified production path in this guide.
+The upstream project also supports Docker Compose v2 through Docker Desktop on
+macOS and Windows. Those platforms are useful for local evaluation, but the
+Linux users, paths, firewall, service management, and recovery commands below
+do not apply to them unchanged. Follow the
+[official Docker Desktop installation](https://docs.docker.com/desktop/) and
+keep platform-specific data separate from a production node.
 
 Confirm the installed tools, time synchronization, and available disk space:
 
@@ -87,7 +129,7 @@ cp -R config-example config
 
 Open `.env` in your usual text editor and review these values:
 
-| Setting | Observer value | Reason |
+| Setting | Standard node value | Reason |
 | --- | --- | --- |
 | `BASEDIR` | `/var/lib/koinos` | persistent node data |
 | `P2P_INTERFACE` | `0.0.0.0` | accept peers when `8888/tcp` is allowed |
@@ -115,7 +157,7 @@ cd /opt/koinos
 docker compose config
 ```
 
-Start the configured observer and display its state:
+Start the configured standard node and display its state:
 
 ```console
 docker compose up -d
@@ -125,7 +167,7 @@ docker compose ps
 The expected services are `amqp`, `chain`, `mempool`, `block_store`, `p2p`,
 and `jsonrpc`. The `block_producer` container must not be present.
 
-## 5. Prove synchronization and health
+## 5. Verify synchronization and health
 
 Watch the services responsible for receiving and applying blocks:
 
@@ -133,25 +175,65 @@ Watch the services responsible for receiving and applying blocks:
 docker compose logs --tail 100 --follow chain p2p block_store
 ```
 
-In another terminal, first prove that every expected service is running, none
-has restarted, and the producer is absent:
+During the initial synchronization, these messages are expected:
+
+| Message | Meaning |
+| --- | --- |
+| `Requesting blocks ... from peer ...` | P2P is downloading historical blocks |
+| `Sync block progress - Height: ...` | Block Store is saving synchronized blocks |
+| `Sync progress - Height: ...` | Chain is replaying blocks to rebuild current state |
+| `Block applied - Height: ...` | Chain is applying blocks near the current head |
+
+The “block time remaining” displayed with `Sync progress` is the difference
+between the historical block timestamp and the current chain head. It is not a
+wall-clock completion estimate.
+
+In another terminal, verify that every expected service is running, the
+producer is absent, and no container restarts or is recreated during a
+30-second interval:
 
 ```console
+(
+set -euo pipefail
+required_services=(amqp chain mempool block_store p2p jsonrpc)
 running_services="$(docker compose ps --status running --services)"
-for service in amqp chain mempool block_store p2p jsonrpc; do
+for service in "${required_services[@]}"; do
   printf '%s\n' "$running_services" | grep -qx "$service"
 done
 ! printf '%s\n' "$running_services" | grep -qx block_producer
 
-for container_id in $(docker compose ps -q); do
-  test "$(docker inspect --format '{{.State.Status}}' "$container_id")" = running
-  test "$(docker inspect --format '{{.RestartCount}}' "$container_id")" -eq 0
-done
+snapshot_containers() {
+  for service in "${required_services[@]}"; do
+    container_id="$(docker compose ps --all -q "$service")"
+    if [[ -z "$container_id" ]]; then
+      printf 'ERROR: missing container for %s\n' "$service" >&2
+      return 1
+    fi
+    status="$(docker inspect --format '{{.State.Status}}' "$container_id")"
+    if [[ "$status" != running ]]; then
+      printf 'ERROR: %s status is %s\n' "$service" "$status" >&2
+      return 1
+    fi
+    restart_count="$(
+      docker inspect --format '{{.RestartCount}}' "$container_id"
+    )"
+    printf '%s %s %s\n' "$service" "$container_id" "$restart_count"
+  done
+}
+
+containers_before="$(snapshot_containers)"
+sleep 30
+containers_after="$(snapshot_containers)"
+printf '%s\n' "$containers_after"
+test "$containers_before" = "$containers_after"
+)
 ```
 
-No output from the `test` commands means that all gates passed. If a gate
-fails, inspect `docker compose ps` and the bounded service logs before
-continuing.
+The final lines record service, container ID, and restart count. If the command
+fails, a required service is missing, is not running, restarted, or was
+recreated during the interval. Inspect `docker compose ps --all` and the last
+100 service log lines before continuing. A historical non-zero restart count
+is acceptable when it remains stable and the service is healthy.
 
 Fetch the local and independently operated mainnet heads, calculate their ages,
 and display their heights:
@@ -191,7 +273,7 @@ proof: the local values must come from `127.0.0.1`. The small negative
 tolerance permits ordinary clock and block-timestamp skew; a larger negative
 age requires a time-synchronization investigation.
 
-Prove that the local height continues to advance:
+Verify that the local height continues to advance:
 
 ```console
 height_before="$(curl --fail --silent --show-error \
@@ -219,14 +301,19 @@ curl --fail --silent --show-error http://127.0.0.1:8080/ \
   jq -e '.result.enabled == true'
 
 peer_lines="$(docker compose logs --since 2m --no-color p2p |
-  grep -E ' - /.*/p2p/' || true)"
+  awk '
+    /Connected peers:/ { in_peers=1; next }
+    in_peers && / - \/.*\/p2p\// { print; next }
+    in_peers { in_peers=0 }
+  ')"
 test -n "$peer_lines"
 printf '%s\n' "$peer_lines"
 ```
 
 The `p2p` service emits its “Connected peers” list once per minute in the
-verified version. Wait two minutes and investigate P2P configuration,
-firewall, DNS, and seed reachability if no peer line appears.
+selected version. Only addresses after the `Connected peers` marker count; the
+node's own `My address` entry does not. Wait two minutes and investigate P2P
+configuration, firewall, DNS, and seed reachability if no peer line appears.
 
 The node is ready only when:
 

@@ -290,6 +290,7 @@ reliable end-to-end production path. Important gaps included:
 | `docs/nodes/requirements.md` | Replaced stale fixed requirements with role-based planning starts, measured disk evidence, Ubuntu/Linux scope, Docker/SSD/time/bandwidth requirements, direct host checks, and measurement-based tuning. |
 | `docs/nodes/running-node.md` | Added a focused three-step basic-node Quick Start: download the current official orchestrator, activate its default configuration, and start the required services. It explains why the `all` profile is not a basic node: it includes `block_producer`. |
 | `docs/nodes/running-node-advanced.md` | Separated the production procedure into its own page: host preparation, dedicated paths, explicit configuration, validation/start, synchronization interpretation, service/restart checks, fresh/advancing head checks, gossip and peer checks, disk checks, and clean stop/start. |
+| `docs/nodes/seed-node.md` | Added the missing public Seed Node role: stable P2P identity, public listener and multiaddr, layered firewall/NAT/DNS setup, external and real-peer verification, monitoring, rotation, and the distinction between community and official/default seeds. |
 | `docs/nodes/networks.md` | Added explicit separation of mainnet, the current public testnet, and legacy Harbinger. Documented the lack of a verified external-operator bundle for the current testnet and added direct chain-ID/head checks. |
 | `docs/nodes/docker-profiles.md` | Documented required services and each verified optional profile. Replaced `all` as a quick start with least-profile guidance and explicit service inspection. |
 | `docs/nodes/microservices.md` | Added an operator-oriented service matrix covering purpose, required/optional status, profiles, and default host bindings. Linked deeper behavior to Architecture. |
@@ -811,6 +812,7 @@ docs/nodes/requirements.md
 docs/nodes/rpc-node.md
 docs/nodes/running-node.md
 docs/nodes/running-node-advanced.md
+docs/nodes/seed-node.md
 docs/nodes/security.md
 docs/validators/configuration.md
 docs/validators/docker-compose-profiles.md

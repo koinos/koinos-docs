@@ -18,6 +18,10 @@ It fails when a required service is absent, a restart count increases, a
 container is recreated, the head is stale or does not advance, gossip is
 disabled, or no connected peer is visible.
 
+For a [public Seed Node](seed-node.md), also monitor external P2P reachability,
+DNS stability, inbound peer activity, and continuity of the advertised Peer
+ID.
+
 For a quick view from the official checkout:
 
 ```console

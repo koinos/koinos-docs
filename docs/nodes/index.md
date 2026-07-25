@@ -16,6 +16,7 @@ Docker Compose orchestrator and the image tags selected there. See
 | Purpose | Services | Public exposure | Main risk | Start here |
 | --- | --- | --- | --- | --- |
 | Standard node | Required services; optional private JSON-RPC | P2P `8888/tcp` | Disk growth and synchronization | [Quick Start](running-node.md) or [advanced setup](running-node-advanced.md) |
+| Public Seed Node | Standard node with stable P2P identity and published multiaddr | Stable inbound P2P, normally `8888/tcp` | Availability, identity continuity, and public peer load | [Run a Seed Node](seed-node.md) |
 | Public API node | Standard node plus selected API services | HTTPS through a reverse proxy | Abuse, capacity, and incorrect port exposure | [Run a public API node](rpc-node.md) |
 | Block producer | Standard node plus `block_producer` | P2P; APIs need not be public | Hot key and irreversible PoB actions | [Block production](block-production.md) |
 
@@ -53,6 +54,15 @@ Docker Compose orchestrator and the image tags selected there. See
     identities, keys, and chain IDs separate.
 
     [:octicons-arrow-right-24: Choose a network](networks.md)
+
+-   :fontawesome-solid-share-nodes:{ .lg .middle } __Public Seed Node__
+
+    ---
+
+    Provide a stable public P2P entry point with a protected identity, public
+    multiaddr, external reachability checks, and continuous monitoring.
+
+    [:octicons-arrow-right-24: Run a Seed Node](seed-node.md)
 
 -   :fontawesome-solid-tower-broadcast:{ .lg .middle } __Public API node__
 

@@ -22,6 +22,11 @@ Docker-published ports can bypass assumptions about host firewalls. Verify both
 the effective Docker bindings and reachability from another host. Follow the
 [two-location exposure check](rpc-node.md#4-verify-exposure-from-two-locations).
 
+A [public Seed Node](seed-node.md) deliberately exposes P2P while keeping API
+and RabbitMQ ports private. Its stable P2P seed secret requires owner-only
+storage, encrypted backup, and incident planning, but it must remain separate
+from wallet and producer keys.
+
 ## Host and account controls
 
 - Use a dedicated unprivileged Unix account for the checkout and basedir.

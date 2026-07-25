@@ -13,6 +13,7 @@ const docs = [
   "docs/nodes/networks.md",
   "docs/nodes/running-node.md",
   "docs/nodes/running-node-advanced.md",
+  "docs/nodes/seed-node.md",
   "docs/nodes/rpc-node.md",
   "docs/nodes/block-production.md",
   "docs/nodes/configuration.md",
@@ -77,8 +78,8 @@ function extractLanguageBlocks(relativePath, language) {
 
 const blocks = docs.flatMap(extractConsoleBlocks);
 assert(
-  blocks.length === 92,
-  `expected 92 reviewed console blocks, found ${blocks.length}; ` +
+  blocks.length === 102,
+  `expected 102 reviewed console blocks, found ${blocks.length}; ` +
     "classify and test any command-set change"
 );
 
@@ -125,6 +126,39 @@ const requiredProcedures = [
   ["docs/nodes/running-node-advanced.md", ["local_age", "public_height"]],
   ["docs/nodes/running-node-advanced.md", ["height_before", "height_after"]],
   ["docs/nodes/running-node-advanced.md", ["p2p.get_gossip_status", "peer_lines"]],
+  [
+    "docs/nodes/seed-node.md",
+    ["openssl rand -hex 32", "stat -c '%a'"],
+  ],
+  [
+    "docs/nodes/seed-node.md",
+    ["REPLACE_IN_EDITOR_FROM_SECURE_FILE", "force-recreate p2p"],
+  ],
+  ["docs/nodes/seed-node.md", ["p2p_listener=", "ss -lntp"]],
+  [
+    "docs/nodes/seed-node.md",
+    ["Type ENABLE", "ufw allow 8888/tcp", "ufw --force enable"],
+  ],
+  [
+    "docs/nodes/seed-node.md",
+    ["public_multiaddr=", "refusing wildcard multiaddr", "My address:"],
+  ],
+  [
+    "docs/nodes/seed-node.md",
+    ["address_count_before=", "restart p2p", "peer_id_after="],
+  ],
+  [
+    "docs/nodes/seed-node.md",
+    ["private_port", "nc -z -w 5", "unexpected public port"],
+  ],
+  [
+    "docs/nodes/seed-node.md",
+    ["TARGET_PEER_ID", "Connected peers:", "grep -F"],
+  ],
+  [
+    "docs/nodes/seed-node.md",
+    ["config --services", "force-recreate p2p"],
+  ],
   ["docs/nodes/rpc-node.md", ["grpcurl", "-protoset"]],
   [
     "docs/nodes/rpc-node.md",
@@ -764,6 +798,360 @@ exit 0
   );
 }
 
+function verifySeedNodeCommands(fixture) {
+  const seedFixture = path.join(fixture, "seed-node");
+  const project = path.join(seedFixture, "project");
+  const fakeBin = path.join(seedFixture, "fake-bin");
+  const commandLog = path.join(seedFixture, "commands.log");
+  const restartState = path.join(seedFixture, "restarted");
+  fs.mkdirSync(path.join(project, "config"), { recursive: true });
+  fs.mkdirSync(fakeBin, { recursive: true });
+  fs.writeFileSync(
+    path.join(project, "config/config.yml"),
+    "p2p:\n  listen: /ip4/0.0.0.0/tcp/8888\n  seed: fixture-secret\n",
+    { mode: 0o600 }
+  );
+  fs.writeFileSync(commandLog, "");
+
+  fs.writeFileSync(
+    path.join(fakeBin, "stat"),
+    `#!/usr/bin/env bash
+target="\${!#}"
+if [[ "$(uname -s)" == Darwin ]]; then
+  /usr/bin/stat -f '%Lp' "$target"
+else
+  /usr/bin/stat -c '%a' "$target"
+fi
+`,
+    { mode: 0o755 }
+  );
+  fs.writeFileSync(
+    path.join(fakeBin, "docker"),
+    `#!/usr/bin/env bash
+if [[ "$1" == compose && "$2" == logs ]]; then
+  printf 'p2p | My address:\n'
+  printf 'p2p |  - /ip4/0.0.0.0/tcp/8888/p2p/QmStableSeed\n'
+  printf 'p2p | Connected peers:\n'
+  if [[ "$SEED_PEER_MODE" != missing ]]; then
+    printf 'p2p |  - /ip4/192.0.2.20/tcp/8888/p2p/QmStableSeed\n'
+  fi
+  printf 'p2p | Recently gossiped:\n'
+  if [[ -f "$SEED_RESTART_STATE" ]]; then
+    printf 'p2p | My address:\n'
+    if [[ "$SEED_IDENTITY_MODE" == changing ]]; then
+      printf 'p2p |  - /ip4/0.0.0.0/tcp/8888/p2p/QmChangedSeed\n'
+    else
+      printf 'p2p |  - /ip4/0.0.0.0/tcp/8888/p2p/QmStableSeed\n'
+    fi
+    printf 'p2p | Connected peers:\n'
+    printf 'p2p |  - /ip4/192.0.2.20/tcp/8888/p2p/QmStableSeed\n'
+  fi
+elif [[ "$1" == compose && "$2" == config && "$3" == --services ]]; then
+  printf 'p2p\n'
+elif [[ "$1" == compose && "$2" == restart && "$3" == p2p ]]; then
+  : > "$SEED_RESTART_STATE"
+else
+  printf '%s\n' "$*" >> "$SEED_COMMAND_LOG"
+fi
+`,
+    { mode: 0o755 }
+  );
+  fs.writeFileSync(
+    path.join(fakeBin, "sudo"),
+    `#!/usr/bin/env bash
+printf '%s\n' "$*" >> "$SEED_COMMAND_LOG"
+if [[ "$1" == ss && "$SEED_LISTENER_MODE" != missing ]]; then
+  printf 'LISTEN 0 4096 0.0.0.0:8888 0.0.0.0:* users:(("docker-proxy"))\n'
+fi
+`,
+    { mode: 0o755 }
+  );
+  fs.writeFileSync(
+    path.join(fakeBin, "ss"),
+    `#!/usr/bin/env bash
+if [[ "$SEED_LISTENER_MODE" != missing ]]; then
+  printf 'LISTEN 0 4096 0.0.0.0:8888 0.0.0.0:* users:(("docker-proxy"))\n'
+fi
+`,
+    { mode: 0o755 }
+  );
+  fs.writeFileSync(
+    path.join(fakeBin, "getent"),
+    "#!/usr/bin/env bash\nprintf '192.0.2.10 STREAM %s\\n' \"${!#}\"\n",
+    { mode: 0o755 }
+  );
+  fs.writeFileSync(
+    path.join(fakeBin, "nc"),
+    `#!/usr/bin/env bash
+port="\${!#}"
+if [[ "$port" == 8888 ]]; then
+  exit 0
+fi
+if [[ "$SEED_EXPOSURE_MODE" == api-open && "$port" == 8080 ]]; then
+  exit 0
+fi
+exit 1
+`,
+    { mode: 0o755 }
+  );
+  fs.writeFileSync(path.join(fakeBin, "sleep"), "#!/usr/bin/env bash\nexit 0\n", {
+    mode: 0o755,
+  });
+
+  const baseEnv = {
+    PATH: `${fakeBin}:${process.env.PATH}`,
+    SEED_COMMAND_LOG: commandLog,
+    SEED_RESTART_STATE: restartState,
+    SEED_IDENTITY_MODE: "stable",
+    SEED_LISTENER_MODE: "present",
+    SEED_PEER_MODE: "present",
+    SEED_EXPOSURE_MODE: "private",
+  };
+
+  runFixtureBlock(
+    "documented Seed Node secret generation and permissions",
+    findBlock("docs/nodes/seed-node.md", [
+      "openssl rand -hex 32",
+      "stat -c '%a'",
+    ]),
+    seedFixture,
+    root,
+    baseEnv
+  );
+  const secretPath = path.join(seedFixture, "active/secrets/p2p-seed");
+  assert(
+    /^[0-9a-f]{64}\n$/.test(fs.readFileSync(secretPath, "utf8")),
+    "Seed Node procedure did not generate a 32-byte hex secret"
+  );
+  assert(
+    (fs.statSync(secretPath).mode & 0o777) === 0o600,
+    "Seed Node secret file mode is not 600"
+  );
+  assert(
+    (fs.statSync(path.join(project, "config/config.yml")).mode & 0o777) ===
+      0o600,
+    "Seed Node config file mode is not 600"
+  );
+
+  const identityConfig = findBlock("docs/nodes/seed-node.md", [
+    "REPLACE_IN_EDITOR_FROM_SECURE_FILE",
+    "force-recreate p2p",
+  ]);
+  runFixtureBlock(
+    "documented Seed Node identity configuration",
+    identityConfig,
+    seedFixture,
+    root,
+    baseEnv
+  );
+  fs.writeFileSync(
+    path.join(project, "config/config.yml"),
+    "p2p:\n  seed: REPLACE_IN_EDITOR_FROM_SECURE_FILE\n",
+    { mode: 0o600 }
+  );
+  const placeholderResult = run(
+    "bash",
+    ["-euo", "pipefail", "-c", transformedFixtureCommand(identityConfig, seedFixture)],
+    { env: baseEnv }
+  );
+  assert(
+    placeholderResult.status !== 0,
+    "Seed Node procedure accepted the identity placeholder as a secret"
+  );
+  fs.writeFileSync(
+    path.join(project, "config/config.yml"),
+    "p2p:\n  listen: /ip4/0.0.0.0/tcp/8888\n  seed: fixture-secret\n",
+    { mode: 0o600 }
+  );
+
+  runFixtureBlock(
+    "documented Seed Node public listener check",
+    findBlock("docs/nodes/seed-node.md", ["p2p_listener=", "ss -lntp"]),
+    seedFixture,
+    root,
+    baseEnv
+  );
+  const missingListener = run(
+    "bash",
+    [
+      "-euo",
+      "pipefail",
+      "-c",
+      transformedFixtureCommand(
+        findBlock("docs/nodes/seed-node.md", ["p2p_listener=", "ss -lntp"]),
+        seedFixture
+      ),
+    ],
+    { env: { ...baseEnv, SEED_LISTENER_MODE: "missing" } }
+  );
+  assert(
+    missingListener.status !== 0,
+    "Seed Node listener check accepted a missing public listener"
+  );
+
+  const firewall = findBlock("docs/nodes/seed-node.md", [
+    "Type ENABLE",
+    "ufw allow 8888/tcp",
+    "ufw --force enable",
+  ]);
+  expectSuccess(
+    "documented Seed Node firewall activation",
+    run("bash", ["-euo", "pipefail", "-c", firewall], {
+      env: baseEnv,
+      input: "ENABLE\n",
+    })
+  );
+  const rejectedFirewall = run(
+    "bash",
+    ["-euo", "pipefail", "-c", firewall],
+    { env: baseEnv, input: "NO\n" }
+  );
+  assert(
+    rejectedFirewall.status !== 0,
+    "Seed Node firewall procedure accepted activation without confirmation"
+  );
+
+  const multiaddr = findBlock("docs/nodes/seed-node.md", [
+    "public_multiaddr=",
+    "refusing wildcard multiaddr",
+    "My address:",
+  ]);
+  const dnsMultiaddr = expectSuccess(
+    "documented DNS Seed Node multiaddr",
+    run("bash", ["-euo", "pipefail", "-c", multiaddr], {
+      env: { ...baseEnv, SEED_HOST: "seed.example.com" },
+    })
+  );
+  assert(
+    dnsMultiaddr.stdout.includes(
+      "/dns4/seed.example.com/tcp/8888/p2p/QmStableSeed"
+    ),
+    "Seed Node procedure did not construct the expected DNS multiaddr"
+  );
+  const ipMultiaddr = expectSuccess(
+    "documented IPv4 Seed Node multiaddr",
+    run("bash", ["-euo", "pipefail", "-c", multiaddr], {
+      env: { ...baseEnv, SEED_HOST: "192.0.2.10" },
+    })
+  );
+  assert(
+    ipMultiaddr.stdout.includes(
+      "/ip4/192.0.2.10/tcp/8888/p2p/QmStableSeed"
+    ),
+    "Seed Node procedure did not construct the expected IPv4 multiaddr"
+  );
+  const wildcardMultiaddr = run(
+    "bash",
+    ["-euo", "pipefail", "-c", multiaddr],
+    { env: { ...baseEnv, SEED_HOST: "0.0.0.0" } }
+  );
+  assert(
+    wildcardMultiaddr.status !== 0,
+    "Seed Node procedure accepted 0.0.0.0 as a public multiaddr"
+  );
+
+  const stableIdentity = findBlock("docs/nodes/seed-node.md", [
+    "address_count_before=",
+    "restart p2p",
+    "peer_id_after=",
+  ]);
+  if (fs.existsSync(restartState)) fs.rmSync(restartState);
+  expectSuccess(
+    "documented stable Seed Node identity check",
+    run(
+      "bash",
+      [
+        "-euo",
+        "pipefail",
+        "-c",
+        transformedFixtureCommand(stableIdentity, seedFixture),
+      ],
+      { cwd: project, env: baseEnv }
+    )
+  );
+  if (fs.existsSync(restartState)) fs.rmSync(restartState);
+  const changedIdentity = run(
+    "bash",
+    [
+      "-euo",
+      "pipefail",
+      "-c",
+      transformedFixtureCommand(stableIdentity, seedFixture),
+    ],
+    {
+      cwd: project,
+      env: { ...baseEnv, SEED_IDENTITY_MODE: "changing" },
+    }
+  );
+  assert(
+    changedIdentity.status !== 0,
+    "Seed Node identity check accepted a changed Peer ID"
+  );
+
+  const exposure = findBlock("docs/nodes/seed-node.md", [
+    "private_port",
+    "nc -z -w 5",
+    "unexpected public port",
+  ]);
+  expectSuccess(
+    "documented Seed Node external exposure check",
+    run("bash", ["-euo", "pipefail", "-c", exposure], {
+      env: { ...baseEnv, SEED_HOST: "seed.example.com" },
+    })
+  );
+  const exposedApi = run(
+    "bash",
+    ["-euo", "pipefail", "-c", exposure],
+    {
+      env: {
+        ...baseEnv,
+        SEED_HOST: "seed.example.com",
+        SEED_EXPOSURE_MODE: "api-open",
+      },
+    }
+  );
+  assert(
+    exposedApi.status !== 0,
+    "Seed Node exposure check accepted a public container API port"
+  );
+
+  const connectedPeer = findBlock("docs/nodes/seed-node.md", [
+    "TARGET_PEER_ID",
+    "Connected peers:",
+    "grep -F",
+  ]);
+  expectSuccess(
+    "documented real Seed Node peer check",
+    run("bash", ["-euo", "pipefail", "-c", connectedPeer], {
+      cwd: project,
+      env: { ...baseEnv, TARGET_PEER_ID: "QmStableSeed" },
+    })
+  );
+  const missingPeer = run(
+    "bash",
+    ["-euo", "pipefail", "-c", connectedPeer],
+    {
+      cwd: project,
+      env: { ...baseEnv, TARGET_PEER_ID: "QmMissingSeed" },
+    }
+  );
+  assert(
+    missingPeer.status !== 0,
+    "Seed Node peer check accepted a missing target Peer ID"
+  );
+
+  runFixtureBlock(
+    "documented second-node P2P activation",
+    findBlock("docs/nodes/seed-node.md", [
+      "config --services",
+      "force-recreate p2p",
+    ]),
+    seedFixture,
+    root,
+    baseEnv
+  );
+}
+
 function verifyFirewallProcedure(fixture) {
   const firewallFixture = path.join(fixture, "firewall");
   const fakeBin = path.join(firewallFixture, "fake-bin");
@@ -1243,6 +1631,29 @@ try {
   fs.mkdirSync(bundle, { recursive: true });
   await downloadOfficialBundle(bundle);
   const baseEnv = fs.readFileSync(path.join(bundle, "env.example"), "utf8");
+  const officialConfig = fs.readFileSync(
+    path.join(bundle, "config-example/config.yml"),
+    "utf8"
+  );
+  assert(
+    officialConfig.includes("listen: /ip4/0.0.0.0/tcp/8888") &&
+      officialConfig.includes("peer:") &&
+      officialConfig.includes("seed: MY_SECRET_SEED_PHRASE") &&
+      officialConfig.includes("seed.koinosfoundation.org"),
+    "official Koinos configuration no longer matches documented Seed Node inputs"
+  );
+  const p2pSource = (
+    await fetchBytes(
+      "https://raw.githubusercontent.com/koinos/koinos-p2p/master/" +
+        "internal/node/node.go"
+    )
+  ).toString("utf8");
+  assert(
+    p2pSource.includes('if seed == ""') &&
+      p2pSource.includes("util.GenerateBase58ID(8)") &&
+      p2pSource.includes("seedStringToInt64(seed)"),
+    "current Koinos P2P identity generation no longer matches the Seed Node guide"
+  );
   const requiredCore = ["amqp", "chain", "mempool", "block_store", "p2p"];
 
   const standardNode = serviceSet(bundle, baseEnv, "jsonrpc");
@@ -1358,6 +1769,7 @@ try {
   );
 
   verifyHealthCommands(fixture);
+  verifySeedNodeCommands(fixture);
   verifyFirewallProcedure(fixture);
   verifyUpdateRollback(fixture);
   verifyNginxConfiguration(fixture);
@@ -1381,7 +1793,7 @@ if (failures.length) {
 } else {
   console.log(
     `Verified ${blocks.length} documented operator command blocks with ` +
-      `${assertions} syntax, upstream, profile, health, proxy, live-protocol, ` +
+      `${assertions} syntax, upstream, profile, seed, health, proxy, live-protocol, ` +
       `backup, recovery, producer, and permission assertions.`
   );
 }

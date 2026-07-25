@@ -23,6 +23,10 @@ Keep mainnet in its own absolute basedir, such as `/var/lib/koinos`. Confirm
 the chain ID from the running node before restoring data or performing a
 signed operation.
 
+Operators who want to provide a stable bootstrap peer can follow the
+[public Seed Node](seed-node.md) procedure. The current canonical mainnet
+configuration remains the source of truth for default seed peers.
+
 ## Current public testnet
 
 The current Koinos Foundation public testnet provides:

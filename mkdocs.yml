@@ -204,6 +204,7 @@ nav:
       - Requirements: nodes/requirements.md
       - Quick Start: nodes/running-node.md
       - Advanced Setup and Verification: nodes/running-node-advanced.md
+      - Run a Public Seed Node: nodes/seed-node.md
       - Networks: nodes/networks.md
       - Docker Compose Profiles: nodes/docker-profiles.md
       - Microservices: nodes/microservices.md

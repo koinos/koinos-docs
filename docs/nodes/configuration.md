@@ -67,6 +67,10 @@ protocol, address, port, and optionally peer ID in one value. Copy peer
 addresses only from the selected network configuration and validate the
 complete configuration before starting services.
 
+An advertised [public Seed Node](seed-node.md) also needs a stable P2P identity
+and a publishable DNS or IPv4 multiaddr. Its secret `p2p.seed` value must not be
+committed or included in copied configuration output.
+
 The most important operator settings are:
 
 | Setting | Operational meaning |

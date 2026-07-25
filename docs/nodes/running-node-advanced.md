@@ -322,6 +322,7 @@ configuration change.
 
 Next:
 
+- [Run a public Seed Node](seed-node.md)
 - [Networks](networks.md)
 - [Docker Compose profiles](docker-profiles.md)
 - [Security](security.md)

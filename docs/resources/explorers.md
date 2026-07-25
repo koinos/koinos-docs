@@ -7,7 +7,7 @@ network or report operational status.
 Inclusion here is not an endorsement or audit. Verify important transaction and
 account information through more than one source when possible.
 
-## Mainnet explorer
+## Mainnet explorers
 
 ### Koinosblocks
 
@@ -20,6 +20,19 @@ accounts, contracts, and names.
 - **Verified network:** Koinos mainnet.
 - **API:** no current maintained public API documentation was verified, so the
   explorer is listed only as a web interface.
+
+### Koinscan
+
+[Koinscan](https://www.koinscan.com/) is a third-party mainnet explorer
+operated by Armana. It supports searches for blocks, transactions, accounts,
+contracts, and tokens, and includes a network view for block-production data.
+
+- **Ownership:** third-party.
+- **Source:** no public source repository was verified.
+- **Verified network:** Koinos mainnet.
+- **API:** no current public API documentation was verified.
+- **Status:** the site identifies itself as an early beta, so independently
+  verify information used for an operational or financial decision.
 
 ## Current public testnet
 

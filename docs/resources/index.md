@@ -43,8 +43,8 @@ Looking for the blockchain's Resource Credits and Mana model instead? See
 
     ---
 
-    Browse verified third-party exchange, bridge, and block-production-pool
-    applications.
+    Browse verified exchange, bridge, community, block-production-pool, and
+    node-software projects.
 
     [:octicons-arrow-right-24: Browse applications](ecosystem-platforms.md)
 

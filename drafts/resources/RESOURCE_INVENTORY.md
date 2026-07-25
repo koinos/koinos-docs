@@ -36,7 +36,7 @@
 | Koinosblocks | Block explorer | Engrave | Community-maintained | [koinosblocks.com](https://koinosblocks.com/) | [GitLab](https://gitlab.com/engrave/koinos/koinosblocks) | Live head height compared with an official mainnet API on 2026-07-25 | Mainnet verified | Include | No current-public-testnet compatibility or maintained public API documentation verified |
 | Koiner | Explorer/analytics candidate | Not verified | Third-party | `https://koiner.app/` | Not verified | DNS resolution failed on 2026-07-25 | Not verified | Exclude | Site unreachable; features and ownership could not be verified |
 | KoinosScan | Block explorer candidate | KoinosScan project | Third-party | [koinosscan.com](https://koinosscan.com/) | Not verified | Displayed head was materially behind the official mainnet head on 2026-07-25 | Mainnet, but stale at verification | Exclude | Not sufficiently synchronized for a current directory entry |
-| Koinscan | Explorer/analytics candidate | Not independently verified | Third-party | `https://koinscan.io/` | Not verified | DNS resolution failed during the browser review on 2026-07-25 | Not verified | Exclude | Site and current ownership could not be verified |
+| Koinscan | Block explorer and network dashboard | Armana | Third-party | [koinscan.com](https://www.koinscan.com/) | Not verified | Live site build `v0.1.0` (`e1b4fbe`); displayed head was within three blocks of the official mainnet API during review | Mainnet verified | Include | Site identifies itself as early beta; no current-public-testnet compatibility, public source repository, or public API documentation verified |
 | Koinos public testnet repository | Network status and configuration | Koinos Group | Official | [koinos/koinos-testnet](https://github.com/koinos/koinos-testnet) | [koinos/koinos-testnet](https://github.com/koinos/koinos-testnet) | Commit [`0c37959`](https://github.com/koinos/koinos-testnet/commit/0c37959074d1d66bfafb90f44d5a6c5c5c1c5a50) and release [`v0.1.0-public-testnet`](https://github.com/koinos/koinos-testnet/releases/tag/v0.1.0-public-testnet) | Current public testnet | Include as network source | Not a graphical explorer |
 
 ## Ecosystem application and service candidates
@@ -44,11 +44,14 @@
 | Resource | Category | Maintainer | Ownership | Canonical URL | Repository | Version evidence | Supported network | Status | Limitations |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | KoinDX | Decentralized exchange application | KoinDX | Third-party | [koindx.com](https://koindx.com/) | [KoinDX GitHub](https://github.com/koindx) | Live application and project links checked 2026-07-25 | Mainnet verified through the live application | Include | No claims about liquidity, pricing, returns, or contract security |
-| Kollection | NFT marketplace candidate | Kollection | Third-party | `https://kollection.app/` | Not verified | Initial browser review rendered the application, but both the final bounded URL audit and a fresh browser check failed DNS resolution | Not verified at final review | Exclude | The canonical site was not consistently reachable at delivery time |
+| Kollection | NFT marketplace source candidate | Kollection | Third-party | [GitHub organization](https://github.com/kollection-nft) | [Marketplace repository](https://github.com/kollection-nft/marketplace) | GitHub organization and source remain available; `kollection.app` failed DNS during final review | No live network compatibility verified | Exclude from live application directory | Source is available, but no consistently reachable current application was verified |
 | Koinos Account Protocol (KAP) | Account naming candidate | Top Level Accounts | Third-party | `https://kap.domains/` | Not verified | Domain redirected to an expired-domain service during the final URL audit | Not verified | Exclude | No current canonical application destination remained available |
 | Vortex Bridge | Cross-chain bridge | Vortex | Third-party | [vortexbridge.io](https://vortexbridge.io/) | Not verified | Live bridge interface checked 2026-07-25 | Networks shown by the live application; users must recheck before use | Include | Bridge use has third-party and cross-chain risks; no security assessment performed |
 | Fogata | Block-production pool interface | Fogata / Julián González | Third-party | [fogata.io](https://fogata.io/) | [joticajulian/fogata](https://github.com/joticajulian/fogata) | Live pool interface checked 2026-07-25 | Mainnet entry only | Include | No reward, availability, or performance claims |
 | BurnKoin | Block-production pool interface | Luke Willis / BurnKoin project | Third-party | [burnkoin.com](https://burnkoin.com/) | [Pool contracts](https://github.com/lukemwillis/koinos-burn-pool) and [web interface](https://github.com/lukemwillis/koinos-burn-pool-ui) | Live pool interface and project links checked 2026-07-25 | Mainnet entry only | Include | Linked repositories are older than the live site; no reward, availability, or performance claims |
+| Koin Krew | Community application portal | Koin Krew project | Third-party | [koincrew.com](https://koincrew.com/) | Not verified | Live site and [application portal](https://app.koincrew.com/) checked 2026-07-25 | Koinos mainnet interface verified from current token, contract, and application destinations | Include | Wallet-connected token, NFT, airdrop, and ownership-verification features; no source repository or contract assessment verified |
+| Koinos One | Desktop node-management application | Community contributors led by Pablo García | Community-maintained; repository hosted by `koinos` | [Repository](https://github.com/koinos/koinos-one) | [koinos/koinos-one](https://github.com/koinos/koinos-one) | Release [`v1.1.1`](https://github.com/koinos/koinos-one/releases/tag/v1.1.1); commit [`1e84415`](https://github.com/koinos/koinos-one/commit/1e844159973765615f72bd35c6c546f739322c66) | Koinos mainnet capability documented; selected network must be verified | Include | Community-driven experimental macOS-first application; official reference node remains the microservice implementation |
+| Teleno | Monolithic native Koinos-compatible node | Community contributors led by Pablo García | Community-maintained; repository hosted by `koinos` | [Repository](https://github.com/koinos/teleno) | [koinos/teleno](https://github.com/koinos/teleno) | Release [`teleno-node-v1.1.0`](https://github.com/koinos/teleno/releases/tag/teleno-node-v1.1.0); commit [`787d7cf`](https://github.com/koinos/teleno/commit/787d7cf37e5d2134ebc72faf944381a6aa4462a3) | Koinos mainnet compatibility documented; selected network must be verified | Include | Experimental single-binary alternative; official reference node remains the microservice implementation |
 | KoinCity | Application/platform candidate | Not verified | Third-party | `https://koincity.com/` | Not verified | DNS resolution failed during browser review on 2026-07-25 | Not verified | Exclude | Current application and purpose could not be verified |
 | Krypto Bulls | Game candidate | Krypto Bulls | Third-party | [kryptobulls.io](https://kryptobulls.io/) | Not verified | Site displayed “Coming Soon” on 2026-07-25 | Not verified | Exclude | No live application verified |
 | Koinos Garden | Investment/community candidate | Koinos Garden | Third-party | [koinosgarden.com](https://koinosgarden.com/) | Not verified | Discovery source reviewed 2026-07-25 | Not applicable | Exclude | Outside the narrow application-directory scope and would require financial context |
@@ -99,12 +102,18 @@ The reviewed immutable revision is commit
 
 - Public wallet entries: Kondor and Tangem. Koinos CLI is a developer-tool
   cross-reference.
-- Public explorer entry: Koinosblocks for mainnet. The official current-public-
-  testnet repository is linked as the network authority because no current
-  public-testnet explorer was verified.
-- Public ecosystem entries: KoinDX, Vortex Bridge, Fogata, and BurnKoin.
+- Public explorer entries: Koinosblocks and Koinscan for mainnet. The official
+  current-public-testnet repository is linked as the network authority because
+  no current public-testnet explorer was verified.
+- Public ecosystem entries: KoinDX, Vortex Bridge, Koin Krew, Fogata, BurnKoin,
+  Koinos One, and Teleno.
 - Public developer entries: Koilib, the AssemblyScript SDK and CLI, the C++ SDK,
   Koinos CLI, local testnet, Mock VM, and protocol definitions.
 - A resource may be reconsidered after its maintainer supplies a canonical URL,
   ownership information, supported-network evidence, and a reproducible current
   verification path.
+- Website PR
+  [koinos/koinos-io-website#142](https://github.com/koinos/koinos-io-website/pull/142)
+  was used as a discovery source for Koinscan, Koin Krew, Koinos One, Teleno,
+  and the updated Kollection destination. Each candidate was independently
+  checked; the website list was not treated as verification by itself.

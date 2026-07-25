@@ -1,8 +1,8 @@
 # Ecosystem applications and services
 
-This page lists live applications and services whose purpose and canonical
-destination were verified. Every entry below is third-party: it is operated
-independently of the Koinos project.
+This page lists live applications, services, and node software whose purpose
+and canonical destination were verified. Each entry identifies whether it is
+community-maintained or third-party.
 
 Inclusion is not an endorsement, audit, or guarantee of availability. Before
 connecting a wallet, verify the domain, selected network, contract, assets, and
@@ -32,6 +32,23 @@ documentation before submitting a transfer.
 - **Maintainer:** Vortex project.
 - **Ownership:** third-party.
 
+## Community applications
+
+### Koin Krew
+
+[Koin Krew](https://koincrew.com/) operates a Koinos community site and
+[application portal](https://app.koincrew.com/) with token-tracking, NFT,
+airdrop, and ownership-verification tools.
+
+- **Maintainer:** Koin Krew project.
+- **Ownership:** third-party.
+- **Source:** no public source repository was verified.
+
+Some features connect a wallet or interact with tokens. Confirm the destination,
+contract, permissions, and transaction contents before using them. This
+directory does not assess the listed tokens, NFTs, prices, or application
+contracts.
+
 ## Block-production pools
 
 These services provide interfaces for participating in pooled block production.
@@ -51,6 +68,41 @@ This directory makes no claim about rewards, returns, uptime, performance, or
 the safety of funds. For protocol-level block production and Proof of Burn, see
 [Node Operators](../nodes/index.md) and
 [Proof of Burn](../architecture/proof-of-burn.md).
+
+## Node software and operator applications
+
+The official Koinos reference node remains the
+[microservice-based Koinos node](https://github.com/koinos/koinos). The
+projects below are community-led, experimental alternatives. Follow the
+[Node Operators](../nodes/index.md) documentation for the standard production
+path.
+
+### Koinos One
+
+[Koinos One](https://github.com/koinos/koinos-one) is an experimental desktop
+application for running and managing a local Koinos node. It uses Teleno as its
+native node engine and currently targets macOS.
+
+- **Maintainer:** community contributors led by Pablo García.
+- **Ownership:** community-maintained; the repository is hosted in the Koinos
+  GitHub organization.
+- **Current reviewed release:** [Koinos One v1.1.1](https://github.com/koinos/koinos-one/releases/tag/v1.1.1).
+
+### Teleno
+
+[Teleno](https://github.com/koinos/teleno) is an experimental,
+Koinos-compatible node implemented as a single native C++ binary. It is the
+node engine used by Koinos One; it does not replace the official
+microservice-based reference implementation.
+
+- **Maintainer:** community contributors led by Pablo García.
+- **Ownership:** community-maintained; the repository is hosted in the Koinos
+  GitHub organization.
+- **Current reviewed release:** [Teleno node 1.1.0](https://github.com/koinos/teleno/releases/tag/teleno-node-v1.1.0).
+
+Verify the selected network, release, configuration, data path, and key-handling
+instructions in each project's own documentation before running either
+experimental project.
 
 ## Request an entry or correction
 

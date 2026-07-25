@@ -18,6 +18,22 @@ const warnings = [];
 const seen = new Map();
 const safetyClasses = new Set(manifest.safetyClasses);
 
+if (!/^[0-9a-f]{40}$/.test(manifest.publishedRevision ?? "")) {
+  errors.push("manifest publishedRevision must be a full Git commit");
+} else {
+  const commit = spawnSync(
+    "git",
+    ["cat-file", "-e", `${manifest.publishedRevision}^{commit}`],
+    { cwd: root, encoding: "utf8" }
+  );
+  if (commit.status !== 0) {
+    errors.push(
+      `manifest publishedRevision is not available locally: ` +
+        `${manifest.publishedRevision}`
+    );
+  }
+}
+
 function relative(target) {
   return path.relative(root, target).split(path.sep).join("/");
 }
@@ -114,7 +130,7 @@ for (const docPath of walk(path.join(root, "docs/nodes")).filter((file) =>
     const links = linksAfter(lines, closingFenceIndex);
     const expectedSource =
       `https://github.com/koinos/koinos-docs/blob/` +
-      `${manifest.publishedBranch}/${entry.source}`;
+      `${manifest.publishedRevision}/${entry.source}`;
     if (links.source !== expectedSource) {
       errors.push(`${id}: source link must be ${expectedSource}`);
     }
@@ -161,6 +177,13 @@ for (const entry of manifest.entries) {
   if (entry.baseline !== metadata.deploymentBundle.commit) {
     errors.push(`${entry.id}: baseline does not match upstream metadata`);
   }
+  if (
+    !entry.runUrl.includes(
+      `/koinos/koinos-docs/tree/${manifest.publishedRevision}/`
+    )
+  ) {
+    errors.push(`${entry.id}: run URL is not pinned to publishedRevision`);
+  }
   if (seen.get(entry.id) !== 1) {
     errors.push(
       `${entry.id}: expected one documentation fence, found ` +
@@ -175,6 +198,19 @@ for (const entry of manifest.entries) {
   }
 
   const source = fs.readFileSync(sourcePath, "utf8");
+  const publishedSource = spawnSync(
+    "git",
+    ["show", `${manifest.publishedRevision}:${entry.source}`],
+    { cwd: root, encoding: "utf8" }
+  );
+  if (
+    publishedSource.status !== 0 ||
+    publishedSource.stdout !== source
+  ) {
+    errors.push(
+      `${entry.id}: canonical source differs from publishedRevision snapshot`
+    );
+  }
   const start = `[start:${entry.snippet}]`;
   const end = `[end:${entry.snippet}]`;
   if (!source.includes(start) || !source.includes(end)) {

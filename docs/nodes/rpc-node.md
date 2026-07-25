@@ -32,8 +32,8 @@ on loopback and intentionally enables `api`.
 --8<-- "examples/node-operators/rpc/env.example:rpc-env"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/env.example) ·
-[Use locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
+[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc/env.example) ·
+[Use locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc)
 
 After preserving the existing `.env`, apply the reviewed values and run
 `docker compose --profile api up -d`. Confirm that the six API services plus
@@ -51,24 +51,24 @@ a valid test.
 --8<-- "examples/node-operators/rpc/test-jsonrpc.sh:test-jsonrpc"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/test-jsonrpc.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
+[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc/test-jsonrpc.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc)
 
 <!-- node-example: test-rest -->
 ```bash title="test-rest.sh"
 --8<-- "examples/node-operators/rpc/test-rest.sh:test-rest"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/test-rest.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
+[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc/test-rest.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc)
 
 <!-- node-example: test-grpc -->
 ```bash title="test-grpc.sh"
 --8<-- "examples/node-operators/rpc/test-grpc.sh:test-grpc"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/test-grpc.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
+[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc/test-grpc.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc)
 
 Use `GRPC_PLAINTEXT=1` only for the local loopback test. Public gRPC should use
 TLS on port 443.
@@ -86,7 +86,7 @@ Caddy can obtain and renew certificates automatically when public DNS and
 ports 80/443 are correctly configured. The configuration uses the
 `caddy-ratelimit` module, which is not part of the standard Caddy binary. Build
 the complete pinned
-[`Dockerfile.caddy`](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/Dockerfile.caddy)
+[`Dockerfile.caddy`](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc/Dockerfile.caddy)
 from the example directory and verify `caddy list-modules` includes
 `http.handlers.rate_limit` before installation.
 
@@ -95,8 +95,8 @@ from the example directory and verify `caddy list-modules` includes
 --8<-- "examples/node-operators/rpc/Caddyfile:rpc-caddy"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/Caddyfile) ·
-[Validate locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
+[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc/Caddyfile) ·
+[Validate locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc)
 
 ### nginx
 
@@ -108,8 +108,8 @@ your ACME client or certificate-management process before starting nginx.
 --8<-- "examples/node-operators/rpc/nginx.conf:rpc-nginx"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/nginx.conf) ·
-[Validate locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
+[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc/nginx.conf) ·
+[Validate locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc)
 
 ## 4. Prove internal ports are not public
 
@@ -121,8 +121,8 @@ from another network. This is read-only; it does not change firewall rules.
 --8<-- "examples/node-operators/rpc/audit-exposure.sh:audit-exposure"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/rpc/audit-exposure.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/rpc)
+[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc/audit-exposure.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/rpc)
 
 From outside the server, expect only 80/443 and any intentionally public P2P
 port. Treat externally reachable 5672, 15672, 8080, 50051, or 3000 as a

@@ -52,8 +52,8 @@ archive modifies the staging directory and requires substantial free space.
 --8<-- "examples/node-operators/backup-restore/fetch-public-backup.sh:fetch-public-backup"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/backup-restore/fetch-public-backup.sh) ·
-[Use locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/backup-restore)
+[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/backup-restore/fetch-public-backup.sh) ·
+[Use locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/backup-restore)
 
 ## Inspect without extracting
 
@@ -66,8 +66,8 @@ published SHA-256, rejects unsafe paths, and confirms that `chain` and
 --8<-- "examples/node-operators/backup-restore/inspect-backup.sh:inspect-backup"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/backup-restore/inspect-backup.sh) ·
-[Run locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/backup-restore)
+[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/backup-restore/inspect-backup.sh) ·
+[Run locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/backup-restore)
 
 Review the metadata and full member listing yourself as well. Stop if the
 checksum, owner, network, date, layout, or required free space is unclear.
@@ -88,8 +88,8 @@ acknowledgement, and the exact confirmation `RESTORE_MAINNET`.
 --8<-- "examples/node-operators/backup-restore/restore-backup.sh:restore-backup"
 ```
 
-[View complete file](https://github.com/koinos/koinos-docs/blob/dev/examples/node-operators/backup-restore/restore-backup.sh) ·
-[Use locally](https://github.com/koinos/koinos-docs/tree/dev/examples/node-operators/backup-restore)
+[View complete file](https://github.com/koinos/koinos-docs/blob/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/backup-restore/restore-backup.sh) ·
+[Use locally](https://github.com/koinos/koinos-docs/tree/a607646343d910bab33eb8f19a6fdad763e8c5ff/examples/node-operators/backup-restore)
 
 Only `chain` and `block_store` enter the live basedir. Existing core, mempool,
 and optional-index directories move to `.pre-restore-TIMESTAMP`. The helper

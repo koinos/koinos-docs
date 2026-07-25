@@ -2,49 +2,78 @@
 icon: fontawesome/solid/network-wired
 ---
 
-# Interprocess communication
-Communication between microservices is accomplished utilizing the AMQP 0.9.1 protocol. The Koinos cluster uses the hub and spoke model. Messages between microservices can either be RPC or broadcast (see **Table 1** below for a more detailed explanation). Messages originating from a particular microservice will be directed through an exchange on RabbitMQ; through `koinos.rpc` and `koinos.event` for RPC and broadcasts, respectively.
+# Internal messaging
 
-_**Table 1.** A table containing information about the types of messages and exchanges within a Koinos cluster._
+Koinos microservices exchange Protocol Buffer messages through RabbitMQ using
+AMQP 0.9.1. This internal bus supports two different communication patterns:
+RPC and broadcasts.
 
-|Message type|Exchange|Example request(s)|Characteristics|
-|---|---|---|---|
-|RPC       |`koinos.rpc`  |`get_head_info`<br/>`get_blocks_by_height`<br/>`get_account_nonce`<br/>`get_chain_id`  |The traditional request/response <br/>model|
-|Broadcast |`koinos.event`|`block_accepted`<br/>`transaction_accepted`<br/>`block_irreversible`<br/>`fork_heads`  |An event driven model - messages <br/>are generally sent from one to many|
+RabbitMQ connects services inside one Koinos node. P2P is the separate protocol
+boundary used to communicate with other nodes.
 
----
 ## RPC
-Each microservice that serves RPC requests binds to a durable queue. The system is designed such that each microservice can be scaled up and down based on the load required by the particular Koinos cluster. This is implemented via a competitive consumer model, i.e., multiple instances of a microservice competing to service requests off a single queue.
 
-From a high level, each service makes requests by sending an RPC message to the `koinos.rpc` exchange on the RabbitMQ server. RabbitMQ directs messages from the `koinos.rpc` exchange to the corresponding queue using a routing key. The routing key matches the name of the destination queue. The response messages are matched to the request using a Correlation ID - that is attached to the original request message and the resulting response.
-
-```mermaid
-
-   sequenceDiagram
-      Koinos P2P->>+RabbitMQ: get_head_info_request
-      RabbitMQ->>+Koinos Chain: get_head_info_request
-      Koinos Chain-->>-RabbitMQ: get_head_info_response
-      RabbitMQ-->>-Koinos P2P: get_head_info_response
-```
-
-_**Figure 1.** A diagram demonstrating the data path of an RPC request from Koinos P2P to Koinos Chain._
-
----
-## Broadcast
-When an event occurs within a Koinos cluster, such as when a block is accepted into a fork of the chain, a broadcast message is emitted (as shown in **Figure 2** below). The broadcast message is not directed to any particular consumer, it is intended for any consumer who may be interested. This essentially behaves similar to a publisher/subscriber paradigm where a message is sent on a particular topic.
+An RPC has a request, one destination service, and a response. A service sends a
+protobuf request to the `koinos.rpc` exchange, and RabbitMQ routes it to the
+queue for the target service. A correlation identifier associates the response
+with the original request.
 
 ```mermaid
+sequenceDiagram
+    participant P2P
+    participant MQ as RabbitMQ
+    participant Chain
 
-   flowchart
-      B[Koinos Chain] -- block_accepted --> A((RabbitMQ))
-      A -- block_accepted --> C[Koinos Block Store]
-      A -- block_accepted --> D[Koinos Transaction Store]
-      A -- block_accepted --> E[Koinos P2P]
-      A -- block_accepted --> F[Koinos Mempool]
+    P2P->>MQ: get_head_info request
+    MQ->>Chain: route to Chain
+    Chain-->>MQ: get_head_info response
+    MQ-->>P2P: correlated response
 ```
 
-_**Figure 2.** A diagram demonstrating the data path of a `block_accepted` message._
+API gateways use this same path after translating an external JSON-RPC or gRPC
+request. A gateway timeout does not by itself reveal whether the destination
+finished processing a state-changing request.
 
-The advantage of a broadcast message is that it allows for the loose coupling of services. It also facilitates the seamless integration of user-created microservices. Reacting to the acceptance of a block, for example, will likely be leveraged by most custom applications and does not require RPC or polling.
+## Broadcasts
 
-To receive broadcasts, one must create an anonymous queue and bind it to the `koinos.event` exchange. Using the routing key, one may specify topics of interest. In the case of block acceptance, the corresponding routing key would be `koinos.block.accept`. Wildcards may be used to simplify this process. For example, if an application must be notified about all events involving a block, the routing key can be specified as `koinos.block.*`.
+A broadcast announces an event to every interested subscriber. Broadcasts use
+the `koinos.event` exchange and topic-based routing keys.
+
+For example, after Chain accepts a block, Block Store can persist it, Mempool
+can update pending transactions, P2P can propagate it, and index services can
+update their derived views.
+
+```mermaid
+flowchart TB
+    Chain["Chain"] -- "block accepted" --> MQ(("RabbitMQ"))
+    MQ --> BlockStore["Block Store"]
+    MQ --> Mempool["Mempool"]
+    MQ --> P2P["P2P"]
+    MQ --> Indexes["Derived indexes"]
+```
+
+The versioned broadcast schema includes accepted and irreversible blocks,
+accepted and failed transactions, Mempool acceptance, fork heads, gossip
+status, and contract event parcels.
+
+## Delivery and consistency
+
+Messaging separates services, but it does not make their databases atomic:
+
+- Chain can advance before a downstream index processes the broadcast.
+- A consumer must handle redelivery without corrupting its state.
+- Recent accepted-block data can change after a fork.
+- RPC availability depends on RabbitMQ and the destination service.
+- Replicating a stateful writer or broadcast consumer requires explicit
+  ownership and consistency support; it must not be inferred from the
+  microservice design.
+
+RabbitMQ queue durability, credentials, exposure, and recovery are deployment
+concerns documented under [Node Operators](../nodes/index.md).
+
+## Versioned sources
+
+- [RabbitMQ in the official Compose topology](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/docker-compose.yml)
+- [RPC envelope in `koinos-proto` v2.6.0](https://github.com/koinos/koinos-proto/blob/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80/koinos/rpc/rpc.proto)
+- [Broadcast definitions in `koinos-proto` v2.6.0](https://github.com/koinos/koinos-proto/blob/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80/koinos/broadcast/broadcast.proto)
+- [AMQP 0.9.1 specification](https://www.rabbitmq.com/amqp-0-9-1-reference)

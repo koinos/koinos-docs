@@ -3,28 +3,70 @@ icon: fontawesome/solid/cubes
 ---
 
 # Serialization
-Koinos utilizes [Protocol Buffers](https://protobuf.dev/) for serializing data types between microservices and between the Koinos Blockchain Framework and the KVM. Protocol Buffers was chosen for a variety of reasons. The primary being the number of officially supported languages and flexibility of the specification to represent all cases required by Koinos.
 
----
-## Koinos Proto
-[Koinos Proto](https://github.com/koinos/koinos-proto) is very foundation of Koinos' multilingual support. Every microservice broadcast event and every RPC is defined as a Protobuf message. Every smart contract transmits data in and out of the KVM via Protobuf serialization. This repository defines all interactions between clients, servers, system smart contracts, and microservices. Protobuf is also used to serialize internal data to disk for those microservices that require state.
+Koinos uses [Protocol Buffers](https://protobuf.dev/) to define structured data
+and encode it as bytes. A shared schema lets services, clients, and smart
+contracts agree on field numbers, types, and nested messages even when they are
+implemented in different languages.
 
-The repository is organizationed by microservices under the `koinos/` directory. There are a handful of special directories, below find a comprehensive list.
+## Where protobuf is used
 
-| Directory | Description |
-| --------- | ----------- |
-| [koinos/broadcast](https://github.com/koinos/koinos-proto/tree/master/koinos/broadcast) | Defines the serialization for all broadcast events within the Koinos cluster. |
-| [koinos/contracts](https://github.com/koinos/koinos-proto/tree/master/koinos/contracts) | Defines the serialization for all system smart contracts. |
-| [koinos/protocol](https://github.com/koinos/koinos-proto/tree/master/koinos/protocol)  | Defines the serialization for all data types on the wire that may be used for signing. |
-| [koinos/rpc](https://github.com/koinos/koinos-proto/tree/master/koinos/rpc)       | Defines the serialization for all Remote Procedure Calls (RPC). |
+The versioned [`koinos-proto`](https://github.com/koinos/koinos-proto/tree/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80)
+repository defines the main data boundaries:
 
----
-## Canonicity
-Protocol Buffers does not specifiy a deterministic serialization for each type. This is a feature of the protocol to increase flexibility. But when cryptographic integrity is required, this is a liability. Thankfully, the Protocol Buffers serialization is not difficult to understand and enforcing canonicity is relatively straight forward. Every field of a Protocol Buffers message must have an integer index. This is a natural sort order. Futhermore, maps are not guaranteeed to be serialized in any particular order. This appears to be due to the fact that not all targeted languages can guarantee a particular order. For example, Golang purposefully randomizes the iteration order of a map to prevent developers from relying on a particular ordering. Koinos Blockchain Framework has no need of maps, so this is not an issue for us. From these restraints the canonical serialization is as follows:
+| Boundary | Examples |
+| --- | --- |
+| Protocol objects | Blocks, block headers, transactions, operations, and receipts |
+| Service RPC | Chain queries, block lookup, pending transactions, and derived indexes |
+| Broadcasts | Accepted blocks, irreversible blocks, transaction results, and contract events |
+| Smart contract runtime | Contract arguments, results, system-call messages, and events |
+| Contract ABI | Type descriptors used to encode a contract's arguments and results |
 
-- Serialize fields in field number order
-- Do not allow maps
+Individual services may also serialize protobuf messages in their persistent
+state. That storage format remains owned by the service and is not automatically
+a public compatibility contract.
 
-All messages that are cryptographically referenced or verified will be serialized using this serialization. The primary location where this will impact developers is transaction signing.
+## Schema and wire data
 
-Learn more about how [Protobuf](../developers/protobuf.md) is used through the Koinos ecosystem. [Read more »](../developers/protobuf.md)
+A `.proto` file is the schema. Generated language bindings or runtime
+descriptors encode and decode the wire data. The schema name alone is not
+enough: a client and service must use compatible field definitions.
+
+Protocol Buffers supports compatible schema evolution when field numbers and
+wire types are managed correctly. Renaming or reusing a field number can be
+breaking even if the new source code still compiles.
+
+## Signed and hashed data
+
+Protocol Buffers does not promise that every implementation will produce an
+identical byte sequence for every logically equivalent message. That matters
+when bytes are hashed or signed.
+
+Koinos protocol objects define the representation expected by the protocol.
+Applications should use an official Koinos SDK or a tested compatible
+implementation when building transaction IDs, signatures, block IDs, or other
+cryptographically referenced values. Re-encoding a message with an arbitrary
+protobuf library can produce bytes that do not match the expected signed
+payload.
+
+## Contract data
+
+The Chain service passes contract arguments and results across the WebAssembly
+runtime boundary as byte arrays. The contract and caller use protobuf types to
+interpret those bytes. A [Contract ABI](contract-abi.md) connects a method's
+entry point to its argument and result message types.
+
+Serialization errors are therefore interface errors: the contract may receive
+the wrong field values or reject the call even though the byte array itself is
+valid.
+
+For language-specific generation and contract examples, continue with
+[Smart Contract Development](../contracts/protobuffers.md).
+
+## Versioned sources
+
+- [`koinos-proto` v2.6.0](https://github.com/koinos/koinos-proto/tree/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80)
+- [Protocol objects](https://github.com/koinos/koinos-proto/tree/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80/koinos/protocol)
+- [RPC schemas](https://github.com/koinos/koinos-proto/tree/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80/koinos/rpc)
+- [Broadcast schemas](https://github.com/koinos/koinos-proto/tree/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80/koinos/broadcast)
+- [Chain runtime boundary](https://github.com/koinos/koinos-chain/tree/0ae99eced8b585c4145424e9c2a28f667796cc66)

@@ -90,3 +90,21 @@ before installing or upgrading.
 - **Irreversible on-chain** changes chain state or consumes assets.
 
 Commands with different safety classes are kept in separate procedures.
+
+## How commands are verified
+
+Every copyable console block is checked for shell syntax in CI. Commands that
+can run safely without a real node receive an additional behavioral check:
+
+- observer, API, and producer profiles are rendered from the pinned official
+  `koinos/koinos` bundle with Docker Compose;
+- read-only JSON-RPC and REST commands run against current public endpoints;
+- the gRPC command is checked for the required transport, descriptor set, and
+  method;
+- the public-backup metadata, checksum publication, HTTP range support, and
+  real archive prefix are checked remotely;
+- restore and key-permission commands run against disposable local data.
+
+Commands that require a real synchronized node, public firewall, TLS
+certificate, or irreversible transaction retain explicit expected results and
+must also be proven on the operator's staging host before production use.

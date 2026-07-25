@@ -39,5 +39,6 @@ jobs:
       - run: npm run examples:test
       - run: npm run examples:start
       - run: npm run examples:smoke
+      - run: npm run node-commands:verify
       - run: npm run docs:links
       - run: mkdocs build

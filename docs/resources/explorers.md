@@ -21,6 +21,42 @@ accounts, contracts, and names.
 - **API:** no current maintained public API documentation was verified, so the
   explorer is listed only as a web interface.
 
+### KoinosScan
+
+[KoinosScan](https://koinosscan.com/) is a community-maintained mainnet
+explorer and analytics platform led by
+[interfecto](https://github.com/interfecto). Its open-source
+[Koinos Token Tracker](https://github.com/koinos/koinos-token-tracker) indexes
+irreversible blocks, token events, balances, transfers, and block metadata.
+
+The current interface provides:
+
+- address and transaction-hash search;
+- recent blocks, transactions, and block-producer information;
+- KOIN and VHP balances, holder rankings, transfer history, and distribution
+  charts;
+- historical KOIN ERC-20 claim analytics, which should be treated as
+  project-provided analysis rather than protocol data.
+
+Verification details:
+
+- **Ownership:** community-maintained; the source repository is hosted in the
+  Koinos GitHub organization.
+- **Reviewed source:** commit
+  [`c625f58`](https://github.com/koinos/koinos-token-tracker/commit/c625f58aba806eb821036cd27fcea26ebbedfd7d).
+- **Verified network:** Koinos mainnet.
+- **API:** the current
+  [Token Tracker API documentation](https://api.koinosscan.com/) covers
+  indexed addresses, token holders, transfers, blocks, tokens, and indexer
+  status. It is not a general-purpose Koinos node API.
+- **Synchronization:** the indexer intentionally processes blocks through the
+  last irreversible block, so its displayed height normally trails the chain
+  head by about 60 blocks.
+
+Market information and historical-claim classifications can depend on external
+data or project-defined heuristics. Verify consequential information against
+on-chain data and the methodology shown by the project.
+
 ### Koinscan
 
 [Koinscan](https://www.koinscan.com/) is a third-party mainnet explorer

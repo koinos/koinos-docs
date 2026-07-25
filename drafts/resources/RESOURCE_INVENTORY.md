@@ -36,7 +36,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Koinosblocks | Block explorer | Engrave | Community-maintained | [koinosblocks.com](https://koinosblocks.com/) | [GitLab](https://gitlab.com/engrave/koinos/koinosblocks) | Live head height compared with an official mainnet API on 2026-07-25 | Mainnet verified | Include | No current-public-testnet compatibility or maintained public API documentation verified |
 | Koiner | Explorer/analytics candidate | Not verified | Third-party | `https://koiner.app/` | Not verified | DNS resolution failed on 2026-07-25 | Not verified | Exclude | Site unreachable; features and ownership could not be verified |
-| KoinosScan | Block explorer candidate | KoinosScan project | Third-party | [koinosscan.com](https://koinosscan.com/) | Not verified | Displayed head was materially behind the official mainnet head on 2026-07-25 | Mainnet, but stale at verification | Exclude | Not sufficiently synchronized for a current directory entry |
+| KoinosScan | Block explorer and analytics platform | interfecto | Community-maintained; source repository hosted by `koinos` | [koinosscan.com](https://koinosscan.com/) | [koinos/koinos-token-tracker](https://github.com/koinos/koinos-token-tracker) | Commit [`c625f58`](https://github.com/koinos/koinos-token-tracker/commit/c625f58aba806eb821036cd27fcea26ebbedfd7d); live indexer status was 55 blocks behind the official mainnet head, consistent with documented last-irreversible-block indexing | Mainnet verified | Include | No current-public-testnet compatibility verified; market data and historical-claim classifications can depend on external data or project-defined heuristics |
 | Koinscan | Block explorer and network dashboard | Armana | Third-party | [koinscan.com](https://www.koinscan.com/) | Not verified | Live site build `v0.1.0` (`e1b4fbe`); displayed head was within three blocks of the official mainnet API during review | Mainnet verified | Include | Site identifies itself as early beta; no current-public-testnet compatibility, public source repository, or public API documentation verified |
 | Koinos public testnet repository | Network status and configuration | Koinos Group | Official | [koinos/koinos-testnet](https://github.com/koinos/koinos-testnet) | [koinos/koinos-testnet](https://github.com/koinos/koinos-testnet) | Commit [`0c37959`](https://github.com/koinos/koinos-testnet/commit/0c37959074d1d66bfafb90f44d5a6c5c5c1c5a50) and release [`v0.1.0-public-testnet`](https://github.com/koinos/koinos-testnet/releases/tag/v0.1.0-public-testnet) | Current public testnet | Include as network source | Not a graphical explorer |
 
@@ -104,9 +104,9 @@ The reviewed immutable revision is commit
 - Public wallet entries: Kondor, Tangem, and the community-maintained `kcli`
   command-line wallet with explicit source/dependency limitations. Koinos CLI
   is a developer-tool cross-reference.
-- Public explorer entries: Koinosblocks and Koinscan for mainnet. The official
-  current-public-testnet repository is linked as the network authority because
-  no current public-testnet explorer was verified.
+- Public explorer entries: Koinosblocks, KoinosScan, and Koinscan for mainnet.
+  The official current-public-testnet repository is linked as the network
+  authority because no current public-testnet explorer was verified.
 - Public ecosystem entries: KoinDX, Vortex Bridge, Koin Krew, Fogata, BurnKoin,
   Koinos One, and Teleno.
 - Public developer entries: Koilib, the AssemblyScript SDK and CLI, the C++ SDK,

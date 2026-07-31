@@ -386,7 +386,8 @@ The baseline Architecture chapter had an incomplete structure:
 - REST was absent;
 - messaging was described too narrowly;
 - Proof of Burn and Resources contained historical formula/parameter detail
-  that was difficult to maintain and easy to misapply;
+  that was difficult to maintain and easy to misapply without a versioned
+  technical reference;
 - ABI, system calls, smart contracts, and serialization mixed implementation
   detail with incomplete or stale explanations;
 - operational instructions and system-contract internals were not consistently
@@ -404,7 +405,8 @@ The baseline Architecture chapter had an incomplete structure:
 | `docs/architecture/contract-abi.md` | Defined method records, entry points, protobuf argument/result types, read-only metadata, descriptor sets, tool usage, and the limitation that an ABI does not validate implementation behavior. |
 | `docs/architecture/system-calls.md` | Defined system calls, native thunks, system-contract overrides, capability groups, determinism, authority, and the consensus/security boundary. |
 | `docs/architecture/serialization.md` | Expanded protobuf coverage across protocol objects, RPC, broadcasts, runtime, and ABI. Distinguished schema from wire data and explained signed/hashed canonicity risks. |
-| `docs/architecture/resources.md` | Replaced difficult-to-maintain formula detail with the stable compute/network/disk model, account RC/mana, payer semantics, block limits, resource markets, and Architecture/Operations/System Contracts boundaries. |
+| `docs/architecture/resources.md` | Replaced difficult-to-maintain formula detail with the stable compute/network/disk model, account RC/mana, payer semantics, block limits, resource markets, and Architecture/Operations/System Contracts boundaries. Links to the separate mathematical derivation. |
+| `docs/architecture/resource-market-mathematics.md` | Preserved and modernized the removed resource-market equations in response to Julián's review. Maps the pool update, per-block RC, invariant, limits, and rounding to immutable implementation sources. Records that the source comment says “one month” while the encoded constant produces an approximately three-day half-life, and keeps both separate from the five-day RC regeneration interval. |
 | `docs/architecture/proof-of-burn.md` | Replaced historical parameters and executable implications with KOIN-to-VHP, effective VHP, VRF/eligibility, VHP consumption/replenishment, and service/system-contract responsibility boundaries. |
 
 ### 6.3 Individual microservice pages
@@ -441,7 +443,8 @@ The public Architecture chapter is grounded in:
 Historical Koinos One microservice documents were used only as structural
 research. Knodel/Windows procedures, GarageMQ details, stale versions, ports,
 seed addresses, storage estimates, recovery steps, and unverified performance
-claims were not imported.
+claims were not imported. The historical resource-market derivation was
+retained only after mapping it to the selected implementation and its tests.
 
 ### 6.5 Internal foundation
 
@@ -467,15 +470,17 @@ notes that would be distracting in the end-user journey.
 - No executable irreversible PoB transaction was added.
 - Teleno, TLN, and monolithic-node architecture are outside this chapter.
 - Historical consensus parameters and unverified performance claims were not
-  restored.
+  restored as current values. The resource-market mathematical reference
+  separates versioned defaults from governed live state and calls out the
+  half-life discrepancy in the selected source.
 
 ### 6.7 Architecture impact
 
 ```text
-36 files changed, 2,380 insertions, 818 deletions
+37 files changed, 2,704 insertions, 843 deletions
 ```
 
-This includes 20 public Architecture pages, 15 internal draft/foundation files,
+This includes 21 public Architecture pages, 15 internal draft/foundation files,
 and navigation.
 
 ## 7. Chapter 4: Resources
@@ -844,6 +849,7 @@ docs/architecture/microservices/p2p.md
 docs/architecture/microservices/rest.md
 docs/architecture/microservices/transaction-store.md
 docs/architecture/proof-of-burn.md
+docs/architecture/resource-market-mathematics.md
 docs/architecture/resources.md
 docs/architecture/serialization.md
 docs/architecture/smart-contracts.md

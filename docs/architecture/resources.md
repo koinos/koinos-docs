@@ -60,6 +60,14 @@ flowchart TB
     Block -- "Yes" --> Apply["Apply transaction state"]
 ```
 
+## Mathematical model
+
+The Resources system contract uses an internal constant-product market for each
+resource type. The separate
+[Resource market mathematics](resource-market-mathematics.md) page derives its
+resource-supply update, per-block RC allocation, invariant, limits, and
+rounding behavior from the selected versioned implementation.
+
 ## Architecture versus operation
 
 This page describes the accounting boundary. Current values, monitoring,

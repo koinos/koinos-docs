@@ -236,7 +236,9 @@ nav:
           - Contract ABI: architecture/contract-abi.md
           - System calls: architecture/system-calls.md
           - Serialization: architecture/serialization.md
-      - Resource model: architecture/resources.md
+      - Resource model:
+          - Overview: architecture/resources.md
+          - Resource market mathematics: architecture/resource-market-mathematics.md
       - Proof of Burn: architecture/proof-of-burn.md
   - System Contracts:
       - system-contracts/index.md

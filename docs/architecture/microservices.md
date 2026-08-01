@@ -3,47 +3,89 @@ icon: fontawesome/solid/circle-nodes
 ---
 
 # Microservices
-A microservice architecture has many advantages over a more traditional monolithic architecture. By breaking up a complex application into a set of loosely coupled services, software becomes highly maintainable and easily verifiable while providing a great degree of deployment flexibility. Improving or replacing microservices become a trivial task - this allows for low-risk upgrade paths. An additional benefit that should not be underestimated is the ability to choose the programming language best fit for the microservice at hand.
 
-With a microservice architecture, onboarding engineers becomes a more feasible task as engineers can more easily master one or more services without having to understand the details of the larger complicated system. This will lead to more productive hires and higher quality contributions.
+A Koinos node is composed of services with separate responsibilities. RabbitMQ
+provides the internal message bus. Chain validates consensus state, P2P connects
+the node to peers, and the remaining services store artifacts, maintain working
+state, build query indexes, produce blocks, or expose APIs.
 
----
-## Cluster anatomy
-The Koinos cluster implements the Koinos protocol leveraging the benefits of microservice architectures. The microservices provided by Koinos Group facilitates all the necessary functions to power the Koinos blockchain (see **Table 1** below for a complete list).
-
-_**Table 1.** A table containing information about the core microservices of a Koinos cluster._
-
-|Microservice|Language|Responsibilities|
-|---|---|---|
-|[Koinos Chain](https://github.com/koinos/koinos-chain)                             |C++|Processing blocks and maintaining the state of the chain|
-|[Koinos Block Store](https://github.com/koinos/koinos-block-store)                 |Golang|Storing block information|
-|[Koinos P2P](https://github.com/koinos/koinos-p2p)                                 |Golang|P2P communication between node clusters|
-|[Koinos Mempool](https://github.com/koinos/koinos-mempool)                         |C++|Storing transactions that have yet to be included in blocks|
-|[Koinos Transaction Store](https://github.com/koinos/koinos-transaction-store)     |Golang|Storing transaction information|
-|[Koinos Block Producer](https://github.com/koinos/koinos-block-producer)           |C++|The production of blocks|
-|[Koinos JSON-RPC](https://github.com/koinos/koinos-jsonrpc)                        |Golang|Providing API access from outside the cluster|
-|[Koinos gRPC](https://github.com/koinos/koinos-grpc)                               |C++|Providing API access from outside the cluster|
-|[Koinos Contract Meta Store](https://github.com/koinos/koinos-contract-meta-store) |Golang|Providing ABI data for smart contracts|
-|[Koinos Account History](https://github.com/koinos/koinos-account-history)         |C++|Providing records for each address|
-
----
-## Internal communication
-Communication between microservices is accomplished by taking advantage of the battle hardened _Advanced Message Queue Protocol_ ([AMQP 0.9.1](https://www.amqp.org/specification/0-9-1/amqp-org-download)) as implemented by [RabbitMQ](https://www.rabbitmq.com/). Each microservice maintains a connection to RabbitMQ which it uses to send and receive _Remote Procedure Calls_ (RPC) as well as broadcast messages. Microservices avoid the need for polling by utilizing broadcast messages in order to implement an event driven paradigm.
+Separating these responsibilities makes the node modular, but it also means
+that process health and data consistency are different questions. An API can be
+reachable while its target service is unavailable or catching up.
 
 ```mermaid
-
-   flowchart
-      B[Koinos Chain] <--> A(("RabbitMQ\n(AMQP 0.9.1)"))
-      C[Koinos Block Store] <--> A
-      D[Koinos Mempool] <--> A
-      E[Koinos P2P] <--> A
-      A <--> F[Koinos Block Producer]
-      A <--> G[Koinos JSONRPC]
-      A <--> H[Koinos Transaction Store]
-      A <--> I[Koinos Contract Meta Store]
+flowchart TB
+    External["Peers, applications, and tools"]
+    Interfaces["P2P and API gateways"]
+    Bus["RabbitMQ internal messaging"]
+    Services["Chain, Mempool, Block Store, indexes, and Block Producer"]
+    External <--> Interfaces
+    Interfaces <--> Bus
+    Bus <--> Services
 ```
-_**Figure 1.** A diagram demonstrating the interprocess communication data flow within a Koinos cluster._
 
-[More about interprocess communication »](interprocess-communication.md)
+The arrows show communication relationships. They do not imply that every
+service can write every database or that all services can be replicated without
+coordination.
 
-Because of the extensibility of the Koinos cluster, users can develop custom microservices that provide additional functionality. User-created microservices have first class citizenship - in other words, they have the same capabilities of any core microservice provided by Koinos Group. This enables engineers and entrepreneurs to provide unique business propositions that would otherwise be difficult to implement - no longer is polling and parallel data storage required when you have access to the core event driven system.
+## Services in the official deployment bundle
+
+The selected
+[Compose topology](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/docker-compose.yml)
+contains a core node and optional production, API, and index services.
+
+| Service | Role |
+| --- | --- |
+| [RabbitMQ](interprocess-communication.md) | Routes internal RPC requests and broadcasts |
+| [Chain](microservices/koinos-chain.md) | Validates blocks and transactions, executes contracts, and owns canonical state |
+| [Mempool](microservices/mempool.md) | Maintains the fork-aware pending-transaction view |
+| [Block Store](microservices/block-store.md) | Stores blocks and receipts for retrieval |
+| [P2P](microservices/p2p.md) | Connects to peers, gossips data, and coordinates synchronization |
+| [Block Producer](microservices/block-producer.md) | Optionally assembles, signs, and submits blocks |
+| [JSON-RPC](microservices/json-rpc.md) | Exposes an HTTP JSON-RPC gateway |
+| [gRPC](microservices/grpc.md) | Exposes a typed protobuf gateway |
+| [REST](microservices/rest.md) | Exposes REST/OpenAPI endpoints through JSON-RPC |
+| [Transaction Store](microservices/transaction-store.md) | Builds a transaction lookup index |
+| [Contract Meta Store](microservices/contract-meta-store.md) | Builds a contract metadata and ABI index |
+| [Account History](microservices/account-history.md) | Builds a fork-aware account activity index |
+
+The core Compose services are RabbitMQ, Chain, Mempool, Block Store, and P2P.
+The other services are enabled through Compose profiles in this release. That
+deployment grouping can change, so operator configuration should always follow
+the selected release rather than this architecture summary.
+
+## State ownership
+
+| State | Service | Consistency meaning |
+| --- | --- | --- |
+| Consensus state | Chain | Authoritative for local validation and execution |
+| Blocks and receipts | Block Store | Durable artifacts; Chain still decides validity |
+| Pending transactions | Mempool | Transient, fork-aware working state |
+| Transaction lookup | Transaction Store | Derived index that can lag Chain |
+| Contract metadata | Contract Meta Store | Derived index that can lag or follow a fork |
+| Account activity | Account History | Derived, fork-aware index |
+| API request state | JSON-RPC, gRPC, REST | Gateway state only; not blockchain state |
+
+An accepted block can still be replaced before it becomes irreversible.
+Services that index accepted blocks must therefore follow fork changes and
+irreversible-block information. A derived index can be incomplete while Chain
+is already synchronized.
+
+## Internal and external boundaries
+
+- [Internal messaging](interprocess-communication.md) carries service RPC and
+  broadcasts through RabbitMQ.
+- [P2P](microservices/p2p.md) exchanges blocks and transactions with other
+  Koinos nodes.
+- API gateways translate external protocols into internal service requests.
+- Smart contracts execute inside the Chain service's WebAssembly runtime.
+
+For selecting services and operating their data, continue with
+[Node Operators](../nodes/microservices.md).
+
+## Versioned sources
+
+- [Official service versions](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/env.example)
+- [Official Compose topology](https://github.com/koinos/koinos/blob/821674672e699bf56e94d7c0e8bce122e83d1482/docker-compose.yml)
+- [RPC service definitions in `koinos-proto` v2.6.0](https://github.com/koinos/koinos-proto/blob/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80/koinos/rpc/services.proto)
+- [Broadcast definitions in `koinos-proto` v2.6.0](https://github.com/koinos/koinos-proto/blob/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80/koinos/broadcast/broadcast.proto)

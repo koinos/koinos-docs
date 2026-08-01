@@ -3,19 +3,52 @@ icon: fontawesome/brands/docker
 ---
 
 # Docker Compose profiles
-Docker Compose profiles allow embedded different configurations within a single compose file. The Koinos node comes with several compose profiles configured that quickly enable common configurations. For more information on Docker Compose profiles, please read the official [documentation](https://docs.docker.com/compose/profiles/).
 
-To enable a compose profile you can pass it in with the `--profile` option (e.g. `docker compose --profile jsonrpc up`), or by setting the `COMPOSE_PROFILES` environment variable in the shell or in `.env`. We recommend setting `COMPOSE_PROFILES` in `.env` so that you do not need to remember to add `--profile` to every compose command. For this reason, there is already a place to set `COMPOSE_PROFILES` in the provided `.env` example.
+Required services run without a profile. Optional services are enabled through
+the upstream Compose profiles below.
 
-You can run additional microservices or set common configurations by enabled on, or more, of the following profiles:
+These profiles follow the current `koinos/koinos` `master` branch. Confirm the
+rendered services locally because the upstream orchestrator can change.
 
-| <div style="width:150px">Docker Compose profile</div> | Description |
+| Profile | Services enabled |
 | --- | --- |
-| `block_production`     | Enables the block production. |
-| `jsonrpc`              | Enables JSON-RPC API handling. |
-| `grpc`                 | Enables gRPC API handling. |
-| `transaction_store`    | Enables transaction history tracking. |
-| `contract_meta_store`  | Enables service of contract ABIs. |
-| `account_history`      | Enables account history tracking. |
-| `api`                  | Enables API related microservices (`jsonrpc`, `grpc`, `transaction_store`, `contract_meta_store`, and `account_history`). |
-| `all`                  | Enables all microservices. |
+| `block_producer` | `block_producer` |
+| `jsonrpc` | `jsonrpc` |
+| `grpc` | `grpc` |
+| `rest` | `rest` and its `jsonrpc` dependency |
+| `transaction_store` | `transaction_store` |
+| `contract_meta_store` | `contract_meta_store` |
+| `account_history` | `account_history` |
+| `api` | `jsonrpc`, `grpc`, `rest`, `transaction_store`, `contract_meta_store`, `account_history` |
+| `all` | Every optional service, including `block_producer` |
+
+Required services:
+
+- `amqp`
+- `chain`
+- `mempool`
+- `block_store`
+- `p2p`
+
+## Select the least profile
+
+- Standard node with core services only: leave `COMPOSE_PROFILES` empty.
+- Standard node with private health API: `COMPOSE_PROFILES=jsonrpc`.
+- Full API/index node: `COMPOSE_PROFILES=api`.
+- Individual APIs: use `jsonrpc`, `grpc`, or `rest`.
+- Producer: follow [Block production](block-production.md) and enable
+  `block_producer` intentionally.
+
+Profiles can be set in `.env` or passed with `docker compose --profile`.
+Commands that omit `--profile` still honor `COMPOSE_PROFILES` from `.env`.
+Inspect `.env` before assuming a command starts only required services.
+
+!!! danger "`all` is not a quick-start profile"
+    `all` starts the producer service. It can initialize producer-key state and
+    materially changes the threat model, even when producer configuration is
+    incomplete.
+
+Before changing a profile, inspect the `profiles` and `depends_on` sections in
+the `docker-compose.yml` supplied by the exact deployment revision. Confirm
+the selected services with `docker compose config --services`, then use
+`docker compose ps` after applying the change.

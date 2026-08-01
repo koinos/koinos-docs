@@ -1,4 +1,4 @@
-name: JavaScript examples
+name: Documentation examples
 
 on:
   pull_request:
@@ -22,6 +22,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -37,5 +39,6 @@ jobs:
       - run: npm run examples:test
       - run: npm run examples:start
       - run: npm run examples:smoke
+      - run: npm run node-commands:verify
       - run: npm run docs:links
       - run: mkdocs build

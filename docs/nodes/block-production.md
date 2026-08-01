@@ -1,94 +1,229 @@
 # Block production
-Koinos uses the novel consensus algorithm, Proof-of-Burn (PoB). To participate in block production you will need to configure your node as well as perform some simple actions on the blockchain.
 
----
-## Proof-of-Burn basics
-Proof-of-Burn has similarities to both Proof-of-Work (PoW) and Proof-of-Stake (PoS) with some notable differences. Like Proof-of-Stake, no mining occurs to produce blocks; this places all physical nodes on an equal playing field. Hashing is simulated in Proof-of-Burn by burning KOIN in order to gain Virtual Hash Power (VHP). Aside from using VHP rather than physical machines performing hashes, the algorithm works similarly to Proof-of-Work.
+Koinos mainnet uses Proof-of-Burn (PoB). KOIN is irreversibly burned to obtain
+Virtual Hash Power (VHP), and a producer signing key is registered to the
+account that owns the VHP.
 
----
-## Prerequisites
-Please follow our guide on [running a node](running-node.md). Be sure to set your `COMPOSE_PROFILES` to either `block_producer` or `all` in your `.env` file. Alternatively, you can start the node with the `--profile all` or `--profile block_producer` to start the optional block producer microservice.
+VHP represents block-production power, similar to hash power in
+Proof-of-Work, without requiring physical mining hardware. A producer may need
+to replenish or top up VHP over time according to its production plan. Every
+additional burn is a separate irreversible on-chain decision, not a node
+startup step. Keep enough liquid KOIN and mana for block-production costs.
+See [Proof-of-Burn](../architecture/proof-of-burn.md) for the consensus
+mechanics.
 
----
-## Retrieving your address and key
-Upon starting a new node, a private block production key will be automatically generated for you. This key will be at `$KOINOS_BASEDIR/block_producer/private.key` (`$KOINOS_BASEDIR` is `~/.koinos` on macOS/Linux and `C:\koinos` for Windows if following our guide). There is a corresponding `public.key` file that is written out when the block producer runs and is always the public key corresponding to the private key that the block producer is configured to use (`private.key` by default). Upon starting the block producer the public key is also printed to the logs.
+!!! danger "Do not start here"
+    First operate a fully synchronized standard Koinos node. Confirm mainnet
+    chain ID, advancing recent head, active peers and gossip, safe disk space,
+    clean logs, working backups, and a tested disable and rollback procedure.
 
-You will want to copy the contents of `public.key` and save this for later use. This is our "hot" key.
+The current public testnet can be queried but, at the verification date, did
+not publish a complete external-operator node bundle. Do not substitute
+Harbinger or mainnet files to rehearse production there.
 
-```console
-cat $KOINOS_BASEDIR/block_producer/public.key
-```
-```{ .txt, .no-copy }
-Aq4Ps_Ch-f8OZDnpQOov2SiMvdYyA5tn0oWa36QWnTeH
-```
+## Separate authority and signing
 
-Next, you will want your main account to hold VHP and KOIN for block production. Let us use the [Koinos CLI](../developers/cli.md) to register the PoB contract and open the wallet for our main account.
+Use different keys for:
 
-```{ .txt, .no-copy }
-koinos-cli -r http://localhost:8080/
-```
+- the wallet account that holds KOIN/VHP and authorizes on-chain actions;
+- the hot producer key that signs blocks on the node.
 
-If you are not using the `.koinosrc` file as mentioned in the [Koinos CLI](../developers/cli.md) documentation, you may need to register the Proof-of-Burn contract manually.
-```{ .txt, .no-copy }
-🔐 > register pob 159myq5YUhhoVWu3wsHKHiJYKPKGUrGiyv
-```
+The producer service stores its generated key under
+`BASEDIR/block_producer/private.key` by default and writes the corresponding
+`public.key`. Confirm the literal absolute `BASEDIR` in `.env`; do not assume
+that opening a shell automatically exports that value.
 
-Finally, open the wallet.
-```{ .txt, .no-copy }
-🔐 > open <wallet_file> <password>
-```
-
-Let us grab our main account address so that we can register it within the Proof-of-Burn contract.
-
-```{ .txt, .no-copy }
-🔓 > address
-Wallet address: 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn
-```
-
----
-## Registering your key and burning
-Using the address from our main account and the public key from our block producer we will now create the association in the Proof-of-Burn contract.
-
-```{ .txt, .no-copy }
-🔓 > pob.register_public_key 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn Aq4Ps_Ch-f8OZDnpQOov2SiMvdYyA5tn0oWa36QWnTeH
-```
-
-Next, we must burn some KOIN in order to receive VHP. Let us burn 1,000 KOIN in exchange for 1,000 VHP. The `pob.burn` call is requesting that 1,000 KOIN be burned from the first address and place 1,000 VHP in to the second address. In our case, we want the address to burn KOIN from to be the same that receives VHP.
-
-```{ .txt, .no-copy }
-🔓 > pob.burn 100000000000 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn
-```
-
-!!! note
-    You may repeat this process to top off your VHP as you run your block producer over time. Do not burn your entire KOIN balance as you will need liquid KOIN and its associated mana in order to produce blocks.
-
----
-## Configuring the block producer
-At this point, the chain has all the information required in order for us to produce blocks. Let us update our block producer configuration file to reflect the information we provided the chain. We should uncomment or add the `producer` line to let the block producer know which account holds our VHP. Below is an example configuration using the address and key from this guide.
-
-```yml
-block_producer:
-  algorithm: pob
-  producer: 1P4msR22FXKHZragcLk2dCNweTEi9JWgxn
-```
-
----
-## Producing blocks
-Now that our configuration file is prepared we may restart our block producer in order to use the new settings. From the directory containing your `docker-compose.yml` execute:
+Before adding the producer account to `config.yml`, create the key directory
+with owner-only access. Replace `koinos` with the real operator account:
 
 ```console
-docker compose restart block_producer
+sudo install -d -m 700 -o koinos -g koinos \
+  /var/lib/koinos/block_producer
 ```
 
-If everything is working as expected your block production logs should look like this:
+Start the producer profile only long enough to create the key, then stop it:
 
-```{ .txt, .no-copy }
-koinos-block_producer-1       | 2022-08-18 17:56:08.489496 (block_producer.Koinos) [block_producer.cpp:296] <info>: Produced block - Height: 220753, ID: 0x1220003c080793c08de2bb3a7d94986b85cbe4f0c8c3c9ad3b6dd036379bc048f421
-koinos-block_producer-1       | 2022-08-18 17:56:08.495517 (block_producer.Koinos) [block_producer.cpp:219] <info>: Created block containing 0 transactions utilizing approximately 0/204800 disk, 0/1048576 network, 0/287500000 compute
-koinos-block_producer-1       | 2022-08-18 17:56:08.501338 (block_producer.Koinos) [pob_producer.cpp:347] <info>: Difficulty target: 0x00000000000002c7bf812846eacfa2a3
-koinos-block_producer-1       | 2022-08-18 17:56:08.502196 (block_producer.Koinos) [pob_producer.cpp:349] <info>: Estimated total VHP producing: 863917.30411773 VHP
-koinos-block_producer-1       | 2022-08-18 17:56:08.502890 (block_producer.Koinos) [pob_producer.cpp:352] <info>: Producing with 10000.00000000 VHP
-koinos-block_producer-1       | 2022-08-18 17:56:10.539163 (block_producer.Koinos) [pob_producer.cpp:98] <info>: Burn difficulty met at quantum 1660845375530
+```console
+cd /opt/koinos
+docker compose --profile block_producer up -d block_producer
+docker compose logs --tail 50 block_producer
+docker compose stop block_producer
 ```
 
-Congratulations, you are now producing blocks using Proof-of-Burn!
+Confirm that `private.key` and `public.key` now exist before continuing. Apply
+owner-only permissions to the private material. These commands assume
+`BASEDIR=/var/lib/koinos`:
+
+```console
+sudo chmod 700 /var/lib/koinos/block_producer
+sudo chmod 600 /var/lib/koinos/block_producer/private.key
+sudo chmod 644 /var/lib/koinos/block_producer/public.key
+sudo chown -R koinos:koinos /var/lib/koinos/block_producer
+ls -ld /var/lib/koinos/block_producer
+ls -l /var/lib/koinos/block_producer
+```
+
+Verify the owner as well as the mode. Encrypt the private key before storing
+an off-host recovery copy, keep the decryption material separately, and test
+recovery without replacing the live key.
+
+Read the public key as the node operator. Never display or copy `private.key`:
+
+```console
+sudo -u koinos cat /var/lib/koinos/block_producer/public.key
+```
+
+## Verify current mainnet inputs
+
+On **2026-07-25**, the current `koinos-cli` mainnet startup file at commit
+`60caabb4c9b17c89b77f18630b0fbe144de5ba8a` registered the PoB contract at
+`159myq5YUhhoVWu3wsHKHiJYKPKGUrGiyv`. A live read of its ABI confirmed the
+write methods `register_public_key(producer, public_key)` and
+`burn(token_amount, burn_address, vhp_address)`.
+
+Those values are time-sensitive. Before signing:
+
+1. install the current release of
+   [Koinos CLI](../developers/cli.md) and connect it to the intended local
+   mainnet RPC;
+2. query and compare the chain ID;
+3. verify the current PoB address from an official versioned CLI startup file;
+4. use CLI `help` for both current PoB methods;
+5. verify KOIN decimals and the exact smallest-unit amount;
+6. verify wallet, producer account, VHP recipient, producer public key,
+   fees/mana, and remaining liquid KOIN;
+7. review the transaction summary through a second channel.
+
+Launch the CLI against the private local endpoint:
+
+```console
+koinos-cli --rpc http://127.0.0.1:8080/
+```
+
+Before opening the wallet, use the CLI to compare the connected chain ID with
+the value obtained in [Networks](networks.md#check-an-endpoint). Then use
+`help register`, `help pob.register_public_key`, and `help pob.burn` to confirm
+the syntax implemented by the installed CLI.
+
+The command shapes below are a non-executable checklist:
+
+```text
+register pob <VERIFIED_MAINNET_POB_CONTRACT>
+open <WALLET_FILE>
+address
+pob.register_public_key <PRODUCER_ACCOUNT> <PRODUCER_PUBLIC_KEY>
+pob.burn <TOKEN_AMOUNT_IN_SMALLEST_UNITS> <BURN_ADDRESS> <VHP_ADDRESS>
+```
+
+**Registration changes on-chain authority. Burning permanently destroys
+KOIN.** Never paste a historical amount or address, and never burn the balance
+needed for future mana and operations.
+
+After broadcasting, record transaction IDs, confirm finality through an
+independent mainnet endpoint, and read the producer registration back from
+chain before enabling the service.
+
+## Configure production
+
+Edit the active `/opt/koinos/config/config.yml` from the selected official
+release or commit. Under `block_producer`, set only the confirmed values:
+
+| Setting | Required decision |
+| --- | --- |
+| `algorithm` | `pob` for mainnet |
+| `producer` | exact account that owns the VHP |
+| `private-key-file` | filename inside `BASEDIR/block_producer` |
+| `pob-production` | chosen percentage from 1 to 100 |
+
+Keep JSON-RPC private. In `.env`, set
+`COMPOSE_PROFILES=block_producer,jsonrpc`; do not use `all`, which also enables
+every API and index service.
+
+Validate the complete configuration:
+
+```console
+cd /opt/koinos
+docker compose config
+```
+
+Start only after the standard node, key, registration, and backup checks pass:
+
+```console
+docker compose up -d
+docker compose ps
+docker compose logs --tail 100 --follow block_producer chain p2p
+```
+
+## Confirm production
+
+A local “Produced block” log line is not enough. Extract the latest complete
+block ID from the producer logs:
+
+```console
+cd /opt/koinos
+produced_block_id="$(docker compose logs --no-color block_producer |
+  sed -nE 's/.*Produced block.*ID: (0x[[:xdigit:]]+).*/\1/p' |
+  tail -n 1)"
+printf 'produced block: %s\n' "$produced_block_id"
+[[ "$produced_block_id" =~ ^0x[[:xdigit:]]{68}$ ]]
+```
+
+Query that exact ID from the local block store and then from an independently
+operated mainnet endpoint:
+
+```console
+for rpc_url in \
+  http://127.0.0.1:8080/ \
+  https://api.koinos.io/jsonrpc
+do
+  response="$(curl --fail --silent --show-error "$rpc_url" \
+    -H 'Content-Type: application/json' \
+    --data "{\"jsonrpc\":\"2.0\",\"method\":\"block_store.get_blocks_by_id\",\"params\":{\"block_ids\":[\"$produced_block_id\"],\"return_block\":false,\"return_receipt\":false},\"id\":1}")"
+  returned_id="$(printf '%s' "$response" |
+    jq -er '.result.block_items[0].block_id')"
+  returned_height="$(printf '%s' "$response" |
+    jq -er '.result.block_items[0].block_height | tonumber')"
+  test "$returned_id" = "$produced_block_id"
+  printf '%s confirmed height %s\n' "$rpc_url" "$returned_height"
+done
+```
+
+The independent endpoint may need a few seconds to observe a newly produced
+block. Retry the second query after finality instead of treating an immediate
+miss as proof that the block was rejected.
+
+For each first-production or post-change check:
+
+1. record the produced block ID from the latest producer log lines;
+2. query that block ID from the local block store;
+3. query the same block ID through an independently operated mainnet endpoint
+   or explorer;
+4. confirm that both sources return the same block and height;
+5. continue monitoring for rejected blocks, lost peers, stale head, key-read
+   errors, and resource exhaustion.
+
+## Disable and rotate
+
+To disable production, remove `block_producer` from `COMPOSE_PROFILES`, apply
+the Compose configuration, and confirm the container is absent:
+
+```console
+cd /opt/koinos
+docker compose up -d --remove-orphans
+docker compose ps
+```
+
+For suspected key compromise:
+
+1. stop and disable the producer immediately;
+2. preserve logs and transaction evidence without exposing the key;
+3. generate a replacement key on a hardened host with restrictive permissions;
+4. verify its public key through a second channel;
+5. re-register through the current PoB ABI and CLI after confirming every
+   address and key;
+6. confirm the new association from an independent endpoint;
+7. start with the replacement key and verify a canonical block;
+8. revoke access to and securely retire old key copies.
+
+Re-registration is an on-chain authority change. Store an encrypted recovery
+copy and rehearse the operational sequence before an incident.

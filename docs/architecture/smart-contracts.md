@@ -3,153 +3,96 @@ icon: fontawesome/solid/code
 ---
 
 # Smart contracts
-The Koinos Blockchain Framework is a bare bones minimal blockchain implementation that is fully customizable through the use of smart contracts. Smart contracts can implement both feature rich
-decentralized applications and core system functionality. The information in this documented is intended to be SDK agnostic and explain the core functionality of the Koinos Virtual Machine and its
-implementation.
 
-Because Koinos uses [Fizzy](https://github.com/wasmx/fizzy) for its WASM (WebAssembly) virtual machine, the blockchain is agnostic to the language the smart contract has been written -- this allows
-support for a multitude of programming languages for development.
+Koinos smart contracts are WebAssembly modules executed by Chain. Contracts
+implement application behavior, and selected system contracts also implement
+protocol behavior that would otherwise require a native node upgrade.
 
-Smart contracts come in two flavors: user and system. User contracts have a basic set of features that allow the developer to
-write decentralized applications. System contracts have all the features available to user contracts, with the additional ability of access the system contract space.
+The node remains responsible for validation, execution context, resource
+metering, state commits, receipts, and consensus. Contract code cannot bypass
+those boundaries.
 
-## Contract space
-Each smart contract has access to an `object_space`, which essentially defines a key value store. The `object_space` is defined as follows:
+## Execution boundary
 
-```proto
-message object_space {
-   bool system = 1;
-   bytes zone = 2;
-   uint32 id = 3;
-}
-```
+A contract call identifies:
 
-### User space
-In the case of a user contract `system` will be set to `false`, the `zone` will be set to the bytes of the public address of the contract, and `id` is used as a unique identifier distinguishing between multiple key value stores. A contract may
-have different key value stores by incrementing the `id`.
+- a contract ID;
+- a 32-bit entry point; and
+- protobuf-encoded argument bytes.
 
-### System space
-The system contract is special in that it may access a _global_ space denoted by `system` being `true` and the `zone` being set to an empty byte array, otherwise known as `kernel` space. This allows for system contracts to read and manipulate a pool
-of shared key value stores.
-
----
-## Entry points
-To inform the blockchain which function you are calling within a smart contract an entry point is provided. The Koinos Blockchain Framework will take the request, whether it is a read or write, load up the contract and pass the entry point as a parameter.
-The main function will then instantiate the contract class or execute procedurally and execute the corresponding code whether it is a member function or inline code. Entry points come in two flavors: read and write.
-
-### Read-only entry points
-Read-only entry points are often used to implement "getter" functions and can be called outside of a transaction. Most commonly, the read only entry points are called using the RPC method `read_contract`. Smart contract code that is executed
-in read-only mode is prevented from writing to any key value store. If the contract attempts to perform a write during read-only mode it will be abruptly trapped and a permission denied exception will be thrown.
-
-Given the following RPC request and response definitions:
-
-```proto
-message read_contract_request {
-   bytes contract_id = 1 [(btype) = CONTRACT_ID];
-   uint32 entry_point = 2;
-   bytes args = 3;
-}
-```
-
-```proto
-message read_contract_response {
-   bytes result = 1;
-   repeated string logs = 2;
-}
-```
+Chain loads the contract, creates an execution context, invokes the entry point,
+meters the work, and returns protobuf-encoded result bytes. The
+[Contract ABI](contract-abi.md) lets tools map human-readable method names to
+entry points and message types.
 
 ```mermaid
+sequenceDiagram
+    participant Client
+    participant API as API gateway
+    participant Chain
+    participant KVM as WebAssembly runtime
 
-   sequenceDiagram
-      Client->>+RPC microservice: read_contract_request
-      RPC microservice->>+Koinos Chain: read_contract_request
-      Koinos Chain->>+Koinos Virtual Machine: contract execution
-      Koinos Virtual Machine->>-Koinos Chain: contract execution
-      Koinos Chain->>-RPC microservice: read_contract_response
-      RPC microservice->>-Client: read_contract_response
+    Client->>API: Contract request
+    API->>Chain: Protobuf RPC
+    Chain->>KVM: Contract ID, entry point, arguments
+    KVM-->>Chain: Result, state changes, logs, events
+    Chain-->>API: Receipt or read result
+    API-->>Client: External API response
 ```
 
-_**Figure 1.** A diagram demonstrating the data path of a `read_contract_request` from an RPC client._
+## Read-only calls and transactions
 
-### Writable entry points
-Writable entry points have no restrictions with regards to reading or writing data. If the smart contract code attempts to write to a key value store, it must be executed in writable mode. This is accomplished by calling the contract from within
-a transaction.
+A `read_contract` RPC executes a contract against node state without committing
+state changes. It is suitable for queries, but its result reflects the Chain
+state reached by that node.
 
-Using the `call_contract_operation` defined below, a user may submit a transaction containing the operation which in turn calls the smart contract in a writable mode.
+A writable contract call is an operation inside a signed transaction. Chain
+checks authorization, nonce, resource availability, and contract execution
+before committing the resulting state. If execution fails, the state changes
+from that transaction are not committed.
 
-```proto
-message call_contract_operation {
-   bytes contract_id = 1 [(btype) = CONTRACT_ID];
-   uint32 entry_point = 2;
-   bytes args = 3;
-}
-```
+The API path does not change these rules. JSON-RPC, gRPC, and REST only
+translate or route the request.
 
-Given the following RPC request and response definitions:
+## Contract state
 
-```proto
-message submit_transaction_request {
-   protocol.transaction transaction = 1;
-   bool broadcast = 2;
-}
-```
+Contract objects are stored in named object spaces. A user contract's storage
+is separated by its contract identifier and object-space ID. System contracts
+can receive authority to work with system state and replace selected
+[system calls](system-calls.md).
 
-```proto
-message submit_transaction_response {
-   protocol.transaction_receipt receipt = 1;
-}
-```
+State becomes part of the selected chain only when the containing transaction
+and block are accepted. Recent accepted state can still change after a fork
+until it becomes irreversible.
 
-```mermaid
+## Calls, logs, and events
 
-   sequenceDiagram
-      Client->>+RPC microservice: submit_transaction_request
-      RPC microservice->>+Koinos Chain: submit_transaction_request
-      Koinos Chain->>+Koinos Virtual Machine: contract execution
-      Koinos Virtual Machine->>-Koinos Chain: contract execution
-      Koinos Chain->>-RPC microservice: submit_transaction_response
-      RPC microservice->>-Client: submit_transaction_response
-```
+A contract can call another contract through the `call` system call. Chain
+creates a nested execution frame, preserves caller context, and returns the
+callee's encoded result.
 
-_**Figure 2.** A diagram demonstrating the data path of a `submit_transaction_request` from an RPC client._
+Contracts can emit:
 
----
-## Contract buffers
+- **logs**, intended primarily for execution diagnostics; and
+- **events**, structured protobuf data recorded in receipts and distributed to
+  interested services.
 
-Because Koinos passes data between the system and contracts using a serialized protocol buffer format, a buffer is used in the interchange of data. There is a cost in CPU cycles when allocating
-data within the VM and therefore it costs mana. It is recommended you set your contract buffer to the lowest size possible that will fit both your contract inputs and contract outputs in order to
-maintain efficiency with regards to resource usage.
+The caller and callee must agree on the protobuf types used for arguments,
+results, and events.
 
----
-## Intercontract communication
-Smart contracts do not necessarily operate in a silo. Any contract has to capability to call upon another contract. This is achieve through a system call, `call`. Similar to both `read_contract` and
-`contract_call_operation` it takes similar paremeters and is defined as:
+## User and system contracts
 
-```proto
-message call_arguments {
-   bytes contract_id = 1 [(btype) = CONTRACT_ID];
-   uint32 entry_point = 2;
-   bytes args = 3;
-}
-```
+User contracts build applications within the normal runtime permissions. System
+contracts have explicitly assigned protocol responsibilities and can override
+selected system-call behavior.
 
-With the corresponding response:
+This page explains the runtime boundary. Privileged contracts and governance
+controls belong in [System Contracts](../system-contracts/index.md), while build
+and deployment procedures belong in
+[Smart Contract Development](../contracts/index.md).
 
-```proto
-message call_result {
-   bytes value = 1;
-}
-```
+## Versioned sources
 
-It is up to the developer to serialize the contract input and output data correctly to ensure the integrity of the call between contracts.
-
-```mermaid
-
-   sequenceDiagram
-      Smart contract 1->>+Koinos Chain: call_arguments
-      Koinos Chain->>+Smart contract 2: call_arguments
-      Smart contract 2->>-Koinos Chain: call_result
-      Koinos Chain->>-Smart contract 1: call_result
-```
-
-_**Figure 3.** A diagram demonstrating the data path of a smart contract calling another smart contract._
+- [`koinos-chain` v1.5.2](https://github.com/koinos/koinos-chain/tree/0ae99eced8b585c4145424e9c2a28f667796cc66)
+- [Contract operations in `koinos-proto` v2.6.0](https://github.com/koinos/koinos-proto/blob/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80/koinos/protocol/protocol.proto)
+- [System-call schemas in `koinos-proto` v2.6.0](https://github.com/koinos/koinos-proto/blob/f3ba7c54d72ddd7b6898a0e2ab7567dcf60ccd80/koinos/chain/system_calls.proto)

@@ -76,13 +76,22 @@ Koinos is a next-generation blockchain platform designed to be **truly accessibl
 
     [:octicons-arrow-right-24: Integrate trading](exchanges/index.md)
 
--   :fontawesome-solid-book:{ .lg .middle } __References & Resources__
+-   :fontawesome-solid-book:{ .lg .middle } __References__
 
     ---
 
-    API references, troubleshooting guides, community links, and additional resources to support your Koinos development journey.
+    Look up API, SDK, contract, and troubleshooting reference material.
 
-    [:octicons-arrow-right-24: Browse resources](references/index.md)
+    [:octicons-arrow-right-24: Open references](references/index.md)
+
+-   :fontawesome-solid-compass:{ .lg .middle } __Resources__
+
+    ---
+
+    Find verified wallets, explorers, ecosystem applications, developer tools,
+    contract standards, and community links.
+
+    [:octicons-arrow-right-24: Browse resources](resources/index.md)
 
 </div>
 
